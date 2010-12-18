@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'mechanize'
 require 'highline/import'
+require 'logger'
 
   @log = Logger.new(STDOUT)
   
