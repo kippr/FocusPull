@@ -4,8 +4,9 @@ require 'highline/import'
 
   def download_archive( username, password )
     agent = WWW::Mechanize.new
-      agent.user_agent_alias = 'Mac Safari'
-      agent.get('https://www.omnigroup.com/sync/') do |page|
+    agent.user_agent_alias = 'Mac Safari'
+      
+    agent.get('https://www.omnigroup.com/sync/') do |page|
       login_result = page.form_with(:action => '/sync/signin') do |login|
         login.username = username
         login.password = password
