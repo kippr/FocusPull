@@ -19,7 +19,7 @@ require 'highline/import'
       end.submit
 
       login_result.link_with(:href => '/sync/manage/download') do |archive|
-        throw Error("Something went wrong retrieving archive") if archive.nil?
+        raise "Something went wrong retrieving archive, maybe invalid username/ password?" if archive.nil?
         archive_file = archive.click()
         return archive_file
       end
