@@ -21,7 +21,11 @@ require 'highline/import'
     login_result.link_with(:href => '/sync/manage/download') do |archive|
       (puts "Something went wrong retrieving archive"; next) if archive.nil?
       archive_file = archive.click()
-      archive_file.save("./data/omnisync.tar")
+      dir = "./archives/#{Time.now.strftime("%Y.%m.%d_%H%M")}"
+      FileUtils.mkpath dir
+      filename = "#{dir}/omnisync.tar"
+      archive_file.save(filename)
+      puts "Saved #{filename} ok"
     end
 
   end
