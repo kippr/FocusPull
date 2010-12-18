@@ -26,21 +26,28 @@ require 'logger'
   end
   
   def unpack_archive( directory, filename, username)
-    @log.debug("unpacking #{directory}/#{filename} for #{username}")
-    command = "tar xf #{directory}/#{filename} && mv #{username} #{directory}"
+    
+    @log.debug("untarring #{directory}/#{filename} for #{username}")
+    command = "tar xf #{directory}/#{filename}"
     success = system(command)
     raise "Could not untar #{filename}" unless success && $?.exitstatus == 0
     
+    FileUtils.mv(username, directory)
+    
+    @log.debug("unzipping entries in archive, #{directory}/#{username}/OmniFocus.ofocus/")
+    Dir.foreach("#{directory}/#{username}/OmniFocus.ofocus/") do | zipFile |
+      @log.debug("Found #{zipFile}")
+    end
   end
 
   username = 'kippr'
   password = ask("Omnisync password for #{username}? ") { |q| q.echo = false }
   
-  archive = download_archive( username, password )
-  
   directory = "./archives/#{Time.now.strftime("%Y.%m.%d_%H%M")}"
   FileUtils.mkpath(directory)
   filename = "omnisync.tar"
+
+  archive = download_archive( username, password )
   archive.save("#{directory}/#{filename}")
   @log.info("Saved #{filename} into #{directory}")
 
