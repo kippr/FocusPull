@@ -2,14 +2,7 @@ require 'rubygems'
 require 'mechanize'
 require 'highline/import'
 
-
-  #a.pluggable_parser.default = WWW::Mechanize::FileSaver
-
-  username = 'kippr'
-  password = ask("Pw?: ") { |q| q.echo = false }
-
-
-  def downloadOmniSync( username, password )
+  def download_archive( username, password )
     agent = WWW::Mechanize.new
       agent.user_agent_alias = 'Mac Safari'
       agent.get('https://www.omnigroup.com/sync/') do |page|
@@ -26,11 +19,15 @@ require 'highline/import'
     end
   end
 
-  archive_file = downloadOmniSync( username, password )
+  username = 'kippr'
+  password = ask("Omnisync password for #{username}? ") { |q| q.echo = false }
+  
+  archive = download_archive( username, password )
+  
   dir = "./archives/#{Time.now.strftime("%Y.%m.%d_%H%M")}"
-  FileUtils.mkpath dir
+  FileUtils.mkpath(dir)
   filename = "#{dir}/omnisync.tar"
-  archive_file.save(filename)
-  puts "Saved #{filename} ok"
+  archive.save(filename)
+  puts("Saved #{filename} ok")
 
 
