@@ -1,17 +1,21 @@
 require 'rubygems'
 require 'mechanize'
+require 'highline/import'
 
-  a = WWW::Mechanize.new { |agent|
-    agent.user_agent_alias = 'Mac Safari'
-  }
 
   #a.pluggable_parser.default = WWW::Mechanize::FileSaver
 
+  username = 'kippr'
+  password = ask("Pw?: ") { |q| q.echo = false }
 
-  a.get('https://www.omnigroup.com/sync/') do |page|
+  agent = WWW::Mechanize.new { |agent|
+    agent.user_agent_alias = 'Mac Safari'
+  }
+
+  agent.get('https://www.omnigroup.com/sync/') do |page|
     login_result = page.form_with(:action => '/sync/signin') do |login|
-      login.username = 'kippr'
-      login.password = '123'
+      login.username = username
+      login.password = password
     end.submit
 
     login_result.link_with(:href => '/sync/manage/download') do |archive|
