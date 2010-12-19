@@ -15,6 +15,7 @@ archive = download_archive( username, password )
 archive.save("#{directory}/#{filename}")
 @log.info("Saved #{filename} into #{directory}")
 
-focus = parse( directory, filename, username)
+parser = FocusParser.new( directory, filename, username)
+focus = parser.parse
 puts focus
 
