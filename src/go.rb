@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'highline/import'
 
-require File.dirname(__FILE__) + '/pull_archive.rb'
-require File.dirname(__FILE__) + '/archive_parser.rb'
+require File.dirname(__FILE__) + '/pull_archive'
+require File.dirname(__FILE__) + '/archive_parser'
 
 username = 'kippr'
 password = ask("Omnisync password for #{username}? ") { |q| q.echo = false }
