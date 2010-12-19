@@ -1,6 +1,10 @@
 require 'rubygems'
 require 'logger'
 require 'zip/zipfilesystem'
+require 'nokogiri'
+
+require File.join(File.dirname(__FILE__), 'focus')
+
 
 
 class FocusParser
@@ -13,9 +17,18 @@ class FocusParser
   end
 
   def parse
+    focus = Focus.new
     foreach_archive_xml do | content |
-      @log.info( content )
+      #@log.debug( content )
+      xml = Nokogiri::XML( content )
+      #@log.debug( xml )
+      projects = xml.xpath( '//xmlns:task/xmlns:project/..' ).map do | projectTaskNode |
+        @log.debug( "Found node: #{projectTaskNode}")
+        Project.new( projectTaskNode.xpath( './xmlns:name' ).first.content )
+      end
+      focus.projects = projects
     end
+    focus
   end
 
   private
