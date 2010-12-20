@@ -5,8 +5,8 @@ class Focus
   end
   
   #todo: this won't handle 2 projects with same name!
-  def projects=( projects )
-    projects.each { | p | @projects[ p.name ] = p }
+  def add_project( p )
+    @projects[ p.name ] = p
   end
   
   def project_list

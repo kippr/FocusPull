@@ -17,21 +17,31 @@ class FocusParser
   end
 
   def parse
+
     focus = Focus.new
     foreach_archive_xml do | content |
-      #@log.debug( content )
       xml = Nokogiri::XML( content )
-      #@log.debug( xml )
-      projects = xml.xpath( '//xmlns:task/xmlns:project/..' ).map do | projectTaskNode |
-        @log.debug( "Found node: #{projectTaskNode}")
-        Project.new( projectTaskNode.xpath( './xmlns:name' ).first.content )
-      end
-      focus.projects = projects
+      
+      parse_tasks( xml, focus) # is there a nicer way to do this?
+            
     end
+    
     focus
   end
 
   private
+    
+    def parse_tasks( xml, focus )
+      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
+        @log.debug( "Found node: #{taskNode}")
+        name = taskNode.xpath( './xmlns:name' ).first.content
+        project = taskNode.at_xpath( './xmlns:project' )
+        unless project.nil?
+          focus.add_project( Project.new( name ) ) 
+        end
+      end
+    end
+    
     def foreach_archive_xml
       @log.debug( "untarring #{@directory}/#{@filename} for #{@username}" )
       begin
