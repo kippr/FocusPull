@@ -15,12 +15,13 @@ class FocusParser
     @directory = directory
     @filename = filename
     @username = username
-    
-    @focus = Focus.new
-    @refs = Hash.new
   end
 
   def parse
+    @refs = Hash.new
+    root = new Folder( "." )
+    @refs[ nil ] = root
+    
     foreach_archive_xml do | content |
       xml = Nokogiri::XML( content )
       
@@ -32,7 +33,7 @@ class FocusParser
     
     resolve_links
     
-    @focus
+    Focus.new( root )
   end
 
   private
@@ -51,7 +52,7 @@ class FocusParser
           
           track_links( project, projectNode )
           
-          @focus.add_project( project ) 
+          #@focus.add_project( project ) 
         end
       end
     end
@@ -64,7 +65,7 @@ class FocusParser
         folder = Folder.new( name )
         track_links( folder, folderNode )        
     
-        @focus.add_folder( folder )
+        #@focus.add_folder( folder )
       end
     end
     
@@ -74,7 +75,7 @@ class FocusParser
       parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
       @log.debug( "Found parent link to #{parentLink}" )
       # need the 'or' for project nodes, which are structured as sub-els of tasks
-      @refs[ folderNode.attr( "id") || folderNode.parent.attr('id')]  = folder 
+      @refs[ folderNode.attr( "id") || folderNode.parent.attr('id')  ]  = folder 
       folder.parent = parentLink && parentLink.content   
     end
     
