@@ -14,30 +14,29 @@ class FocusParser
     @directory = directory
     @filename = filename
     @username = username
+    @focus = Focus.new
   end
 
   def parse
-
-    focus = Focus.new
     foreach_archive_xml do | content |
       xml = Nokogiri::XML( content )
       
-      parse_tasks( xml, focus) # is there a nicer way to do this?
-            
+      parse_tasks( xml ) 
+      
     end
     
-    focus
+    @focus
   end
 
   private
     
-    def parse_tasks( xml, focus )
+    def parse_tasks( xml )
       xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
         @log.debug( "Found node: #{taskNode}")
         name = taskNode.xpath( './xmlns:name' ).first.content
         project = taskNode.at_xpath( './xmlns:project' )
         unless project.nil?
-          focus.add_project( Project.new( name ) ) 
+          @focus.add_project( Project.new( name ) ) 
         end
       end
     end
