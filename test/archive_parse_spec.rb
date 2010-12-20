@@ -3,7 +3,9 @@ require File.dirname(__FILE__) + '/../src/archive_parser.rb'
 describe FocusParser, "#parse" do
 
   before(:all) do
-    @parser = FocusParser.new( "archives/2010.12.19_2225", "omnisync.tar", "kippr" )
+#    dir = "archives/2010.12.19_2225"
+    dir = "archives/2010.12.19_1407"
+    @parser = FocusParser.new( dir, "omnisync.tar", "kippr" )
     @focus = @parser.parse
   end
   
@@ -30,6 +32,10 @@ describe FocusParser, "#parse" do
   
   it "should build links from projects to folders" do
     @focus.project("Spend less time in email").parent.name.should == "Admin"
+  end
+  
+  it "should build a tree starting with nodes without parents" do
+    puts @focus.root.children
   end
 
 end

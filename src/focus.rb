@@ -1,7 +1,10 @@
 class Focus
   
-  def initialize( )
+  attr_reader :root
+  
+  def initialize( root )
     @projects = Hash.new
+    @root = root
   end
   
   #todo: this won't handle 2 projects with same name!

@@ -19,7 +19,7 @@ class FocusParser
 
   def parse
     @refs = Hash.new
-    root = new Folder( "." )
+    root = Folder.new( "." )
     @refs[ nil ] = root
     
     foreach_archive_xml do | content |
@@ -32,6 +32,8 @@ class FocusParser
     end
     
     resolve_links
+    # and stop stack overflows:
+    root.parent = nil
     
     Focus.new( root )
   end
@@ -59,7 +61,7 @@ class FocusParser
     
     def parse_folders( xml )
       xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
-        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attr( "id")}" )
+        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id")}" )
         
         name = folderNode.at_xpath( './xmlns:name' ).content
         folder = Folder.new( name )
@@ -75,7 +77,7 @@ class FocusParser
       parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
       @log.debug( "Found parent link to #{parentLink}" )
       # need the 'or' for project nodes, which are structured as sub-els of tasks
-      @refs[ folderNode.attr( "id") || folderNode.parent.attr('id')  ]  = folder 
+      @refs[ folderNode.attribute( "id") || folderNode.parent.attribute('id')  ]  = folder 
       folder.parent = parentLink && parentLink.content   
     end
     
