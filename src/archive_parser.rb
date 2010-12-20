@@ -26,6 +26,8 @@ class FocusParser
       
       parse_tasks( xml ) 
       
+      parse_folders( xml )
+      
     end
     
     @focus
@@ -46,6 +48,15 @@ class FocusParser
           
           @focus.add_project( project ) 
         end
+      end
+    end
+    
+    def parse_folders( xml )
+      xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
+        @log.debug( "Found folder: #{folderNode}" )
+        name = folderNode.at_xpath( './xmlns:name' ).content
+        folder = Folder.new( name )
+        @focus.add_folder( folder )
       end
     end
     

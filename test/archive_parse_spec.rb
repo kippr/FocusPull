@@ -7,13 +7,21 @@ describe FocusParser, "#parse" do
     @focus = @parser.parse
   end
   
-  it "should see projects" do
+  it "should read projects" do
     @focus.project("Spend less time in email").should_not be_nil
-    @focus.project_list.each { | project | puts project }
+    @focus.project_list.first.name.should_not be_nil
   end
   
   it "should parse project status" do
     @focus.project("iPad has open zone access").status.should == "dropped"
     @focus.project("Spend less time in email").status.should == "active"
   end
+  
+  it "should read folders" do
+    @focus.folder("Personal").should_not be_nil
+    @focus.folder_list.each { | f | puts f }
+  end
+  
+  it "should build the folder tree structure"
+
 end

@@ -8,7 +8,7 @@ class Focus
   def add_project( p )
     @projects[ p.name ] = p
   end
-  
+      
   def project_list
     @projects.values
   end
@@ -17,20 +17,41 @@ class Focus
     @projects[ name ]
   end
   
+  alias add_folder add_project
+  alias folder project
+  alias folder_list project_list
+  
 end
 
-class Project
-  
+class Item
   attr_reader :name
-  attr_accessor :status
+  attr_accessor :parent
   
   def initialize( name )
     @name = name
+  end
+  
+  def to_s
+    "#{self.class}: #{@name}" 
+  end
+end
+
+
+class Folder < Item
+
+end
+
+class Project < Item
+  
+  attr_accessor :status
+  
+  def initialize( name )
+    super( name )
     @status = "active"
   end
   
   def to_s
-    "#{@name} [#{@status}]" 
+    super + " [#{@status}]" 
   end
   
 end
