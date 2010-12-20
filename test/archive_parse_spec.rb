@@ -27,5 +27,9 @@ describe FocusParser, "#parse" do
     planFolder.parent.name.should == "FSA Liquidity"
     @focus.folder("FSA Liquidity").children.should include(planFolder)
   end
+  
+  it "should build links from projects to folders" do
+    @focus.project("Spend less time in email").parent.name.should == "Admin"
+  end
 
 end

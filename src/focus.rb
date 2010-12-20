@@ -34,14 +34,14 @@ class Item
   end
   
   def to_s
-    "#{self.class}: #{@name}" 
+    "#{self.class}: #{@name} <- #{self.parent}" 
   end
 end
 
 
 class Folder < Item
   def to_s
-    super + " <- #{self.parent}"
+    super + " "
   end
 
 end

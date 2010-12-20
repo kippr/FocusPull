@@ -48,6 +48,8 @@ class FocusParser
           statusNode = projectNode.at_xpath( './xmlns:status' )
           project.status = statusNode.content unless statusNode.nil?
           
+          track_links( project, projectNode )
+          
           @focus.add_project( project ) 
         end
       end
@@ -67,7 +69,8 @@ class FocusParser
       #keep track of links for parent <-> kids
       parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
       @log.debug( "Found parent link to #{parentLink}" )
-      @refs[ folderNode.attr( "id") ] = folder 
+      # need the 'or' for project nodes, which are structured as sub-els of tasks
+      @refs[ folderNode.attr( "id") || folderNode.parent.attr('id')]  = folder 
       folder.parent = parentLink && parentLink.content   
     end
     
