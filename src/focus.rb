@@ -26,9 +26,11 @@ end
 class Item
   attr_reader :name
   attr_accessor :parent
+  attr_reader :children
   
   def initialize( name )
     @name = name
+    @children = []
   end
   
   def to_s
@@ -38,6 +40,9 @@ end
 
 
 class Folder < Item
+  def to_s
+    super + " <- #{self.parent}"
+  end
 
 end
 

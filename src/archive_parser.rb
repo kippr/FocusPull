@@ -30,6 +30,8 @@ class FocusParser
       
     end
     
+    resolve_links
+    
     @focus
   end
 
@@ -53,10 +55,29 @@ class FocusParser
     
     def parse_folders( xml )
       xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
-        @log.debug( "Found folder: #{folderNode}" )
+        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attr( "id")}" )
         name = folderNode.at_xpath( './xmlns:name' ).content
         folder = Folder.new( name )
+        track_links( folder, folderNode )        
         @focus.add_folder( folder )
+      end
+    end
+    
+    def track_links( folder, folderNode )
+      #keep track of links for parent <-> kids
+      parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
+      @log.debug( "Found parent link to #{parentLink}" )
+      @refs[ folderNode.attr( "id") ] = folder 
+      folder.parent = parentLink && parentLink.content   
+    end
+    
+    def resolve_links
+      @log.debug( "Resolving links for #{@refs}")
+      @refs.each_pair do | id, node |
+        # replace each string key ref with the actual parent
+        node.parent = @refs[ node.parent ]
+        # then add a backlink
+        node.parent.children << node unless node.parent.nil?
       end
     end
     

@@ -22,6 +22,10 @@ describe FocusParser, "#parse" do
     @focus.folder_list.each { | f | puts f }
   end
   
-  it "should build the folder tree structure"
+  it "should build the folder tree structure" do
+    planFolder = @focus.folder("Plan")
+    planFolder.parent.name.should == "FSA Liquidity"
+    @focus.folder("FSA Liquidity").children.should include(planFolder)
+  end
 
 end
