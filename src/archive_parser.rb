@@ -11,10 +11,13 @@ class FocusParser
 
   def initialize( directory, filename, username )
     @log = Logger.new(STDOUT)
+    
     @directory = directory
     @filename = filename
     @username = username
+    
     @focus = Focus.new
+    @refs = Hash.new
   end
 
   def parse
@@ -33,10 +36,15 @@ class FocusParser
     def parse_tasks( xml )
       xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
         @log.debug( "Found node: #{taskNode}")
-        name = taskNode.xpath( './xmlns:name' ).first.content
-        project = taskNode.at_xpath( './xmlns:project' )
-        unless project.nil?
-          @focus.add_project( Project.new( name ) ) 
+        name = taskNode.at_xpath( './xmlns:name' ).content
+        projectNode = taskNode.at_xpath( './xmlns:project' )
+        unless projectNode.nil?
+          project = Project.new( name )
+          
+          statusNode = projectNode.at_xpath( './xmlns:status' )
+          project.status = statusNode.content unless statusNode.nil?
+          
+          @focus.add_project( project ) 
         end
       end
     end

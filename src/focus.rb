@@ -10,7 +10,7 @@ class Focus
   end
   
   def project_list
-    @projects.keys
+    @projects.values
   end
   
   def project( name )
@@ -22,9 +22,15 @@ end
 class Project
   
   attr_reader :name
+  attr_accessor :status
   
   def initialize( name )
     @name = name
+    @status = "active"
   end
-
+  
+  def to_s
+    "#{@name} [#{@status}]" 
+  end
+  
 end
