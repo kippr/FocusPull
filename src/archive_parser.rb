@@ -37,6 +37,7 @@ class FocusParser
 
   private
     
+    #todo: remove duplication with parse_folders
     def parse_tasks( xml )
       xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
         @log.debug( "Found node: #{taskNode}")
@@ -58,13 +59,16 @@ class FocusParser
     def parse_folders( xml )
       xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
         @log.debug( "Found folder: #{folderNode} with id #{folderNode.attr( "id")}" )
+        
         name = folderNode.at_xpath( './xmlns:name' ).content
         folder = Folder.new( name )
         track_links( folder, folderNode )        
+    
         @focus.add_folder( folder )
       end
     end
     
+    # This is going to need cleanup, esp when we get to tasks, where path is different
     def track_links( folder, folderNode )
       #keep track of links for parent <-> kids
       parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
@@ -77,9 +81,9 @@ class FocusParser
     def resolve_links
       @log.debug( "Resolving links for #{@refs}")
       @refs.each_pair do | id, node |
-        # replace each string key ref with the actual parent
+        # replace the string key ref we stored on each node with the actual parent
         node.parent = @refs[ node.parent ]
-        # then add a backlink
+        # then add a backlink, registering child with parent
         node.parent.children << node unless node.parent.nil?
       end
     end
