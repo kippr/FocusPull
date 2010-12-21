@@ -28,6 +28,7 @@ class Focus < Item
   end
         
   def project_list
+    self
   end
   
   def project( name )
