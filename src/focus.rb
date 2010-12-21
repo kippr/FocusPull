@@ -3,24 +3,16 @@ class Focus
   attr_reader :root
   
   def initialize( root )
-    @projects = Hash.new
     @root = root
   end
-  
-  #todo: this won't handle 2 projects with same name!
-  def add_project( p )
-    @projects[ p.name ] = p
-  end
-      
+        
   def project_list
-    @projects.values
   end
   
   def project( name )
     @projects[ name ]
   end
   
-  alias add_folder add_project
   alias folder project
   alias folder_list project_list
   
@@ -35,6 +27,13 @@ class Item
     @name = name
     @children = []
   end
+
+  def each( &block )
+    yield self
+    proc = block
+    self.children.each { | child | child.each( &proc ) }
+  end
+  
   
   def to_s
     "#{self.class}: #{@name} <- #{self.parent}" 

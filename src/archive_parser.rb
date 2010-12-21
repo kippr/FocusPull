@@ -18,9 +18,8 @@ class FocusParser
   end
 
   def parse
-    @refs = Hash.new
     root = Folder.new( "." )
-    @refs[ nil ] = root
+    @refs = Hash.new( root )
     
     foreach_archive_xml do | content |
       xml = Nokogiri::XML( content )
@@ -86,8 +85,8 @@ class FocusParser
       @refs.each_pair do | id, node |
         # replace the string key ref we stored on each node with the actual parent
         node.parent = @refs[ node.parent ]
-        # then add a backlink, registering child with parent
-        node.parent.children << node unless node.parent.nil?
+        # then add a backlink, registering child with parent, except for root node...
+        node.parent.children << node unless node.parent = node
       end
     end
     

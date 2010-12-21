@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../src/archive_parser.rb'
 describe FocusParser, "#parse" do
 
   before(:all) do
-#    dir = "archives/2010.12.19_2225"
-    dir = "archives/2010.12.19_1407"
+    dir = "archives/2010.12.19_2225"
+#    dir = "archives/2010.12.19_1407"
     @parser = FocusParser.new( dir, "omnisync.tar", "kippr" )
     @focus = @parser.parse
   end
@@ -35,7 +35,12 @@ describe FocusParser, "#parse" do
   end
   
   it "should build a tree starting with nodes without parents" do
-    puts @focus.root.children
+    #@focus.root.each do | node |
+    #  puts node.name
+    #end
+    puts "<<<"
+    puts @focus.root.children.map { |p| p.name }
+    puts ">>>"
   end
 
 end
