@@ -61,7 +61,7 @@ class FocusParser
     
     def parse_folders( xml )
       xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
-        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id")}" )
+        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id").content}" )
         
         name = folderNode.at_xpath( './xmlns:name' ).content
         folder = Folder.new( name )
@@ -77,7 +77,9 @@ class FocusParser
       parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
       @log.debug( "Found parent link to #{parentLink}" )
       # need the 'or' for project nodes, which are structured as sub-els of tasks
-      @refs[ folderNode.attribute( "id") || folderNode.parent.attribute('id')  ]  = folder 
+      # todo: clean this up
+      id = ( folderNode.attribute( "id") && folderNode.attribute( "id").content ) || ( folderNode.parent.attribute('id') && folderNode.parent.attribute('id').content )
+      @refs[  id ]  = folder 
       folder.parent = parentLink && parentLink.content   
     end
     

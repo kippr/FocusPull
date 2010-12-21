@@ -34,13 +34,11 @@ describe FocusParser, "#parse" do
     @focus.project("Spend less time in email").parent.name.should == "Admin"
   end
   
-  it "should build a tree starting with nodes without parents" do
-    #@focus.root.each do | node |
-    #  puts node.name
-    #end
-    puts "<<<"
-    puts @focus.root.children.map { |p| p.name }
-    puts ">>>"
+  it "should build a tree starting with orphan nodes linked into root" do
+    @focus.root.name.should == "."
+    personal = @focus.root.children.detect{ |c| c.name == "Personal" }
+    personal.should_not be_nil
+    personal.children.map( &:name ).should include( "Switch to 3 network" )   
   end
 
 end
