@@ -1,4 +1,6 @@
 class Item
+  include Enumerable # Wow, I love Ruby!
+
   attr_reader :name
   attr_accessor :parent
   attr_reader :children
@@ -14,9 +16,8 @@ class Item
     self.children.each { | child | child.each( &proc ) }
   end
   
-  
   def to_s
-    "#{self.class}: #{@name} <- #{self.parent}" 
+    "#{self.class}: #{@name} <- #{self.parent}"
   end
 end
 
@@ -30,7 +31,7 @@ class Focus < Item
   end
   
   def project( name )
-    @projects[ name ]
+    self.detect{ | n | n.name == name }
   end
   
   alias folder project
@@ -43,10 +44,6 @@ class Focus < Item
 end
 
 class Folder < Item
-  def to_s
-    super + " "
-  end
-
 end
 
 class Project < Item
