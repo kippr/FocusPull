@@ -1,23 +1,3 @@
-class Focus
-  
-  attr_reader :root
-  
-  def initialize( root )
-    @root = root
-  end
-        
-  def project_list
-  end
-  
-  def project( name )
-    @projects[ name ]
-  end
-  
-  alias folder project
-  alias folder_list project_list
-  
-end
-
 class Item
   attr_reader :name
   attr_accessor :parent
@@ -40,6 +20,27 @@ class Item
   end
 end
 
+class Focus < Item
+  
+  def initialize( )
+    super( "Portfolio" )
+  end
+        
+  def project_list
+  end
+  
+  def project( name )
+    @projects[ name ]
+  end
+  
+  alias folder project
+  alias folder_list project_list
+  
+  def parent
+    nil
+  end
+  
+end
 
 class Folder < Item
   def to_s

@@ -35,8 +35,9 @@ describe FocusParser, "#parse" do
   end
   
   it "should build a tree starting with orphan nodes linked into root" do
-    @focus.root.name.should == "."
-    personal = @focus.root.children.detect{ |c| c.name == "Personal" }
+    @focus.name.should == "Portfolio"
+    @focus.parent.should be_nil
+    personal = @focus.children.detect{ |c| c.name == "Personal" }
     personal.should_not be_nil
     personal.children.map( &:name ).should include( "Switch to 3 network" )   
   end

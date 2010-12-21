@@ -6,7 +6,6 @@ require 'nokogiri'
 require File.join(File.dirname(__FILE__), 'focus')
 
 
-
 class FocusParser
 
   def initialize( directory, filename, username )
@@ -18,7 +17,7 @@ class FocusParser
   end
 
   def parse
-    root = Folder.new( "." )
+    root = Focus.new
     @refs = Hash.new
     @refs[ nil ] = root
     
@@ -32,10 +31,8 @@ class FocusParser
     end
     
     resolve_links
-    # and stop stack overflows:
-    root.parent = nil
     
-    Focus.new( root )
+    root
   end
 
   private
