@@ -27,7 +27,7 @@ class Focus < Item
     super( "Portfolio" )
   end
         
-  def project_list
+  def projects
     self
   end
   
@@ -36,7 +36,7 @@ class Focus < Item
   end
   
   alias folder project
-  alias folder_list project_list
+  alias folders projects
   
   def parent
     nil

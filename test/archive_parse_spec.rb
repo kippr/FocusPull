@@ -11,7 +11,7 @@ describe FocusParser, "#parse" do
   
   it "should read projects" do
     @focus.project("Spend less time in email").should_not be_nil
-    @focus.project_list.first.name.should_not be_nil
+    @focus.projects.first.name.should_not be_nil
   end
   
   it "should parse project status" do
@@ -21,7 +21,7 @@ describe FocusParser, "#parse" do
   
   it "should read folders" do
     @focus.folder("Personal").should_not be_nil
-    @focus.folder_list.detect("Admin").should_not be_nil
+    @focus.folders.detect("Admin").should_not be_nil
   end
   
   it "should build the folder tree structure" do
@@ -39,7 +39,7 @@ describe FocusParser, "#parse" do
     @focus.folder("Spend less time in email").should be_nil
     @focus.folder("Personal").should be_nil
     @focus.folder("Personal").should_not be_nil
-    @focus.project_list.size.should_not == @focus.folder_list.size
+    @focus.projects.size.should_not == @focus.folders.size
   end
   
   it "should build a tree starting with orphan nodes linked into root" do
