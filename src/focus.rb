@@ -38,15 +38,22 @@ class Focus < Item
   end
         
   def projects
-    self
+    self.select{ | n | n.class == Project }
+  end
+
+  # remove duplication w projects, inefficiency of double scan?
+  def folders
+    self.select{ | n | n.class == Folder }
   end
   
   def project( name )
-    self.detect{ | n | n.name == name }
+    projects.detect{ | n | n.name == name }
   end
-  
-  alias folder project
-  alias folders projects
+
+  # remove duplication w project
+  def folder( name )
+    folders.detect{ | n | n.name == name }
+  end
   
   def parent
     nil
@@ -55,7 +62,7 @@ class Focus < Item
   def is_root?
     true
   end
-  
+
 end
 
 class Folder < Item
