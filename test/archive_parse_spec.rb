@@ -33,14 +33,6 @@ describe FocusParser, "#parse" do
   it "should build links from projects to folders" do
     @focus.project("Spend less time in email").parent.name.should == "Admin"
   end
-
-  it "should not confuse folders with projects" do
-    @focus.project("Spend less time in email").should_not be_nil
-    @focus.folder("Spend less time in email").should be_nil
-    @focus.project("Personal").should be_nil
-    @focus.folder("Personal").should_not be_nil
-    @focus.projects.to_a.size.should_not == @focus.folders.to_a.size
-  end
   
   it "should build a tree starting with orphan nodes linked into root" do
     @focus.name.should == "Portfolio"
