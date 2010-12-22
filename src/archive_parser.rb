@@ -18,10 +18,12 @@ class FocusParser
 
   def parse
     root = Focus.new
-    @refs = Hash.new
-    @refs[ nil ] = root
+    @ref_to_node = Hash.new
+    @ref_to_node[ nil ] = root
+    @parent_ref_of = Hash.new
     
     foreach_archive_xml do | content |
+      
       xml = Nokogiri::XML( content )
       
       parse_tasks( xml ) 
@@ -51,7 +53,6 @@ class FocusParser
           
           track_links( project, projectNode )
           
-          #@focus.add_project( project ) 
         end
       end
     end
@@ -64,7 +65,6 @@ class FocusParser
         folder = Folder.new( name )
         track_links( folder, folderNode )        
     
-        #@focus.add_folder( folder )
       end
     end
     
@@ -76,17 +76,15 @@ class FocusParser
       # need the 'or' for project nodes, which are structured as sub-els of tasks
       # todo: clean this up
       id = ( folderNode.attribute( "id") && folderNode.attribute( "id").content ) || ( folderNode.parent.attribute('id') && folderNode.parent.attribute('id').content )
-      @refs[  id ]  = folder 
-      folder.parent = parentLink && parentLink.content   
+      @ref_to_node[  id ]  = folder 
+      @parent_ref_of[ folder ] = parentLink && parentLink.content   
     end
     
     def resolve_links
-      @log.debug( "Resolving links for #{@refs}")
-      @refs.each_pair do | id, node |
+      @log.debug( "Resolving links for #{@ref_to_node}")
+      @ref_to_node.each_pair do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
-        node.parent = @refs[ node.parent ]
-        # then add a backlink, registering child with parent, except for root node...
-        node.parent.children << node if node.parent && node.parent != node
+        node.link_parent( @ref_to_node[ @parent_ref_of[ node ] ] )
       end
     end
     

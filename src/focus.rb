@@ -2,7 +2,7 @@ class Item
   include Enumerable # Wow, I love Ruby!
 
   attr_reader :name
-  attr_accessor :parent
+  attr_reader :parent
   attr_reader :children
   
   def initialize( name )
@@ -14,6 +14,16 @@ class Item
     yield self
     proc = block
     self.children.each { | child | child.each( &proc ) }
+  end
+  
+  def link_parent( parent )
+    @parent = parent
+    # then add a backlink, registering self with parent, except for root!
+     parent.children << self unless self.is_root?
+  end
+  
+  def is_root?
+    false
   end
   
   def to_s
@@ -40,6 +50,10 @@ class Focus < Item
   
   def parent
     nil
+  end
+
+  def is_root?
+    true
   end
   
 end
