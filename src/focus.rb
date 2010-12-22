@@ -16,6 +16,12 @@ class Item
     self.children.each { | child | child.each( &proc ) }
   end
   
+  def traverse( value, push, pop )
+    value = push.call( value, self )
+    children.each{ | c | value = c.traverse( value, push, pop ) }
+    pop.call( value, self )
+  end
+  
   def link_parent( parent )
     @parent = parent
     # then add a backlink, registering self with parent, except for root!
