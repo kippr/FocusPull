@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../src/archive_parser.rb'
+require File.join(File.dirname(__FILE__), '../src/archive_parser')
 
 describe FocusParser, "#parse" do
 

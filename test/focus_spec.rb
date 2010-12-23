@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../src/focus.rb'
+require File.join(File.dirname(__FILE__), '../src/focus')
 
 describe Focus do
 
@@ -37,6 +37,7 @@ describe Focus do
   
   it "should offer gratuitous scope-creeping candy, like optional blocks" do
     postCollector = lambda{ | x, n, | x += "#{n.name}->" }
-    @personalFolder.traverse("", nil, postCollector).should == "iPad has open zone access->Personal->"
+    result = @personalFolder.traverse("", nil, postCollector)
+    result.should == "iPad has open zone access->Personal->"
   end
 end
