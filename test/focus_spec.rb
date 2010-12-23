@@ -25,13 +25,18 @@ describe Focus do
   end
   
   it "should offer pre-order traversal with callbacks" do
-    push = lambda { | x, n | x += "hello #{n.name}, "}
-    pop = lambda { | x, n | x += "#{n.name} bye! "}
+    push = lambda{ | x, n | x += "hello #{n.name}, "}
+    pop = lambda{ | x, n | x += "#{n.name} bye! "}
     result = @focus.traverse("So, to begin with: ", push, pop )
     result.should == "So, to begin with: hello Portfolio, " +
       "hello Spend less time in email, Spend less time in email bye! " +
       "hello Personal, hello iPad has open zone access, " +
       "iPad has open zone access bye! Personal bye! " +
       "Portfolio bye! "
+  end
+  
+  it "should offer gratuitous scope-creeping candy, like optional blocks" do
+    postCollector = lambda{ | x, n, | x += "#{n.name}->" }
+    @personalFolder.traverse("", nil, postCollector).should == "iPad has open zone access->Personal->"
   end
 end

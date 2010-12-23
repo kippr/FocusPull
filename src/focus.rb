@@ -17,9 +17,9 @@ class Item
   end
   
   def traverse( value, push, pop )
-    value = push.call( value, self )
+    value = push.call( value, self ) if push
     children.each{ | c | value = c.traverse( value, push, pop ) }
-    pop.call( value, self )
+    pop.call( value, self ) if pop
   end
   
   def link_parent( parent )
