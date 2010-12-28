@@ -3,9 +3,7 @@ require File.join(File.dirname(__FILE__), '../src/archive_parser')
 describe FocusParser, "#parse" do
 
   before(:all) do
-    dir = "archives/2010.12.19_2225"
-#    dir = "archives/2010.12.19_1407"
-    @parser = FocusParser.new( dir, "omnisync.tar", "kippr" )
+    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
   end
   

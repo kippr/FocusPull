@@ -97,7 +97,7 @@ class FocusParser
         
         FileUtils.mv( @username, @directory )
         
-        @log.debug( "unzipping entries in archive, #{@directory}/#{@username}/OmniFocus.ofocus/" )
+        @log.debug( "unzipping entries in archive: #{@directory}/#{@username}/OmniFocus.ofocus/" )
         full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
         Dir.foreach( full_path ) do | file |
           if( /\.zip$/ =~ file )
