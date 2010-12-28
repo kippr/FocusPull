@@ -24,8 +24,8 @@ describe FocusParser, "#parse" do
   
   it "should build the folder tree structure" do
     planFolder = @focus.folder("Plan")
-    planFolder.parent.name.should == "FSA Liquidity"
-    @focus.folder("FSA Liquidity").children.should include(planFolder)
+    planFolder.parent.name.should == "Secretive Project"
+    @focus.folder("Secretive Project").children.should include(planFolder)
   end
   
   it "should build links from projects to folders" do

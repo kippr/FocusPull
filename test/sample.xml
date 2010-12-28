@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<omnifocus xmlns="http://www.omnigroup.com/namespace/OmniFocus/v1" app-id="com.omnigroup.OmniFocus.iPad" app-version="77.69.2.0.142512" os-name="iPhone OS" os-version="4.2.1" machine-model="iPad">
+  <setting id="OFMDefaultSingletonProjectPersistentIdentifier">
+    <added order="1">2010-11-22T23:41:29.383Z</added>
+    <modified>2010-11-26T11:41:36.077Z</modified>
+    <plist version="1.0"><string>mQAtHPOck9p</string></plist>
+  </setting>
+  <setting id="PerspectiveOrder">
+    <added>2010-11-30T22:09:15.421Z</added>
+    <plist version="1.0"><array/></plist>
+  </setting>
+  <context id="hmBwBxYctCd">
+    <added order="1">2010-11-22T23:41:16.504Z</added>
+    <modified>2010-12-06T10:39:30.635Z</modified>
+    <name>Phone</name>
+    <rank>-107374185</rank>
+    <location name="Always Here"/>
+  </context>
+  <context id="jpYXqvpA4y1">
+    <added order="3">2010-11-22T23:41:16.504Z</added>
+    <modified>2010-12-15T13:04:04.707Z</modified>
+    <name>Online</name>
+    <rank>1952867942</rank>
+    <location name="Always Here"/>
+  </context>
+  <context id="cgWFqFG6m2W">
+    <added order="8">2010-11-22T23:41:16.504Z</added>
+    <modified>2010-11-26T19:40:34.883Z</modified>
+    <name>Errands</name>
+    <rank>1221381320</rank>
+  </context>
+  <context id="kcxkKUbK7zP">
+    <added order="10">2010-11-22T23:41:16.504Z</added>
+    <name>Waiting</name>
+    <rank>-1610612737</rank>
+    <prohibits-next-action>true</prohibits-next-action>
+  </context>
+  <context id="jZY_XWR3M07">
+    <added order="11">2010-11-22T23:41:16.504Z</added>
+    <modified>2010-11-24T09:45:19.132Z</modified>
+    <name>iPad</name>
+    <rank>1855560089</rank>
+    <location name="Always Here"/>
+  </context>
+  <context id="pDzHQgc-rCJ">
+    <context idref="cgWFqFG6m2W"/>
+    <added>2010-11-23T19:16:11.687Z</added>
+    <name>At Lunch</name>
+    <rank>2040109463</rank>
+  </context>
+  <folder id="lTvKvwDOXV1">
+    <added>2010-11-23T19:10:50.745Z</added>
+    <modified>2010-12-08T18:30:09.436Z</modified>
+    <name>Personal</name>
+    <rank>1757020160</rank>
+  </folder>
+  <folder id="dLI6ihcrYxf">
+    <added>2010-11-23T19:14:49.122Z</added>
+    <modified>2010-12-06T21:42:11.808Z</modified>
+    <name>Secretive Project</name>
+    <rank>-1225261056</rank>
+  </folder>
+  <folder id="gXWjE0kW_aX">
+    <added>2010-11-24T11:07:41.964Z</added>
+    <modified>2010-12-17T08:28:47.601Z</modified>
+    <name>Admin</name>
+    <rank>1183688704</rank>
+  </folder>
+  <folder id="fSBDlDGhulw">
+    <folder idref="dLI6ihcrYxf"/>
+    <added>2010-12-01T22:38:04.815Z</added>
+    <modified>2010-12-16T11:50:24.658Z</modified>
+    <name>Plan</name>
+    <rank>-262144</rank>
+  </folder>
+  <task id="bMAutUo5Hy1">
+    <project>
+      <folder idref="lTvKvwDOXV1"/>
+      <last-review>2010-12-15T19:04:46.648Z</last-review>
+      <review-interval>@1w</review-interval>
+      <status>done</status>
+    </project>
+    <added>2010-12-08T17:09:46.909Z</added>
+    <modified>2010-12-16T09:44:47.672Z</modified>
+    <name>Switch to 3 network</name>
+    <rank>2146435072</rank>
+    <completed>2010-12-16T09:44:46.919Z</completed>
+    <order>parallel</order>
+  </task>
+  <task id="cKEHwp5WQLt">
+    <project>
+      <folder idref="lTvKvwDOXV1"/>
+      <last-review>2010-12-06T08:35:38.209Z</last-review>
+      <review-interval>@1w</review-interval>
+      <status>dropped</status>
+    </project>
+    <added>2010-11-23T08:00:11.160Z</added>
+    <modified>2010-12-11T16:27:10.999Z</modified>
+    <name>iPad has open zone access</name>
+    <rank>1610612736</rank>
+    <order>parallel</order>
+  </task>
+  <task id="oHdUDVwYhFG">
+    <project>
+      <folder idref="gXWjE0kW_aX"/>
+      <last-review>2010-12-13T21:20:46.487Z</last-review>
+      <review-interval>@1w</review-interval>
+    </project>
+    <added>2010-11-24T13:21:13.241Z</added>
+    <modified>2010-12-13T21:20:46.497Z</modified>
+    <name>Spend less time in email</name>
+    <rank>1073741824</rank>
+    <order>parallel</order>
+  </task>
+  <task id="cc3ofbIVDlX">
+    <task idref="oHdUDVwYhFG"/>
+    <added>2010-11-24T13:54:47.888Z</added>
+    <name>Collect useless mails in sd</name>
+    <rank>0</rank>
+    <context idref="pf4w70-AZjc"/>
+    <order>parallel</order>
+  </task>
+  <task id="iCNXEbk-WAk">
+    <task idref="oHdUDVwYhFG"/>
+    <added>2010-11-25T09:59:09.242Z</added>
+    <modified>2010-12-13T21:09:01.532Z</modified>
+    <name>Record # of mails in inbox before and after</name>
+    <rank>1073741824</rank>
+    <context idref="pf4w70-AZjc"/>
+    <start>2010-11-25T08:00:00.000Z</start>
+    <completed>2010-12-13T21:09:01.512Z</completed>
+    <order>parallel</order>
+    <repeat>@1d</repeat>
+  </task>
+  <perspective id="ProcessFlagged">
+    <added>2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessFlagged</string><key>name</key><string>Flagged</string><key>uuid</key><string>ProcessFlagged</string><key>viewState</key><dict><key>viewMode</key><string>context</string><key>viewModeState</key><dict><key>context</key><dict><key>actionCompletionFilter</key><string>incomplete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>flagged</string><key>collation</key><string>context</string><key>firstResponder</key><string>actionOutline</string><key>sidebarFilter</key><string>available-contexts</string><key>sort</key><string>due</string></dict></dict></dict></dict></plist>
+  </perspective>
+  <perspective id="ProcessInbox">
+    <added order="1">2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessInbox</string><key>name</key><string>Inbox</string><key>useSavedSelection</key><true/><key>uuid</key><string>ProcessInbox</string><key>viewState</key><dict><key>viewMode</key><string>project</string><key>viewModeState</key><dict><key>project</key><dict><key>actionCompletionFilter</key><string>incomplete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>all</string><key>collation</key><string>none</string><key>firstResponder</key><string>actionOutline</string><key>sidebar</key><dict><key>selected</key><array><array><string>com.omnigroup.omnifocus.live_fetch.inbox</string></array></array></dict><key>sidebarFilter</key><string>remaining-projects</string><key>sort</key><string>none</string></dict></dict></dict></dict></plist>
+  </perspective>
+  <perspective id="ProcessContexts">
+    <added order="2">2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessContexts</string><key>name</key><string>Contexts</string><key>uuid</key><string>ProcessContexts</string><key>viewState</key><dict><key>viewMode</key><string>context</string><key>viewModeState</key><dict><key>context</key><dict><key>actionCompletionFilter</key><string>incomplete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>all</string><key>collation</key><string>context</string><key>firstResponder</key><string>actionOutline</string><key>sidebarFilter</key><string>available-contexts</string><key>sort</key><string>project</string></dict></dict></dict></dict></plist>
+  </perspective>
+  <perspective id="ProcessDueSoon">
+    <added order="3">2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessDueSoon</string><key>name</key><string>Due</string><key>uuid</key><string>ProcessDueSoon</string><key>viewState</key><dict><key>viewMode</key><string>context</string><key>viewModeState</key><dict><key>context</key><dict><key>actionCompletionFilter</key><string>due</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>all</string><key>collation</key><string>due</string><key>firstResponder</key><string>actionOutline</string><key>sidebarFilter</key><string>available-contexts</string><key>sort</key><string>due</string></dict></dict></dict></dict></plist>
+  </perspective>
+  <perspective id="ProcessProjects">
+    <added order="4">2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessProjects</string><key>name</key><string>Projects</string><key>uuid</key><string>ProcessProjects</string><key>viewState</key><dict><key>viewMode</key><string>project</string><key>viewModeState</key><dict><key>project</key><dict><key>actionCompletionFilter</key><string>incomplete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>all</string><key>collation</key><string>none</string><key>firstResponder</key><string>actionOutline</string><key>sidebar</key><dict><key>selected</key><array><array><string>com.omnigroup.omnifocus.project_sidebar.library</string></array></array></dict><key>sidebarFilter</key><string>remaining-projects</string><key>sort</key><string>none</string></dict></dict></dict></dict></plist>
+  </perspective>
+  <perspective id="ProcessReview">
+    <added order="5">2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessReview</string><key>name</key><string>Review</string><key>uuid</key><string>ProcessReview</string><key>viewState</key><dict><key>viewMode</key><string>project</string><key>viewModeState</key><dict><key>project</key><dict><key>actionCompletionFilter</key><string>incomplete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>all</string><key>collation</key><string>next-review</string><key>firstResponder</key><string>actionOutline</string><key>sidebarFilter</key><string>remaining-projects</string><key>sort</key><string>none</string></dict></dict></dict></dict></plist>
+  </perspective>
+  <perspective id="ProcessCompleted">
+    <added order="6">2010-11-30T22:09:24.232Z</added>
+    <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessCompleted</string><key>name</key><string>Completed</string><key>uuid</key><string>ProcessCompleted</string><key>viewState</key><dict><key>viewMode</key><string>context</string><key>viewModeState</key><dict><key>context</key><dict><key>actionCompletionFilter</key><string>complete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>all</string><key>collation</key><string>completed</string><key>firstResponder</key><string>actionOutline</string><key>sidebarFilter</key><string>all-contexts</string><key>sort</key><string>completed</string></dict></dict></dict></dict></plist>
+  </perspective>
+</omnifocus>
