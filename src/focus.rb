@@ -102,6 +102,11 @@ class Task < Item
   
   def completed( date )
     @status = 'done'
+    @completedDate = Date.parse( date )
+  end
+  
+  def completedDate
+    @completedDate
   end
   
   def to_s

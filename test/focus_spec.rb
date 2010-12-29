@@ -48,11 +48,12 @@ describe Focus do
   
   it "should default task status to active" do
     @mailTask.status.should == "active"
+    @mailTask.completedDate.should be_nil
   end
   
   it "should accept tasks as being marked complete" do
     @mailTask.completed("2010-12-07T08:50:19.935Z")
     @mailTask.status.should == "done"
-    #@mailTask.completedDate.should == Date.parse("2010-12-07")
+    @mailTask.completedDate.should == Date.parse("2010-12-07")
   end
 end

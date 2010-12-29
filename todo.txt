@@ -11,6 +11,7 @@ X create spec for map factory
 - check todos
 - why doesn't hash-default work?
 - implement visitor pattern for map formatting?
+- new map type: delta from last week?
 X folder & project methods filter by type
 X tree traversal with callback
 ? cleanup tree traversal
