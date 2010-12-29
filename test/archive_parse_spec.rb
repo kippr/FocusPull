@@ -32,6 +32,10 @@ describe FocusParser, "#parse" do
     @focus.project("Spend less time in email").parent.name.should == "Admin"
   end
   
+  it "should link tasks to their projects" do
+    @focus.task("Collect useless mails in sd").parent.name.should == "Spend less time in email"
+  end
+  
   it "should build a tree starting with orphan nodes linked into root" do
     @focus.name.should == "Portfolio"
     @focus.parent.should be_nil

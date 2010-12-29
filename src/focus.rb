@@ -55,18 +55,26 @@ class Focus < Item
     self.select{ | n | n.class == Project }
   end
 
-  # remove duplication w projects, inefficiency of double scan?
+  # todo: remove duplication w projects, inefficiency of double scan?
   def folders
     self.select{ | n | n.class == Folder }
+  end
+
+  def tasks
+    self.select{ | n | n.class == Task }
   end
   
   def project( name )
     projects.detect{ | n | n.name == name }
   end
 
-  # remove duplication w project
+  # todo: remove duplication w project
   def folder( name )
     folders.detect{ | n | n.name == name }
+  end
+  
+  def task( name )
+    tasks.detect{ | n | n.name == name }
   end
   
   def parent
@@ -80,6 +88,7 @@ class Focus < Item
 end
 
 class Folder < Item
+
 end
 
 class Project < Item
@@ -95,4 +104,8 @@ class Project < Item
     super + " [#{@status}]" 
   end
   
+end
+
+class Task < Item
+
 end

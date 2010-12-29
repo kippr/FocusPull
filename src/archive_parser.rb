@@ -45,7 +45,15 @@ class FocusParser
         @log.debug( "Found node: #{taskNode}")
         name = taskNode.at_xpath( './xmlns:name' ).content
         projectNode = taskNode.at_xpath( './xmlns:project' )
-        unless projectNode.nil?
+        
+        if projectNode.nil?
+        
+          task = Task.new( name )
+          
+          track_links( task, taskNode )
+        
+        else
+        
           project = Project.new( name )
           
           statusNode = projectNode.at_xpath( './xmlns:status' )
@@ -54,6 +62,7 @@ class FocusParser
           track_links( project, projectNode )
           
         end
+        
       end
     end
     
@@ -69,15 +78,15 @@ class FocusParser
     end
     
     # This is going to need cleanup, esp when we get to tasks, where path is different
-    def track_links( folder, folderNode )
+    def track_links( item, itemNode )
       #keep track of links for parent <-> kids
-      parentLink = folderNode.at_xpath( './xmlns:folder/@idref' )
-      @log.debug( "Found parent link to #{parentLink}" )
+      parentLink = itemNode.at_xpath( './xmlns:folder/@idref' ) || itemNode.at_xpath( './xmlns:task/@idref' )
+      @log.debug( "Found parent link to '#{parentLink}'" )
       # need the 'or' for project nodes, which are structured as sub-els of tasks
       # todo: clean this up
-      id = ( folderNode.attribute( "id") && folderNode.attribute( "id").content ) || ( folderNode.parent.attribute('id') && folderNode.parent.attribute('id').content )
-      @ref_to_node[  id ]  = folder 
-      @parent_ref_of[ folder ] = parentLink && parentLink.content   
+      id = ( itemNode.attribute( "id") && itemNode.attribute( "id").content ) || ( itemNode.parent.attribute('id') && itemNode.parent.attribute('id').content )
+      @ref_to_node[  id ]  = item 
+      @parent_ref_of[ item ] = parentLink && parentLink.content   
     end
     
     def resolve_links
