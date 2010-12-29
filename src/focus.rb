@@ -32,6 +32,14 @@ class Item
     false
   end
   
+  def is_folder?
+    self.class == Folder
+  end
+  
+  def is_project?
+    self.class = Project
+  end
+  
   def to_s
     "#{self.class}: #{@name} <- #{self.parent}"
   end

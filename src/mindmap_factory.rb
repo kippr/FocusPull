@@ -13,7 +13,7 @@ class MindMapFactory
     root = doc.create_element "map", :version => '0.9.0'
     doc.add_child root
     @stack << root
-    # is there a way to pass methods as procs?
+    # todo: is there a way to pass methods as procs?
     push = lambda{ | a, b | hello( a, b ) }
     pop = lambda{ | a, b | goodbye( a, b) }
     @focus.traverse( doc, push, pop )
@@ -23,8 +23,12 @@ class MindMapFactory
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
   private
     def hello( doc, node )
-      element = doc.create_element( "node" ) { | n | n['TEXT'] = node.name ; n['POSITION'] = pos if pos }
-      @stack.last.add_child( element ) 
+      element = doc.create_element( "node" ) do | n | 
+        n['TEXT'] = node.name 
+        n['POSITION'] = pos if pos
+        n['COLOR'] = "#006699" if node.is_folder?
+      end
+      @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
       @stack << element
       @size += 1
       doc
