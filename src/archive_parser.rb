@@ -48,20 +48,23 @@ class FocusParser
         
         if projectNode.nil?
         
-          task = Task.new( name )
-          
-          track_links( task, taskNode )
-        
+          item = Task.new( name )
+
+          track_links( item, taskNode )
+                  
         else
         
-          project = Project.new( name )
-          
+          item = Project.new( name )
+
           statusNode = projectNode.at_xpath( './xmlns:status' )
-          project.status = statusNode.content unless statusNode.nil?
-          
-          track_links( project, projectNode )
+          item.status = statusNode.content unless statusNode.nil?        
+                    
+          track_links( item, projectNode )
           
         end
+
+        completedNode = taskNode.at_xpath( './xmlns:completed' )
+        item.completed( completedNode.content ) if completedNode
         
       end
     end
