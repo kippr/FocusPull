@@ -27,7 +27,13 @@ class MindMapFactory
         n['TEXT'] = node.name 
         n['POSITION'] = pos if pos
         n['COLOR'] = "#006699" if node.is_folder?
-        n['FOLDED'] = 'true' if node.is_project? && node.children.first
+        if node.is_project?
+          n['FOLDED'] = 'true' if node.children.first
+          if node.status == 'inactive'
+            n['COLOR'] = "#666666"
+            n.add_child( doc.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" )
+          end
+        end
       end
       @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
       @stack << element
