@@ -27,6 +27,7 @@ class MindMapFactory
         n['TEXT'] = node.name 
         n['POSITION'] = pos if pos
         n['COLOR'] = "#006699" if node.is_folder?
+        n['FOLDED'] = 'true' if node.is_project? && node.children.first
       end
       @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
       @stack << element

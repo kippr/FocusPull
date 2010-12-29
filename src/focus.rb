@@ -37,7 +37,7 @@ class Item
   end
   
   def is_project?
-    self.class = Project
+    self.class == Project
   end
   
   def to_s
