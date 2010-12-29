@@ -91,21 +91,26 @@ class Folder < Item
 
 end
 
-class Project < Item
-  
+class Task < Item
+
   attr_accessor :status
   
   def initialize( name )
     super( name )
-    @status = "active"
+    @status = 'active'
+  end
+  
+  def completed( date )
+    @status = 'done'
   end
   
   def to_s
     super + " [#{@status}]" 
   end
+
+end
+
+class Project < Task  
   
 end
 
-class Task < Item
-
-end
