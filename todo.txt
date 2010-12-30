@@ -15,5 +15,6 @@ X create spec for map factory
 - new map type: delta from last week?
 X folder & project methods filter by type
 X tree traversal with callback
+? define attr shortcut method for nokogiri xml node?
 ? cleanup tree traversal
 ? cleanup pos decision

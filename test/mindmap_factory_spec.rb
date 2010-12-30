@@ -14,11 +14,10 @@ describe MindMapFactory, "simple_map" do
  
   # todo: quite brittle, what is a sensible test?
   it "should create entries for folders and their projects" do
-    @root.attribute("version").content.should == "0.9.0"
+    @root['version'].should == "0.9.0"
     @root.node.node.size.should == 3
     @root.node.node(:xpath=>"@TEXT = 'Personal'").node.size.should == 2
     @root.at_xpath("./node/node/node[@TEXT = 'Plan']").parent.attribute("TEXT").content.should == "Secretive Project"
-    
   end
   
   it "should assign positions to 'first child' nodes only" do    
@@ -26,12 +25,18 @@ describe MindMapFactory, "simple_map" do
     portfolio.attribute('POSITION').should be_nil
     
     personal = portfolio.node(:xpath=>"@TEXT='Personal'")
-    personal.attribute('POSITION').content.should == "right"
+    personal['POSITION'].should == "right"
 
     personalProject = portfolio.node[1]
     personalProject.should_not be_nil
-    portfolio.attribute('POSITION').should be_nil
-    
+    portfolio['POSITION'].should be_nil   
+  end
+  
+  it "should colour folders" do
+    portfolio = @root.node
+    personalFolder = portfolio.node[0]
+    portfolio['COLOR'].should be_nil
+    personalFolder['COLOR'].should == "#006699"
   end
   
 end
