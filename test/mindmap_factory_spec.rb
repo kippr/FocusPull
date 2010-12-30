@@ -39,4 +39,10 @@ describe MindMapFactory, "simple_map" do
     personalFolder['COLOR'].should == "#006699"
   end
   
+  it "should fold projects with child tasks" do
+    projectNode = @xml.at_xpath("//node[@TEXT='Spend less time in email']")
+    projectNode['FOLDED'].should be_true
+    @root['FOLDED'].should_not be_true
+  end
+  
 end
