@@ -84,10 +84,18 @@ class Focus < Item
   def is_root?
     true
   end
+  
+  def visit( visitor )
+    visitor.visitRoot( self )
+  end
 
 end
 
 class Folder < Item
+  
+  def visit( visitor )
+    visitor.visitFolder( self )
+  end
 
 end
 
@@ -112,10 +120,18 @@ class Task < Item
   def to_s
     super + " [#{@status}]" 
   end
+  
+  def visit( visitor )
+    visitor.visitTask( self )
+  end
 
 end
 
 class Project < Task  
+  
+  def visit( visitor )
+    visitor.visitProject( self )
+  end
   
 end
 

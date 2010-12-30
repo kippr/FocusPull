@@ -10,6 +10,7 @@ class FocusParser
 
   def initialize( directory, filename, username )
     @log = Logger.new(STDOUT)
+    @log.level = Logger::INFO
     
     @directory = directory
     @filename = filename

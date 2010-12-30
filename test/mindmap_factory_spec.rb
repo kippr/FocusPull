@@ -9,7 +9,6 @@ describe MindMapFactory, "simple_map" do
     @focus = @parser.parse
     @map_factory = MindMapFactory.new( @focus )
     @xml =  @map_factory.simple_map
-    puts @xml
   end
  
   it "should create entries for folders and their projects" do

@@ -56,4 +56,27 @@ describe Focus do
     @mailTask.status.should == "done"
     @mailTask.completedDate.should == Date.parse("2010-12-07")
   end
+  
+  it "should implement the visitor pattern" do
+    visitor = Visitor.new
+    Project.new("").visit( visitor ).should == "Visited a Project"
+    Task.new("").visit( visitor ).should == "Visited a Task"
+    Folder.new("").visit( visitor ).should == "Visited a Folder"
+    Focus.new.visit( visitor ).should == "Visited Portfolio Root"
+  end
+end
+
+class Visitor
+  def visitFolder folder
+    "Visited a Folder"
+  end
+  def visitProject project
+    "Visited a Project"
+  end
+  def visitTask task
+    "Visited a Task"
+  end
+  def visitRoot portfolio
+    "Visited Portfolio Root"
+  end
 end
