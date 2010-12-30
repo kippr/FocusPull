@@ -16,7 +16,7 @@ describe MindMapFactory, "simple_map" do
   it "should create entries for folders and their projects" do
     @root['version'].should == "0.9.0"
     @root.node.node.size.should == 3
-    @root.node.node(:xpath=>"@TEXT = 'Personal'").node.size.should == 2
+    @root.node.node(:xpath=>"@TEXT = 'Personal'").node.size.should == 3
     @root.at_xpath("./node/node/node[@TEXT = 'Plan']").parent.attribute("TEXT").content.should == "Secretive Project"
   end
   
@@ -40,9 +40,18 @@ describe MindMapFactory, "simple_map" do
   end
   
   it "should fold projects with child tasks" do
-    projectNode = @xml.at_xpath("//node[@TEXT='Spend less time in email']")
-    projectNode['FOLDED'].should be_true
+    project = @xml.at_xpath("//node[@TEXT='Spend less time in email']")
+    project['FOLDED'].should be_true
     @root['FOLDED'].should_not be_true
+  end
+  
+  it "should distinguish inactive projects" do
+    inactiveProject = @xml.at_xpath("//node[@TEXT = 'Meet simon for lunch']")
+    inactiveProject['COLOR'].should == '#666666'
+    # Prefer not to assert all the details, but freemind is picky about these
+    inactiveProject.font['ITALIC'].should be_true
+    inactiveProject.font['SIZE'].should == '12'
+    inactiveProject.font['NAME'].should == 'SansSerif'    
   end
   
 end
