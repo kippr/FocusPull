@@ -78,10 +78,11 @@ class Formatter < ElementVisitor
   end
   
   def visitProject project
-    @element['FOLDED'] = 'true' if project.children.first
-    if project.status == 'inactive'
+    @element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
+    if project.inactive?
       @element['COLOR'] = "#666666"
-      @element.add_child( @element.document.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" )
+      font = @element.document.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12"
+      @element.add_child( font )
     end
   end
   

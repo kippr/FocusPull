@@ -117,6 +117,10 @@ class Task < Item
     @completedDate
   end
   
+  def inactive?
+    status == 'inactive'
+  end
+  
   def to_s
     super + " [#{@status}]" 
   end
