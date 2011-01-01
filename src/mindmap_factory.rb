@@ -22,18 +22,11 @@ class MindMapFactory
   
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
   private
-    def hello( doc, node )
-      element = doc.create_element( "node" ) do | n | 
-        n['TEXT'] = node.name 
-        n['POSITION'] = pos if pos
-        n['COLOR'] = "#006699" if node.is_folder?
-        if node.is_project?
-          n['FOLDED'] = 'true' if node.children.first
-          if node.status == 'inactive'
-            n['COLOR'] = "#666666"
-            n.add_child( doc.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" )
-          end
-        end
+    def hello( doc, item )
+      element = doc.create_element( "node" ) do | e |
+        e['TEXT'] = item.name
+        e['POSITION'] = pos if pos
+        item.visit Formatter.new(e)
       end
       @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
       @stack << element
@@ -57,5 +50,39 @@ class MindMapFactory
         nil
       end
     end
+    
+end
+
+class ElementVisitor
+  
+  def initialize( element )
+    @element = element
+    @logger = Logger.new(STDOUT)
+    @logger.level = Logger::INFO
+  end
+  
+  def method_missing name, *args, &block
+    visitDefault *args
+  end
+  
+  def visitDefault *args
+    @logger.debug "Unhandled visit to #{self} with #{args}"
+  end
+  
+end
+
+class Formatter < ElementVisitor
+  
+  def visitFolder folder
+    @element['COLOR'] = "#006699"
+  end
+  
+  def visitProject project
+    @element['FOLDED'] = 'true' if project.children.first
+    if project.status == 'inactive'
+      @element['COLOR'] = "#666666"
+      @element.add_child( @element.document.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" )
+    end
+  end
   
 end

@@ -64,6 +64,8 @@ describe Focus do
     Folder.new("").visit( visitor ).should == "Visited a Folder"
     Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
+  
+  it "should implement visitor pattern with arguments"
 end
 
 class Visitor
@@ -76,7 +78,14 @@ class Visitor
   def visitTask task
     "Visited a Task"
   end
-  def visitRoot portfolio
+  def visitFocus portfolio
     "Visited Portfolio Root"
+  end
+end
+
+class VisitorWithArgs
+  def visitProject project, argument, *arguments
+    puts argument.class
+    argument + " Project"
   end
 end

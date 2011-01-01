@@ -85,8 +85,8 @@ class Focus < Item
     true
   end
   
-  def visit( visitor )
-    visitor.visitRoot( self )
+  def visit( visitor, *args )
+    visitor.visitFocus( self )
   end
 
 end

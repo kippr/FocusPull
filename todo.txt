@@ -11,10 +11,12 @@ X create spec for map factory
 - check todos
 - why doesn't hash-default work?
 - implement visitor pattern for map formatting?
-- use Nokogiri slop for tests?
+X use Nokogiri slop for tests?
 - new map type: delta from last week?
 X folder & project methods filter by type
 X tree traversal with callback
 ? define attr shortcut method for nokogiri xml node?
 ? cleanup tree traversal
 ? cleanup pos decision
+? visitor with extra args
+? make visit dispatch dynamic
