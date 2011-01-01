@@ -23,20 +23,26 @@ class MindMapFactory
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
   private
     def hello( doc, item )
-      element = doc.create_element( "node" ) do | e |
-        e['TEXT'] = item.name
-        e['POSITION'] = pos if pos
-        item.visit Formatter.new(e)
+      if should_include item
+        element = doc.create_element( "node" ) do | e |
+          e['TEXT'] = item.name
+          e['POSITION'] = pos if pos
+          item.visit Formatter.new(e)
+        end
+        @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
+        @size += 1
       end
-      @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
       @stack << element
-      @size += 1
       doc
     end
     
     def goodbye( doc, node )
       @stack.pop
       doc
+    end
+    
+    def should_include( item )
+      item.visit InclusionVisitor.new
     end
     
     def pos
@@ -53,6 +59,16 @@ class MindMapFactory
     
 end
 
+class InclusionVisitor
+  def visit_project project
+    true
+  end
+
+  def method_missing name, *args, &block
+    true
+  end
+end
+
 class ElementVisitor
   
   def initialize( element )
@@ -62,10 +78,10 @@ class ElementVisitor
   end
   
   def method_missing name, *args, &block
-    visitDefault *args
+    visit_default *args
   end
   
-  def visitDefault *args
+  def visit_default *args
     @logger.debug "Unhandled visit to #{self} with #{args}"
   end
   
@@ -73,11 +89,11 @@ end
 
 class Formatter < ElementVisitor
   
-  def visitFolder folder
+  def visit_folder folder
     @element['COLOR'] = "#006699"
   end
   
-  def visitProject project
+  def visit_project project
     @element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
     if project.inactive?
       @element['COLOR'] = "#666666"

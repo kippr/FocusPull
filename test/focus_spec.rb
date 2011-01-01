@@ -48,13 +48,13 @@ describe Focus do
   
   it "should default task status to active" do
     @mailTask.status.should == "active"
-    @mailTask.completedDate.should be_nil
+    @mailTask.completed_date.should be_nil
   end
   
   it "should accept tasks as being marked complete" do
     @mailTask.completed("2010-12-07T08:50:19.935Z")
     @mailTask.status.should == "done"
-    @mailTask.completedDate.should == Date.parse("2010-12-07")
+    @mailTask.completed_date.should == Date.parse("2010-12-07")
   end
   
   it "should implement the visitor pattern" do
@@ -69,23 +69,16 @@ describe Focus do
 end
 
 class Visitor
-  def visitFolder folder
+  def visit_folder folder
     "Visited a Folder"
   end
-  def visitProject project
+  def visit_project project
     "Visited a Project"
   end
-  def visitTask task
+  def visit_task task
     "Visited a Task"
   end
-  def visitFocus portfolio
+  def visit_focus portfolio
     "Visited Portfolio Root"
-  end
-end
-
-class VisitorWithArgs
-  def visitProject project, argument, *arguments
-    puts argument.class
-    argument + " Project"
   end
 end

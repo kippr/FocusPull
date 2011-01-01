@@ -86,7 +86,7 @@ class Focus < Item
   end
   
   def visit( visitor, *args )
-    visitor.visitFocus( self )
+    visitor.visit_focus( self )
   end
 
 end
@@ -94,7 +94,7 @@ end
 class Folder < Item
   
   def visit( visitor )
-    visitor.visitFolder( self )
+    visitor.visit_folder( self )
   end
 
 end
@@ -113,7 +113,7 @@ class Task < Item
     @completedDate = Date.parse( date )
   end
   
-  def completedDate
+  def completed_date
     @completedDate
   end
   
@@ -126,7 +126,7 @@ class Task < Item
   end
   
   def visit( visitor )
-    visitor.visitTask( self )
+    visitor.visit_task( self )
   end
 
 end
@@ -134,7 +134,7 @@ end
 class Project < Task  
   
   def visit( visitor )
-    visitor.visitProject( self )
+    visitor.visit_project( self )
   end
   
 end

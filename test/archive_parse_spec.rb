@@ -17,7 +17,7 @@ describe FocusParser, "#parse" do
     @focus.project("Spend less time in email").status.should == "active"
     doneProject = @focus.project("Switch to 3 network")
     doneProject.status.should == "done"
-    doneProject.completedDate.should == Date.parse("2010-12-16")
+    doneProject.completed_date.should == Date.parse("2010-12-16")
   end
   
   it "should read folders" do
