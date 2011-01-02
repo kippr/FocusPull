@@ -44,15 +44,15 @@ class MindMapFactory
     end
     
     def pos
-      if @stack.size == 2
-        if @size % 2 == 0
-          "left"
-        else
-          "right"
-        end 
+      if first_level
+        @size % 2 == 0 ? "left" : "right"
       else
         nil
       end
+    end
+    
+    def first_level
+      @stack.size == 2
     end
     
 end
