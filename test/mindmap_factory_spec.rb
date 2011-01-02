@@ -127,6 +127,10 @@ describe MindMapFactory, "delta_map" do
     @root = @xml.at_xpath( "/map" )
   end
   
+  it "should include filtering dates in 'portfolio' node name" do
+    @root.node['TEXT'].should == 'Portfolio 2010-12-08..2010-12-13'
+  end
+  
   it "should include newly created projects" do
     project = @xml.at_xpath( "//node[@TEXT='Switch to 3 network']" )
     project.should_not be_nil

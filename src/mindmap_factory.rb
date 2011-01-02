@@ -34,11 +34,11 @@ class MindMapFactory
     def hello( doc, item )
       if @filter.include? item
         element = doc.create_element( "node" ) do | e |
-          e['TEXT'] = item.name
-          e['POSITION'] = pos if pos
           # todo: passing filter smells
+          item.visit Namer.new(e, @filter)
           item.visit Formatter.new(e, @filter )
           item.visit AttributeStamper.new(e)
+          e['POSITION'] = pos if pos
         end
         @stack.last << ( element ) if @stack.last
         @size += 1
@@ -77,6 +77,10 @@ class MapFilter
     true
   end
   
+  def label item
+    item.name
+  end
+  
 end
 
 class TemporalFilter < MapFilter
@@ -102,6 +106,10 @@ class TemporalFilter < MapFilter
     date && @start <= date && date <= @end
   end
   
+  def label item
+    "#{item.name} #{@start}..#{@end}"
+  end
+  
 end
 
 class ElementVisitor
@@ -122,6 +130,23 @@ class ElementVisitor
   
   def add_child( name, *args, &block )
     @element << @element.document.create_element( name, *args, &block )
+  end
+  
+end
+
+class Namer < ElementVisitor
+  
+  def initialize( element, filter )
+    super( element )
+    @filter = filter
+  end
+  
+  def visit_default item
+    @element['TEXT'] = item.name
+  end
+  
+  def visit_focus focus
+    @element['TEXT'] = @filter.label( focus )
   end
   
 end

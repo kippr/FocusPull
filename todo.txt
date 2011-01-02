@@ -20,9 +20,20 @@ X colour tasks differently
 - colour dropped tasks differently?
 X colour folders w/o children as #bfd8e5, with <edge COLOR="#cccccc" STYLE="bezier" WIDTH="thin"/>
 X use 'childless' colouring for folders that have only folders as kids
-
 - there is a link b/w mindmap output nodes and focus nodes, so we can post-traverse
-- add 'filter text' to Portfolio node
+- add 'filter text' to Portfolio node, maybe even replace TEXT with this:
+<richcontent TYPE="NODE"><html>
+  <body>
+    <p style="text-align: center">
+      Portfolio
+    </p>
+    <p style="text-align: center">
+      <font size="2">2010-12-08 - 2010-12-13</font>
+    </p>
+  </body>
+</html>
+</richcontent>
+
 ? cleanup tree traversal
 ? cleanup pos decision
 ? visitor with extra args
