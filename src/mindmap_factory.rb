@@ -4,11 +4,11 @@ class MindMapFactory
 
   def initialize( focus )
     @focus = focus
-    @stack = []
-    @size = 0
   end
   
   def simple_map
+    @stack = []
+    @size = 0
     doc = Nokogiri::XML::Document.new()
     root = doc.create_element( "map", :version => '0.9.0' )
     doc << root
@@ -19,6 +19,10 @@ class MindMapFactory
     pop = lambda{ | a, b | goodbye( a, b) }
     @focus.traverse( doc, push, pop )
     doc
+  end
+  
+  def delta_map start_date, end_date
+    simple_map
   end
   
   #todo: not mad on the inject into behaviour here, needing to return doc is silly

@@ -109,4 +109,27 @@ describe MindMapFactory, "simple_map" do
     attribute && attribute['VALUE']
   end
   
+end  
+
+describe MindMapFactory, "delta_map" do
+
+  before(:all) do
+    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @focus = @parser.parse
+    @map_factory = MindMapFactory.new( @focus )
+    @xml =  Nokogiri::Slop @map_factory.delta_map( "2010-12-07", "2010-12-12" ).to_s
+    @root = @xml.at_xpath( "/map" )
+  end
+  
+  it "should include newly created projects" do
+    project = @xml.at_xpath( "//node[@TEXT='Switch to 3 network']" )
+    project.should_not be_nil
+    project.parent['TEXT'].should == "Personal"
+  end
+  
+  it "should not include tasks that didn't change" do
+    project = @xml.at_xpath( "//node[@TEXT='Meet simon for lunch']" )
+    project.should be_nil
+  end
+  
 end
