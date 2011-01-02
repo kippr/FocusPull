@@ -18,9 +18,11 @@ X folder & project methods filter by type
 X tree traversal with callback
 X colour tasks differently
 - colour dropped tasks differently?
-- colour folders w/o children as #bfd8e5, with <edge COLOR="#cccccc" STYLE="bezier" WIDTH="thin"/>
+X colour folders w/o children as #bfd8e5, with <edge COLOR="#cccccc" STYLE="bezier" WIDTH="thin"/>
+X use 'childless' colouring for folders that have only folders as kids
 
 - there is a link b/w mindmap output nodes and focus nodes, so we can post-traverse
+- add 'filter text' to Portfolio node
 ? cleanup tree traversal
 ? cleanup pos decision
 ? visitor with extra args

@@ -45,10 +45,16 @@ describe MindMapFactory, "simple_map" do
   
   it "should colour folders" do
     portfolio = @root.node
-    personalFolder = portfolio.node[0]
     portfolio['COLOR'].should be_nil
+    personalFolder = @root.at_xpath("//node[@TEXT='Personal']")
     personalFolder['COLOR'].should == "#006699"
   end
+  
+  it "should colour folders with no projects or tasks as faded" do
+    childless_folder = @xml.at_xpath("//node[@TEXT = 'Secretive Project']")
+    childless_folder['COLOR'].should == "#bfd8e5"
+  end
+  
   
   it "should fold projects with child tasks" do
     project = @xml.at_xpath("//node[@TEXT='Spend less time in email']")
@@ -131,7 +137,7 @@ describe MindMapFactory, "delta_map" do
     project = @xml.at_xpath( "//node[@TEXT='Meet simon for lunch']" )
     project.should be_nil
   end
-  
+    
   it "should include projects that didn't change but that include tasks that did" do
     unchanged_project = @xml.at_xpath( "//node[@TEXT='Spend less time in email']")
     unchanged_project.should_not be_nil
@@ -140,10 +146,5 @@ describe MindMapFactory, "delta_map" do
     unchanged_task = unchanged_project.at_xpath("./node[@TEXT='Collect useless mails in sd']")
     unchanged_task.should be_nil
   end
-  
-  it "should fade folders with no tasks that match filter" do
-    childless_folder = @xml.at_xpath("//node[@TEXT = 'Secretive Project']")
-    childless_folder['COLOR'].should == "#bfd8e5"
-  end
-  
+    
 end

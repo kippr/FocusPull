@@ -134,9 +134,8 @@ class Formatter < ElementVisitor
   end
   
   def visit_folder folder
-    #puts "#{folder.children}, #{@filter}" if folder.name == 'Support'
-    has_kids = folder.detect{ | kid | kid != folder && @filter.include?( kid ) }
-    puts "#{has_kids}.. #{has_kids.created_date}.. #{has_kids.completed_date}" if folder.name == 'Support'
+    kids = folder.select{ | kid | kid != folder && @filter.include?( kid ) }
+    has_kids = kids.any?{ | kid | !kid.is_folder? }
     @element['COLOR'] = has_kids ? '#006699' : '#bfd8e5'
     add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") unless has_kids
   end
