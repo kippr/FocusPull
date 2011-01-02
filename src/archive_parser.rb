@@ -65,8 +65,15 @@ class FocusParser
           
         end
 
-        completedNode = taskNode.at_xpath( './xmlns:completed' )
-        item.completed( completedNode.content ) if completedNode
+        # todo: duplication
+        completed_node = taskNode.at_xpath( './xmlns:added' )
+        item.created_date = completed_node.content
+
+        modified_node = taskNode.at_xpath( './xmlns:modified' )
+        item.updated_date = modified_node.content if modified_node
+
+        completed_node = taskNode.at_xpath( './xmlns:completed' )
+        item.completed( completed_node.content ) if completed_node
         
       end
     end

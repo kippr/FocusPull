@@ -12,12 +12,18 @@ describe FocusParser, "#parse" do
     @focus.projects.first.name.should_not be_nil
   end
   
-  it "should parse project status, and completion time" do
+  it "should parse project status" do
     @focus.project("iPad has open zone access").status.should == "dropped"
     @focus.project("Spend less time in email").status.should == "active"
     doneProject = @focus.project("Switch to 3 network")
     doneProject.status.should == "done"
+  end
+  
+  it "should parse start, modified, end dates" do
+    doneProject = @focus.project("Switch to 3 network")
     doneProject.completed_date.should == Date.parse("2010-12-16")
+    doneProject.created_date.should == Date.parse("2010-12-08")
+    doneProject.updated_date.should == Date.parse("2010-12-16")
   end
   
   it "should read folders" do

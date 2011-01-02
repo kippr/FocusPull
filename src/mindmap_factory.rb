@@ -125,20 +125,22 @@ class AttributeStamper < ElementVisitor
   
   def visit_project project
     add_status_for project
-    add_completion_time_for project
+    add_dates_for project
   end
   
   def visit_task task
     add_status_for task
-    add_completion_time_for task
+    add_dates_for task
   end
   
   def add_status_for item
     add_child "attribute", :NAME => 'status', :VALUE => item.status
   end
   
-  def add_completion_time_for item
+  def add_dates_for item
+    add_child( "attribute", :NAME => 'created', :VALUE => item.created_date.to_s )
+    add_child( "attribute", :NAME => 'updated', :VALUE => item.updated_date.to_s ) if item.updated_date
     add_child( "attribute", :NAME => 'completed', :VALUE => item.completed_date.to_s ) if item.done?
   end
-  
+    
 end

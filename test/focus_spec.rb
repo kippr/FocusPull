@@ -65,7 +65,6 @@ describe Focus do
     Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
   
-  it "should implement visitor pattern with arguments"
 end
 
 class Visitor

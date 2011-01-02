@@ -104,6 +104,7 @@ end
 
 class Task < Item
 
+  attr_reader :completed_date, :created_date, :updated_date
   attr_accessor :status
   
   def initialize( name, rank )
@@ -113,13 +114,17 @@ class Task < Item
   
   def completed( date )
     @status = 'done'
-    @completedDate = Date.parse( date )
+    @completed_date = Date.parse( date )
   end
   
-  def completed_date
-    @completedDate
+  def created_date=( date )
+    @created_date = Date.parse( date )
   end
-  
+
+  def updated_date=( date )
+    @updated_date = Date.parse( date )
+  end
+    
   def inactive?
     status == 'inactive'
   end

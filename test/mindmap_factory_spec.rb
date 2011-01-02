@@ -74,9 +74,25 @@ describe MindMapFactory, "simple_map" do
     attribute_for( 'Collect useless mails in sd', 'status' ).should == 'active'
   end
   
+  it "should add a created attribute to tasks and project" do
+    project_name = 'Switch to 3 network'
+    task_name = 'Collect useless mails in sd'
+    attribute_for( project_name, 'created' ).should == '2010-12-08'
+    attribute_for( task_name, 'created' ).should == '2010-11-24'
+  end
+
+  it "should add a updated attribute to tasks and project" do
+    project_name = 'Switch to 3 network'
+    task_name = 'Record # of mails in inbox before and after'
+    attribute_for( project_name, 'updated' ).should == '2010-12-16'
+    attribute_for( task_name, 'updated' ).should == '2010-12-13'
+  end
+
   it "should add a completed attribute to finished tasks and project" do
-    attribute_for( 'Record # of mails in inbox before and after', 'completed' ).should == '2010-12-13'
-    attribute_for( 'Switch to 3 network', 'completed' ).should == '2010-12-16'
+    project_name = 'Switch to 3 network'
+    task_name = 'Record # of mails in inbox before and after'
+    attribute_for( project_name, 'completed' ).should == '2010-12-16'
+    attribute_for( task_name, 'completed' ).should == '2010-12-13'
   end
     
   it "should distinguish tasks" do
