@@ -64,11 +64,13 @@ class MapFilter
   end
   
   def visit_project project
-    !project.done? #&& !project.dropped?
+    #!project.done? && !project.dropped?
+    true
   end
   
   def visit_task task
-    !task.done?
+    #!task.done?
+    true
   end
 
   def method_missing name, *args, &block
@@ -92,6 +94,10 @@ class ElementVisitor
     @logger.debug "Unhandled visit to #{self} with #{args}"
   end
   
+  def add_child( name, *args, &block )
+    @element << @element.document.create_element( name, *args, &block )
+  end
+  
 end
 
 class Formatter < ElementVisitor
@@ -104,15 +110,13 @@ class Formatter < ElementVisitor
     @element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
     if project.inactive?
       @element['COLOR'] = "#666666"
-      font = @element.document.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12"
-      @element <<  font
+      add_child "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" 
     end
   end
   
   def visit_task task
     @element['COLOR'] = "#444444"
-    font = @element.document.create_element "font", :NAME => "SansSerif", :SIZE => "9"
-    @element << font
+    add_child "font", :NAME => "SansSerif", :SIZE => "9"
   end
   
 end
@@ -121,14 +125,20 @@ class AttributeStamper < ElementVisitor
   
   def visit_project project
     add_status_for project
+    add_completion_time_for project
   end
   
   def visit_task task
     add_status_for task
+    add_completion_time_for task
   end
   
   def add_status_for item
-    @element << @element.document.create_element( "attribute", :NAME => 'status', :VALUE => item.status )
+    add_child "attribute", :NAME => 'status', :VALUE => item.status
+  end
+  
+  def add_completion_time_for item
+    add_child( "attribute", :NAME => 'completed', :VALUE => item.completed_date.to_s ) if item.done?
   end
   
 end

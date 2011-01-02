@@ -35,8 +35,8 @@ describe MindMapFactory, "simple_map" do
     portfolio = @root.node
     portfolio.attribute('POSITION').should be_nil
     
-    personal = portfolio.node(:xpath=>"@TEXT='Personal'")
-    personal['POSITION'].should == "left"
+    personal = portfolio.node(:xpath=>"@TEXT='Secretive Project'")
+    personal['POSITION'].should == "right"
 
     personalProject = portfolio.node[1]
     personalProject.should_not be_nil
@@ -66,26 +66,31 @@ describe MindMapFactory, "simple_map" do
   end
   
   it "should add a status attribute to projects" do
-    inactiveProject = @xml.at_xpath("//node[@TEXT = 'Meet simon for lunch']")
     # todo: this might be nice with a custom 'should be'?
-    status = inactiveProject.at_xpath("./attribute[@NAME = 'status']")
-    status.should_not be_nil
-    status['VALUE'].should == 'inactive'
+    attribute_for( 'Meet simon for lunch', 'status' ).should == 'inactive'
   end
   
   it "should add a status attribute to tasks" do
-    task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")  
-    status = task.at_xpath("./attribute[@NAME = 'status']")
-    status.should_not be_nil
-    status['VALUE'].should == 'active'
+    attribute_for( 'Collect useless mails in sd', 'status' ).should == 'active'
   end
   
+  it "should add a completed attribute to finished tasks and project" do
+    attribute_for( 'Record # of mails in inbox before and after', 'completed' ).should == '2010-12-13'
+    attribute_for( 'Switch to 3 network', 'completed' ).should == '2010-12-16'
+  end
+    
   it "should distinguish tasks" do
     task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")  
     task['COLOR'].should == '#444444'
     # Prefer not to assert all the details, but freemind is picky about these
     task.font['SIZE'].should == '9'
     task.font['NAME'].should == 'SansSerif'
+  end
+  
+  def attribute_for( item_name, attribute_name )
+    task = @xml.at_xpath("//node[@TEXT = '#{item_name}']")  
+    attribute = task && task.at_xpath("./attribute[@NAME = '#{attribute_name}']")
+    attribute && attribute['VALUE']
   end
   
 end
