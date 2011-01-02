@@ -40,22 +40,23 @@ class FocusParser
 
   private
     
-    #todo: remove duplication with parse_folders
+    #todo: remove duplication with parse_folders, also rank now
     def parse_tasks( xml )
       xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
         @log.debug( "Found node: #{taskNode}")
         name = taskNode.at_xpath( './xmlns:name' ).content
+        rank = taskNode.at_xpath( './xmlns:rank' ).content
         projectNode = taskNode.at_xpath( './xmlns:project' )
         
         if projectNode.nil?
         
-          item = Task.new( name )
+          item = Task.new( name, rank )
 
           track_links( item, taskNode )
                   
         else
         
-          item = Project.new( name )
+          item = Project.new( name, rank )
 
           statusNode = projectNode.at_xpath( './xmlns:status' )
           item.status = statusNode.content unless statusNode.nil?        
@@ -75,7 +76,8 @@ class FocusParser
         @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id").content}" )
         
         name = folderNode.at_xpath( './xmlns:name' ).content
-        folder = Folder.new( name )
+        rank = folderNode.at_xpath( './xmlns:rank' ).content
+        folder = Folder.new( name, rank )
         track_links( folder, folderNode )        
     
       end

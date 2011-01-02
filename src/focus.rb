@@ -3,10 +3,12 @@ class Item
 
   attr_reader :name
   attr_reader :parent
+  attr_reader :rank 
   attr_reader :children
   
-  def initialize( name )
+  def initialize( name, rank )
     @name = name
+    @rank = rank.to_i
     @children = []
   end
 
@@ -26,6 +28,7 @@ class Item
     @parent = parent
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
+     parent.children.sort_by!{ | c | c.rank }
   end
   
   def is_root?
@@ -48,7 +51,7 @@ end
 class Focus < Item
   
   def initialize( )
-    super( "Portfolio" )
+    super( "Portfolio", 0 )
   end
         
   def projects
@@ -103,8 +106,8 @@ class Task < Item
 
   attr_accessor :status
   
-  def initialize( name )
-    super( name )
+  def initialize( name, rank )
+    super( name, rank )
     @status = 'active'
   end
   

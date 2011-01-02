@@ -10,8 +10,9 @@ class MindMapFactory
   
   def simple_map
     doc = Nokogiri::XML::Document.new()
-    root = doc.create_element "map", :version => '0.9.0'
-    doc.add_child root
+    root = doc.create_element( "map", :version => '0.9.0' )
+    doc << root
+    root << doc.create_element( "attribute_registry", :SHOW_ATTRIBUTES => 'hide' )
     @stack << root
     # todo: is there a way to pass methods as procs?
     push = lambda{ | a, b | hello( a, b ) }
@@ -23,7 +24,7 @@ class MindMapFactory
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
   private
     def hello( doc, item )
-      if should_include item
+      if MapFilter.new.include? item
         element = doc.create_element( "node" ) do | e |
           e['TEXT'] = item.name
           e['POSITION'] = pos if pos
@@ -41,10 +42,6 @@ class MindMapFactory
       doc
     end
     
-    def should_include( item )
-      item.visit InclusionVisitor.new
-    end
-    
     def pos
       if @stack.size == 2
         if @size % 2 == 0
@@ -59,9 +56,18 @@ class MindMapFactory
     
 end
 
-class InclusionVisitor
+class MapFilter
+  
+  def include? item
+    item.visit self
+  end
+  
   def visit_project project
-    !project.done? && !project.dropped?
+    !project.done? #&& !project.dropped?
+  end
+  
+  def visit_task task
+    !task.done?
   end
 
   def method_missing name, *args, &block
@@ -100,6 +106,12 @@ class Formatter < ElementVisitor
       font = @element.document.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12"
       @element.add_child( font )
     end
+  end
+  
+  def visit_task task
+    @element['COLOR'] = "#444444"
+    font = @element.document.create_element "font", :NAME => "SansSerif", :SIZE => "9"
+    @element << font
   end
   
 end

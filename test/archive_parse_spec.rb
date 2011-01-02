@@ -46,5 +46,20 @@ describe FocusParser, "#parse" do
     personal.should_not be_nil
     personal.children.map( &:name ).should include( "Switch to 3 network" )   
   end
+  
+  it "should order folders and projects as per their rank" do
+    pers_order =  rank_of_folder 'Personal'
+    proj_order = rank_of_folder 'Secretive Project'
+    adm_order = rank_of_folder 'Admin'
+    #todo: is there a comparator expectation thingy?
+    (adm_order < pers_order).should be_true
+    (proj_order < adm_order).should be_true
+  end
+  
+  def rank_of_folder name
+    folder, order = @focus.folders.zip(1..100).detect{ | f, o | f.name == name }
+    folder.should_not be_nil
+    order  
+  end
 
 end

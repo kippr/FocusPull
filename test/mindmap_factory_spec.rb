@@ -9,12 +9,19 @@ describe MindMapFactory, "simple_map" do
     @focus = @parser.parse
     @map_factory = MindMapFactory.new( @focus )
     @xml =  Nokogiri::Slop @map_factory.simple_map.to_s
-    @root = @xml.at_xpath("/map")
+    @root = @xml.at_xpath( "/map" )
   end
  
+  it "should set map xml version" do
+    @root['version'].should == "0.9.0"
+  end
+  
+  it "should hide attributes by default" do
+    @root.attribute_registry['SHOW_ATTRIBUTES'].should == 'hide'    
+  end
+  
   # todo: quite brittle, what is a sensible test?
   it "should create entries for folders and their projects" do
-    @root['version'].should == "0.9.0"
     @root.node.node.size.should == 3
     personal_project = @root.node.node(:xpath=>"@TEXT = 'Personal'").node
     personal_project.should_not be_nil
@@ -29,7 +36,7 @@ describe MindMapFactory, "simple_map" do
     portfolio.attribute('POSITION').should be_nil
     
     personal = portfolio.node(:xpath=>"@TEXT='Personal'")
-    personal['POSITION'].should == "right"
+    personal['POSITION'].should == "left"
 
     personalProject = portfolio.node[1]
     personalProject.should_not be_nil
@@ -56,6 +63,15 @@ describe MindMapFactory, "simple_map" do
     inactiveProject.font['ITALIC'].should be_true
     inactiveProject.font['SIZE'].should == '12'
     inactiveProject.font['NAME'].should == 'SansSerif'    
+  end
+  
+  it "should distinguish tasks" do
+    task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")
+    task.should_not be_nil
+    task['COLOR'].should == '#444444'
+    # Prefer not to assert all the details, but freemind is picky about these
+    task.font['SIZE'].should == '9'
+    task.font['NAME'].should == 'SansSerif'    
   end
   
 end
