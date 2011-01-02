@@ -18,6 +18,7 @@ X folder & project methods filter by type
 X tree traversal with callback
 X colour tasks differently
 - colour dropped tasks differently?
+- there is a link b/w mindmap output nodes and focus nodes, so we can post-traverse
 ? cleanup tree traversal
 ? cleanup pos decision
 ? visitor with extra args

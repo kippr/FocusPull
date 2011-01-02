@@ -7,6 +7,7 @@ class MindMapFactory
   end
   
   def simple_map
+    @filter = MapFilter.new unless @filter
     @stack = []
     @size = 0
     doc = Nokogiri::XML::Document.new()
@@ -22,13 +23,16 @@ class MindMapFactory
   end
   
   def delta_map start_date, end_date
-    simple_map
+    @filter = TemporalFilter.new start_date, end_date
+    map = simple_map
+    @filter = MapFilter.new
+    map
   end
   
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
   private
     def hello( doc, item )
-      if MapFilter.new.include? item
+      if @filter.include? item
         element = doc.create_element( "node" ) do | e |
           e['TEXT'] = item.name
           e['POSITION'] = pos if pos
@@ -67,19 +71,31 @@ class MapFilter
     item.visit self
   end
   
-  def visit_project project
-    #!project.done? && !project.dropped?
-    true
-  end
-  
-  def visit_task task
-    #!task.done?
-    true
-  end
-
   def method_missing name, *args, &block
     true
   end
+  
+end
+
+class TemporalFilter < MapFilter
+  
+  def initialize start_date, end_date
+    @start = Date.parse( start_date )
+    @end = Date.parse( end_date )
+  end
+  
+  def visit_project project
+    in_range( project.created_date ) || in_range( project.completed_date )
+  end
+  
+  def visit_task task
+    true
+  end
+  
+  def in_range date
+    date && @start <= date && date <= @end
+  end
+  
 end
 
 class ElementVisitor
