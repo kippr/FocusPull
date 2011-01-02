@@ -33,7 +33,9 @@ X use 'childless' colouring for folders that have only folders as kids
   </body>
 </html>
 </richcontent>
-
+- done projects (and tasks?) should have this added: <icon BUILTIN="button_ok"/> (before attributes)
+- inactive projects should have this added: <icon BUILTIN="stop-sign"/> (after font)
+- simple map shouldn't show 'done' tasks?
 ? cleanup tree traversal
 ? cleanup pos decision
 ? visitor with extra args
