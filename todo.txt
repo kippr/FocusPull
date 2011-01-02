@@ -1,6 +1,6 @@
 X resolve refs to other nodes
 X add project status
-- add task status (e.g. completion date)
+X add task status (e.g. completion date)
 X add tasks
 X load folders
 X change from map of names to tree structure (with parent == null attaching to root)
@@ -10,11 +10,12 @@ X create spec for map factory
 - clean up to_s
 - check todos
 - why doesn't hash-default work?
-- implement visitor pattern for map formatting?
+X implement visitor pattern for map formatting?
 X use Nokogiri slop for tests?
 - new map type: delta from last week?
 X folder & project methods filter by type
 X tree traversal with callback
+- colour tasks differently
 ? define attr shortcut method for nokogiri xml node?
 ? cleanup tree traversal
 ? cleanup pos decision

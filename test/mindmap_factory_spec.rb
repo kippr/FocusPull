@@ -16,7 +16,11 @@ describe MindMapFactory, "simple_map" do
   it "should create entries for folders and their projects" do
     @root['version'].should == "0.9.0"
     @root.node.node.size.should == 3
-    @root.node.node(:xpath=>"@TEXT = 'Personal'").node.size.should == 3
+    personal_project = @root.node.node(:xpath=>"@TEXT = 'Personal'").node
+    personal_project.should_not be_nil
+    done_project = "Switch to 3 network"
+    #personal_projects.at_xpath(:xpath=>"@TEXT").should be_nil
+    #todo: assert done_project is not included
     @root.at_xpath("./node/node/node[@TEXT = 'Plan']").parent.attribute("TEXT").content.should == "Secretive Project"
   end
   

@@ -29,7 +29,7 @@ class MindMapFactory
           e['POSITION'] = pos if pos
           item.visit Formatter.new(e)
         end
-        @stack.last.add_child( element ) #if node.is_folder? or node.status == "active"
+        @stack.last.add_child( element ) if @stack.last
         @size += 1
       end
       @stack << element
@@ -61,7 +61,7 @@ end
 
 class InclusionVisitor
   def visit_project project
-    true
+    !project.done? && !project.dropped?
   end
 
   def method_missing name, *args, &block

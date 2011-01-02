@@ -121,6 +121,14 @@ class Task < Item
     status == 'inactive'
   end
   
+  def done?
+    status == 'done'
+  end
+
+  def dropped?
+    status == 'dropped'
+  end
+  
   def to_s
     super + " [#{@status}]" 
   end
