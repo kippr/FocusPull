@@ -17,7 +17,7 @@ describe MindMapFactory, "simple_map" do
   end
   
   it "should hide attributes by default" do
-    @root.attribute_registry['SHOW_ATTRIBUTES'].should == 'hide'    
+    @root.attribute_registry['SHOW_ATTRIBUTES'].should == 'hide'
   end
   
   # todo: quite brittle, what is a sensible test?
@@ -65,13 +65,27 @@ describe MindMapFactory, "simple_map" do
     inactiveProject.font['NAME'].should == 'SansSerif'    
   end
   
+  it "should add a status attribute to projects" do
+    inactiveProject = @xml.at_xpath("//node[@TEXT = 'Meet simon for lunch']")
+    # todo: this might be nice with a custom 'should be'?
+    status = inactiveProject.at_xpath("./attribute[@NAME = 'status']")
+    status.should_not be_nil
+    status['VALUE'].should == 'inactive'
+  end
+  
+  it "should add a status attribute to tasks" do
+    task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")  
+    status = task.at_xpath("./attribute[@NAME = 'status']")
+    status.should_not be_nil
+    status['VALUE'].should == 'active'
+  end
+  
   it "should distinguish tasks" do
-    task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")
-    task.should_not be_nil
+    task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")  
     task['COLOR'].should == '#444444'
     # Prefer not to assert all the details, but freemind is picky about these
     task.font['SIZE'].should == '9'
-    task.font['NAME'].should == 'SansSerif'    
+    task.font['NAME'].should == 'SansSerif'
   end
   
 end

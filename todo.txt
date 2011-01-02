@@ -1,12 +1,13 @@
 X resolve refs to other nodes
 X add project status
+- add start, modified and completed times as attributes
 X add task status (e.g. completion date)
 X add tasks
 X load folders
 X change from map of names to tree structure (with parent == null attaching to root)
 X create cut-down xml for test
 X create spec for map factory
-- order children by rank
+X order children by rank
 - clean up to_s
 - check todos
 - why doesn't hash-default work?

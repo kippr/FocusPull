@@ -29,8 +29,9 @@ class MindMapFactory
           e['TEXT'] = item.name
           e['POSITION'] = pos if pos
           item.visit Formatter.new(e)
+          item.visit AttributeStamper.new(e)
         end
-        @stack.last.add_child( element ) if @stack.last
+        @stack.last << ( element ) if @stack.last
         @size += 1
       end
       @stack << element
@@ -104,7 +105,7 @@ class Formatter < ElementVisitor
     if project.inactive?
       @element['COLOR'] = "#666666"
       font = @element.document.create_element "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12"
-      @element.add_child( font )
+      @element <<  font
     end
   end
   
@@ -112,6 +113,22 @@ class Formatter < ElementVisitor
     @element['COLOR'] = "#444444"
     font = @element.document.create_element "font", :NAME => "SansSerif", :SIZE => "9"
     @element << font
+  end
+  
+end
+
+class AttributeStamper < ElementVisitor
+  
+  def visit_project project
+    add_status_for project
+  end
+  
+  def visit_task task
+    add_status_for task
+  end
+  
+  def add_status_for item
+    @element << @element.document.create_element( "attribute", :NAME => 'status', :VALUE => item.status )
   end
   
 end
