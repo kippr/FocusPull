@@ -16,3 +16,14 @@ delta = factory.delta_map "2010-12-08", "2010-12-13"
 
 File.open("../output/focus.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta.mm", "w") { |f| f.write( delta ) }
+
+#Also handy to have
+parser = FocusParser.new( "../test", "omnisync-sample.tar", "tester" )
+focus = parser.parse
+factory = MindMapFactory.new( focus )
+xml = factory.simple_map
+delta = factory.delta_map "2010-12-08", "2010-12-13"
+
+File.open("../output/focus-sample.mm", "w") { |f| f.write( xml ) }
+File.open("../output/delta-sample.mm", "w") { |f| f.write( delta ) }
+

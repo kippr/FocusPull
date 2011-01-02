@@ -117,7 +117,7 @@ describe MindMapFactory, "delta_map" do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     @map_factory = MindMapFactory.new( @focus )
-    @xml =  Nokogiri::Slop @map_factory.delta_map( "2010-12-07", "2010-12-12" ).to_s
+    @xml =  Nokogiri::Slop @map_factory.delta_map( "2010-12-08", "2010-12-13" ).to_s
     @root = @xml.at_xpath( "/map" )
   end
   
@@ -130,6 +130,20 @@ describe MindMapFactory, "delta_map" do
   it "should not include tasks that didn't change" do
     project = @xml.at_xpath( "//node[@TEXT='Meet simon for lunch']" )
     project.should be_nil
+  end
+  
+  it "should include projects that didn't change but that include tasks that did" do
+    unchanged_project = @xml.at_xpath( "//node[@TEXT='Spend less time in email']")
+    unchanged_project.should_not be_nil
+    completed_task = unchanged_project.at_xpath("./node[@TEXT='Record # of mails in inbox before and after']")
+    completed_task.should_not be_nil
+    unchanged_task = unchanged_project.at_xpath("./node[@TEXT='Collect useless mails in sd']")
+    unchanged_task.should be_nil
+  end
+  
+  it "should fade folders with no tasks that match filter" do
+    childless_folder = @xml.at_xpath("//node[@TEXT = 'Secretive Project']")
+    childless_folder['COLOR'].should == "#bfd8e5"
   end
   
 end

@@ -36,7 +36,8 @@ class MindMapFactory
         element = doc.create_element( "node" ) do | e |
           e['TEXT'] = item.name
           e['POSITION'] = pos if pos
-          item.visit Formatter.new(e)
+          # todo: passing filter smells
+          item.visit Formatter.new(e, @filter )
           item.visit AttributeStamper.new(e)
         end
         @stack.last << ( element ) if @stack.last
@@ -68,7 +69,8 @@ end
 class MapFilter
   
   def include? item
-    item.visit self
+    visitor = self
+    item.any?{ | c | c.visit( visitor ) }
   end
   
   def method_missing name, *args, &block
@@ -85,11 +87,15 @@ class TemporalFilter < MapFilter
   end
   
   def visit_project project
-    in_range( project.created_date ) || in_range( project.completed_date )
+    starts_or_ends_in_range project
   end
   
   def visit_task task
-    true
+    starts_or_ends_in_range task
+  end
+  
+  def starts_or_ends_in_range item
+    in_range( item.created_date ) || in_range( item.completed_date )
   end
   
   def in_range date
@@ -122,8 +128,17 @@ end
 
 class Formatter < ElementVisitor
   
+  def initialize( element, filter )
+    super( element )
+    @filter = filter
+  end
+  
   def visit_folder folder
-    @element['COLOR'] = "#006699"
+    #puts "#{folder.children}, #{@filter}" if folder.name == 'Support'
+    has_kids = folder.detect{ | kid | kid != folder && @filter.include?( kid ) }
+    puts "#{has_kids}.. #{has_kids.created_date}.. #{has_kids.completed_date}" if folder.name == 'Support'
+    @element['COLOR'] = has_kids ? '#006699' : '#bfd8e5'
+    add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") unless has_kids
   end
   
   def visit_project project
