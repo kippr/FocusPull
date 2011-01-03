@@ -1,24 +1,7 @@
-X resolve refs to other nodes
-X add project status
-X add start, modified and completed times as attributes
-X add task status (e.g. completion date)
-X add tasks
-X load folders
-X change from map of names to tree structure (with parent == null attaching to root)
-X create cut-down xml for test
-X create spec for map factory
-X order children by rank
 - clean up to_s
 - check todos
-X implement visitor pattern for map formatting?
-X use Nokogiri slop for tests?
 - new map type: delta from last week? recently completed?
-X folder & project methods filter by type
-X tree traversal with callback
-X colour tasks differently
 - colour dropped tasks differently?
-X colour folders w/o children as #bfd8e5, with <edge COLOR="#cccccc" STYLE="bezier" WIDTH="thin"/>
-X use 'childless' colouring for folders that have only folders as kids
 - there is a link b/w mindmap output nodes and focus nodes, so we can post-traverse
 - add 'filter text' to Portfolio node, maybe even replace TEXT with this:
 <richcontent TYPE="NODE"><html>
@@ -32,8 +15,7 @@ X use 'childless' colouring for folders that have only folders as kids
   </body>
 </html>
 </richcontent>
-X done projects (and tasks?) should have this added: <icon BUILTIN="button_ok"/> (before attributes)
-X inactive projects should have this added: <icon BUILTIN="stop-sign"/> (after font)
+B  In delta.mm, look at Saurav up to speed: folded, but all child tasks are excluded
 - simple map shouldn't show 'done' tasks?
 ? cleanup tree traversal
 ? cleanup pos decision

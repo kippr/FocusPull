@@ -28,6 +28,7 @@ class Item
     @parent = parent
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
+     #todo: consider moving sorting of children out, rank is an obtrusive item not used for anything else
      parent.children.sort_by!{ | c | c.rank }
   end
   
@@ -36,11 +37,7 @@ class Item
   end
   
   def is_folder?
-    self.class == Folder
-  end
-  
-  def is_project?
-    self.class == Project
+    false
   end
   
   def to_s
@@ -99,6 +96,11 @@ class Folder < Item
   def visit( visitor )
     visitor.visit_folder( self )
   end
+  
+  def is_folder?
+    true
+  end
+  
 
 end
 
