@@ -185,10 +185,19 @@ class IconStamper < ElementVisitor
   
   def visit_project project
     add_on_hold_icon if project.on_hold?
+    add_done_icon if project.done?
+  end
+  
+  def visit_task task
+    add_done_icon if task.done?
   end
   
   def add_on_hold_icon
     add_child "icon", :BUILTIN => 'stop-sign'
+  end
+
+  def add_done_icon
+    add_child "icon", :BUILTIN => 'button_ok'
   end
   
 end

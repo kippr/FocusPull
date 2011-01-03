@@ -83,6 +83,10 @@ describe MindMapFactory, "simple_map" do
   it "should add an icon to projects that are on hold" do
     node_for( 'Meet simon for lunch' ).icon['BUILTIN'].should == 'stop-sign'
   end
+
+  it "should add an icon to projects and tasks that are done" do
+    node_for( 'Switch to 3 network' ).icon['BUILTIN'].should == 'button_ok'
+  end
   
   it "should add a created attribute to tasks and project" do
     project_name = 'Switch to 3 network'
