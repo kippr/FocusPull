@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '../src/focus')
 require File.join(File.dirname(__FILE__), '../src/mindmap_factory')
 require 'nokogiri'
 
-describe MindMapFactory, "simple_map" do
+describe MindMapFactory, "create_simple_map" do
 
   before(:all) do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
@@ -22,48 +22,39 @@ describe MindMapFactory, "simple_map" do
   
   # todo: quite brittle, what is a sensible test?
   it "should create entries for folders and their projects" do
-    @root.node.node.size.should == 3
-    personal_project = @root.node.node(:xpath=>"@TEXT = 'Personal'").node
-    personal_project.should_not be_nil
-    done_project = "Switch to 3 network"
-    #personal_projects.at_xpath(:xpath=>"@TEXT").should be_nil
-    #todo: assert done_project is not included
-    @root.at_xpath("./node/node/node[@TEXT = 'Plan']").parent.attribute("TEXT").content.should == "Secretive Project"
+    personal_project = node_for( 'Personal' ).node
+    personal_project.size.should == 3
+    node_for( 'Plan' ).parent['TEXT'].should == "Secretive Project"
   end
   
   it "should assign positions to 'first child' nodes only" do    
-    portfolio = @root.node
-    portfolio.attribute('POSITION').should be_nil
+    @root.node['POSITION'].should be_nil
     
-    personal = portfolio.node(:xpath=>"@TEXT='Secretive Project'")
-    personal['POSITION'].should == "right"
+    top_level_folder = node_for( 'Personal' )
+    top_level_folder['POSITION'].should == "right"
 
-    personalProject = portfolio.node[1]
-    personalProject.should_not be_nil
-    portfolio['POSITION'].should be_nil   
+    second_level_item = top_level_folder.node[0]
+    second_level_item['POSITION'].should be_nil   
   end
   
   it "should colour folders" do
-    portfolio = @root.node
-    portfolio['COLOR'].should be_nil
-    personalFolder = @root.at_xpath("//node[@TEXT='Personal']")
-    personalFolder['COLOR'].should == "#006699"
+    @root.node['COLOR'].should be_nil
+    node_for( 'Personal' )['COLOR'].should == "#006699"
   end
   
   it "should colour folders with no projects or tasks as faded" do
-    childless_folder = @xml.at_xpath("//node[@TEXT = 'Secretive Project']")
+    childless_folder = node_for( 'Secretive Project' )
     childless_folder['COLOR'].should == "#bfd8e5"
   end
   
   
   it "should fold projects with child tasks" do
-    project = @xml.at_xpath("//node[@TEXT='Spend less time in email']")
-    project['FOLDED'].should be_true
+    node_for( 'Spend less time in email' )['FOLDED'].should be_true
     @root['FOLDED'].should_not be_true
   end
   
   it "should distinguish projects that are on hold" do
-    inactiveProject = @xml.at_xpath("//node[@TEXT = 'Meet simon for lunch']")
+    inactiveProject = node_for( 'Meet simon for lunch' )
     inactiveProject['COLOR'].should == '#666666'
     # Prefer not to assert all the details, but freemind is picky about these
     inactiveProject.font['ITALIC'].should be_true
@@ -89,28 +80,28 @@ describe MindMapFactory, "simple_map" do
   end
   
   it "should add a created attribute to tasks and project" do
-    project_name = 'Switch to 3 network'
-    task_name = 'Collect useless mails in sd'
-    attribute_for( project_name, 'created' ).should == '2010-12-08'
-    attribute_for( task_name, 'created' ).should == '2010-11-24'
+    project = 'Switch to 3 network'
+    attribute_for( project, 'created' ).should == '2010-12-08'
+    task = 'Collect useless mails in sd'
+    attribute_for( task, 'created' ).should == '2010-11-24'
   end
 
   it "should add a updated attribute to tasks and project" do
-    project_name = 'Switch to 3 network'
-    task_name = 'Record # of mails in inbox before and after'
-    attribute_for( project_name, 'updated' ).should == '2010-12-16'
-    attribute_for( task_name, 'updated' ).should == '2010-12-13'
+    project = 'Switch to 3 network'
+    attribute_for( project, 'updated' ).should == '2010-12-16'
+    task = 'Record # of mails in inbox before and after'
+    attribute_for( task, 'updated' ).should == '2010-12-13'
   end
 
   it "should add a completed attribute to finished tasks and project" do
-    project_name = 'Switch to 3 network'
-    task_name = 'Record # of mails in inbox before and after'
-    attribute_for( project_name, 'completed' ).should == '2010-12-16'
-    attribute_for( task_name, 'completed' ).should == '2010-12-13'
+    project= 'Switch to 3 network'
+    attribute_for( project, 'completed' ).should == '2010-12-16'
+    task = 'Record # of mails in inbox before and after'
+    attribute_for( task, 'completed' ).should == '2010-12-13'
   end
     
   it "should distinguish tasks" do
-    task = @xml.at_xpath("//node[@TEXT = 'Collect useless mails in sd']")  
+    task = node_for( 'Collect useless mails in sd' )  
     task['COLOR'].should == '#444444'
     # Prefer not to assert all the details, but freemind is picky about these
     task.font['SIZE'].should == '9'
@@ -119,7 +110,7 @@ describe MindMapFactory, "simple_map" do
     
 end  
 
-describe MindMapFactory, "delta_map" do
+describe MindMapFactory, "create_delta_map" do
 
   before(:all) do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
@@ -133,23 +124,21 @@ describe MindMapFactory, "delta_map" do
     @root.node['TEXT'].should == 'Portfolio 2010-12-08..2010-12-13'
   end
   
-  it "should include newly created projects" do
-    project = @xml.at_xpath( "//node[@TEXT='Switch to 3 network']" )
-    project.should_not be_nil
-    project.parent['TEXT'].should == "Personal"
+  it "should include newly created projects, and their parent folders" do
+    node_for( 'Switch to 3 network' ).parent['TEXT'].should == "Personal"
   end
   
   it "should not include tasks that didn't change" do
-    project = @xml.at_xpath( "//node[@TEXT='Meet simon for lunch']" )
-    project.should be_nil
+    node_for( 'Meet simon for lunch' ).should be_nil
   end
     
-  it "should include projects that didn't change but that include tasks that did" do
-    unchanged_project = @xml.at_xpath( "//node[@TEXT='Spend less time in email']")
+  it "should include projects that didn't change but have child tasks that did" do
+    unchanged_project = node_for( 'Spend less time in email' )
     unchanged_project.should_not be_nil
-    completed_task = unchanged_project.at_xpath("./node[@TEXT='Record # of mails in inbox before and after']")
-    completed_task.should_not be_nil
-    unchanged_task = unchanged_project.at_xpath("./node[@TEXT='Collect useless mails in sd']")
+    completed_task = node_for( 'Record # of mails in inbox before and after' )
+    completed_task.parent.should == unchanged_project 
+    # this is an unchanged child of unchanged project
+    unchanged_task = node_for( 'Collect useless mails in sd' ) 
     unchanged_task.should be_nil
   end
     
