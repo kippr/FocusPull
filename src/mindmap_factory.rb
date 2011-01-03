@@ -1,112 +1,5 @@
 require File.join(File.dirname(__FILE__), '../src/focus')
 
-class MindMapFactory
-
-  def self.create_simple_map focus
-    self.new( focus ).create_map( MapFilter.new )
-  end
-  
-  def self.create_delta_map focus, start_date, end_date
-    self.new( focus ).create_map( TemporalFilter.new( start_date, end_date ) )
-  end
-
-  def initialize( focus )
-    @focus = focus
-  end  
-  
-  def create_map( filter )
-    @filter = filter
-    @stack = []
-    @visitors = create_visitors
-    doc = Nokogiri::XML::Document.new()
-    root = doc.create_element( "map", :version => '0.9.0' )
-    doc << root
-    root << doc.create_element( "attribute_registry", :SHOW_ATTRIBUTES => 'hide' )
-    @stack << root
-    # todo: is there a way to pass methods as procs?
-    push = lambda{ | a, b | hello( a, b ) }
-    pop = lambda{ | a, b | goodbye( a, b) }
-    @focus.traverse( doc, push, pop )
-  end
-  
-  private    
-    def create_visitors
-      v = []
-      v << Namer.new( @stack, @filter )
-      v << Formatter.new( @stack, @filter )
-      v << IconStamper.new( @stack )
-      v << AttributeStamper.new( @stack )
-      v << PositionStamper.new( @stack )
-      v
-    end  
-  
-  #todo: not mad on the inject into behaviour here, needing to return doc is silly
-    def hello( doc, item )
-      e = doc.create_element( "node" )
-      if @filter.include?( item )
-        @stack.last << ( e ) if @stack.last # do not add kids to excluded parents..
-        @stack << e
-        @visitors.each{ | visitor | visitor.accept item }
-      else
-        # todo: this is a shame...
-        @stack << nil
-      end
-      doc
-    end
-    
-    def goodbye( doc, node )
-      @stack.pop
-      doc
-    end
-        
-end
-
-class MapFilter
-  
-  def include? item
-    visitor = self
-    item.any?{ | c | c.visit( visitor ) }
-  end
-  
-  def method_missing name, *args, &block
-    true
-  end
-  
-  def label item
-    item.name
-  end
-  
-end
-
-class TemporalFilter < MapFilter
-  
-  def initialize start_date, end_date
-    @start = Date.parse( start_date )
-    @end = Date.parse( end_date )
-  end
-  
-  def visit_project project
-    starts_or_ends_in_range project
-  end
-  
-  def visit_task task
-    starts_or_ends_in_range task
-  end
-  
-  def starts_or_ends_in_range item
-    in_range( item.created_date ) || in_range( item.completed_date )
-  end
-  
-  def in_range date
-    date && @start <= date && date <= @end
-  end
-  
-  def label item
-    "#{item.name} #{@start}..#{@end}"
-  end
-  
-end
-
 module VisitorMixin
   
   def accept item
@@ -140,6 +33,75 @@ module ElementMixin
     element << element.document.create_element( name, *args, &block )
   end  
 end
+
+
+class MindMapFactory
+  include ElementMixin
+
+  def self.create_simple_map focus
+    self.new( focus ).create_map( MapFilter.new )
+  end
+  
+  def self.create_delta_map focus, start_date, end_date
+    self.new( focus ).create_map( TemporalFilter.new( start_date, end_date ) )
+  end
+
+  def initialize( focus )
+    super( [] )
+    @focus = focus
+  end  
+  
+  def create_map( filter )
+    @filter = filter
+    @visitors = create_visitors
+    doc = create_doc
+    # todo: is there a way to pass methods as procs?
+    push = lambda{ | a, b | hello( a, b ) }
+    pop = lambda{ | a, b | goodbye( a, b) }
+    @focus.traverse( doc, push, pop )
+  end
+  
+  private    
+  
+    def create_doc
+      doc = Nokogiri::XML::Document.new()
+      @stack << doc
+      add_child( "map", :version => '0.9.0' )
+      @stack << doc.root
+      add_child( "attribute_registry", :SHOW_ATTRIBUTES => 'hide' )
+      doc
+    end
+    
+    def create_visitors
+      v = []
+      v << Namer.new( @stack, @filter )
+      v << Formatter.new( @stack, @filter )
+      v << IconStamper.new( @stack )
+      v << AttributeStamper.new( @stack )
+      v << PositionStamper.new( @stack )
+    end  
+  
+  #todo: not mad on the inject into behaviour here, needing to return doc is silly
+    def hello( doc, item )
+      e = doc.create_element( "node" )
+      if @filter.include?( item )
+        @stack.last << ( e ) if @stack.last # do not add kids to excluded parents..
+        @stack << e
+        @visitors.each{ | visitor | visitor.accept item }
+      else
+        # todo: this is a shame...
+        @stack << nil
+      end
+      doc
+    end
+    
+    def goodbye( doc, node )
+      @stack.pop
+      doc
+    end
+        
+end
+
 
 class Namer 
   include ElementMixin, VisitorMixin
@@ -249,6 +211,52 @@ class PositionStamper
   
   def next_pos
     @pos = @pos == "right" ? "left" : "right"
+  end
+  
+end
+
+class MapFilter
+  include VisitorMixin
+  
+  def include? item
+    item.any?{ | c | self.accept( c ) }
+  end
+  
+  def visit_default item
+    true
+  end
+    
+  def label item
+    item.name
+  end
+  
+end
+
+class TemporalFilter < MapFilter
+  
+  def initialize start_date, end_date
+    @start = Date.parse( start_date )
+    @end = Date.parse( end_date )
+  end
+  
+  def visit_project project
+    starts_or_ends_in_range project
+  end
+  
+  def visit_task task
+    starts_or_ends_in_range task
+  end
+  
+  def starts_or_ends_in_range item
+    in_range( item.created_date ) || in_range( item.completed_date )
+  end
+  
+  def in_range date
+    date && @start <= date && date <= @end
+  end
+  
+  def label item
+    "#{item.name} #{@start}..#{@end}"
   end
   
 end
