@@ -30,7 +30,9 @@ module ElementMixin
   end
   
   def add_child( name, *args, &block )
-    element << element.document.create_element( name, *args, &block )
+    child = element.document.create_element( name, *args, &block )
+    element << child
+    child
   end  
 end
 
@@ -66,8 +68,7 @@ class MindMapFactory
     def create_doc
       doc = Nokogiri::XML::Document.new()
       @stack << doc
-      add_child( "map", :version => '0.9.0' )
-      @stack << doc.root
+      @stack << add_child( "map", :version => '0.9.0' )
       add_child( "attribute_registry", :SHOW_ATTRIBUTES => 'hide' )
       doc
     end
