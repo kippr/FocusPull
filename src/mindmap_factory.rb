@@ -2,12 +2,20 @@ require File.join(File.dirname(__FILE__), '../src/focus')
 
 class MindMapFactory
 
-  def initialize( focus )
-    @focus = focus
+  def self.create_simple_map focus
+    self.new( focus ).create_map( MapFilter.new )
   end
   
-  def simple_map
-    @filter = MapFilter.new unless @filter
+  def self.create_delta_map focus, start_date, end_date
+    self.new( focus ).create_map( TemporalFilter.new( start_date, end_date ) )
+  end
+
+  def initialize( focus )
+    @focus = focus
+  end  
+  
+  def create_map( filter )
+    @filter = filter
     @stack = []
     @size = 0
     doc = Nokogiri::XML::Document.new()
@@ -19,18 +27,12 @@ class MindMapFactory
     push = lambda{ | a, b | hello( a, b ) }
     pop = lambda{ | a, b | goodbye( a, b) }
     @focus.traverse( doc, push, pop )
-    doc
+    # todo: drop doc
+    doc      
   end
   
-  def delta_map start_date, end_date
-    @filter = TemporalFilter.new start_date, end_date
-    map = simple_map
-    @filter = MapFilter.new
-    map
-  end
-  
+  private    
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
-  private
     def hello( doc, item )
       if @filter.include? item
         element = doc.create_element( "node" ) do | e |

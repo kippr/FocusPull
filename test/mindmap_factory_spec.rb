@@ -7,8 +7,8 @@ describe MindMapFactory, "simple_map" do
   before(:all) do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    @map_factory = MindMapFactory.new( @focus )
-    @xml =  Nokogiri::Slop @map_factory.simple_map.to_s
+    @map = MindMapFactory.create_simple_map( @focus )
+    @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
  
@@ -124,8 +124,8 @@ describe MindMapFactory, "delta_map" do
   before(:all) do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    @map_factory = MindMapFactory.new( @focus )
-    @xml =  Nokogiri::Slop @map_factory.delta_map( "2010-12-08", "2010-12-13" ).to_s
+    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13" )
+    @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   

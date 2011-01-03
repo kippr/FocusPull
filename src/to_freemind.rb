@@ -8,11 +8,9 @@ dir = "../archives/2010.12.19_2225"
 parser = FocusParser.new( dir, "omnisync.tar", "kippr" )
 focus = parser.parse
 
-factory = MindMapFactory.new( focus )
+xml = MindMapFactory.create_simple_map focus
 
-xml = factory.simple_map
-
-delta = factory.delta_map "2010-12-08", "2010-12-13"
+delta = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13"
 
 File.open("../output/focus.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta.mm", "w") { |f| f.write( delta ) }
@@ -20,9 +18,8 @@ File.open("../output/delta.mm", "w") { |f| f.write( delta ) }
 #Also handy to have
 parser = FocusParser.new( "../test", "omnisync-sample.tar", "tester" )
 focus = parser.parse
-factory = MindMapFactory.new( focus )
-xml = factory.simple_map
-delta = factory.delta_map "2010-12-08", "2010-12-13"
+xml = MindMapFactory.create_simple_map focus
+delta = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13"
 
 File.open("../output/focus-sample.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta-sample.mm", "w") { |f| f.write( delta ) }
