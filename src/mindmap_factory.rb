@@ -17,7 +17,7 @@ class MindMapFactory
   def create_map( filter )
     @filter = filter
     @stack = []
-    @position_stamper = PositionStamper.new( @stack )
+    @visitors = create_visitors
     doc = Nokogiri::XML::Document.new()
     root = doc.create_element( "map", :version => '0.9.0' )
     doc << root
@@ -30,20 +30,23 @@ class MindMapFactory
   end
   
   private    
+    def create_visitors
+      v = []
+      v << Namer.new( @stack, @filter )
+      v << Formatter.new( @stack, @filter )
+      v << IconStamper.new( @stack )
+      v << AttributeStamper.new( @stack )
+      v << PositionStamper.new( @stack )
+      v
+    end  
+  
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
     def hello( doc, item )
       e = doc.create_element( "node" )
       if @filter.include?( item )
         @stack.last << ( e ) if @stack.last # do not add kids to excluded parents..
         @stack << e
-        # todo: passing filter smells
-        # todo: Move these into create_map?
-        e = @stack
-        item.visit Namer.new( e, @filter )
-        item.visit Formatter.new( e, @filter )
-        item.visit IconStamper.new( e )
-        item.visit AttributeStamper.new( e )
-        item.visit @position_stamper
+        @visitors.each{ | visitor | visitor.accept item }
       else
         # todo: this is a shame...
         @stack << nil
@@ -105,9 +108,17 @@ class TemporalFilter < MapFilter
 end
 
 module VisitorMixin
+  
+  def accept item
+    item.visit self
+  end
 
   def method_missing name, *args, &block
-    visit_default *args if name.to_s.start_with?("visit")
+    if name.to_s.start_with? "visit"
+      visit_default *args
+    else
+      super name, *args, &block
+    end
   end
   
   def visit_default item
@@ -116,6 +127,7 @@ module VisitorMixin
 end
 
 module ElementMixin
+
   def initialize( stack )
     @stack = stack
   end
@@ -226,26 +238,14 @@ class AttributeStamper < ElementVisitor
 end
 
 class PositionStamper
-
-  def initialize( stack )
-    @stack = stack
-  end
+  include ElementMixin
   
-  # todo: this is ugly, and leads to stack overflow in case of errors
-  def method_missing name, *args, &block
-    visit_default *args
-  end
-  
-  def visit_default item
+  def accept item
     stamp_position if item.parent && item.parent.is_root?
   end
   
   def stamp_position
     element['POSITION'] = next_pos
-  end
-  
-  def element
-    @stack.last
   end
   
   def next_pos
