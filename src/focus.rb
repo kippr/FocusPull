@@ -124,17 +124,9 @@ class Task < Item
   def updated_date=( date )
     @updated_date = Date.parse( date )
   end
-    
-  def inactive?
-    status == 'inactive'
-  end
-  
+      
   def done?
     status == 'done'
-  end
-
-  def dropped?
-    status == 'dropped'
   end
   
   def to_s
@@ -148,6 +140,14 @@ class Task < Item
 end
 
 class Project < Task  
+
+  def on_hold?
+    status == 'inactive'
+  end
+
+  def dropped?
+    status == 'dropped'
+  end
   
   def visit( visitor )
     visitor.visit_project( self )

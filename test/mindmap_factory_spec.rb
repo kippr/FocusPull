@@ -62,7 +62,7 @@ describe MindMapFactory, "simple_map" do
     @root['FOLDED'].should_not be_true
   end
   
-  it "should distinguish inactive projects" do
+  it "should distinguish projects that are on hold" do
     inactiveProject = @xml.at_xpath("//node[@TEXT = 'Meet simon for lunch']")
     inactiveProject['COLOR'].should == '#666666'
     # Prefer not to assert all the details, but freemind is picky about these
@@ -78,6 +78,10 @@ describe MindMapFactory, "simple_map" do
   
   it "should add a status attribute to tasks" do
     attribute_for( 'Collect useless mails in sd', 'status' ).should == 'active'
+  end
+
+  it "should add an icon to projects that are on hold" do
+    node_for( 'Meet simon for lunch' ).icon['BUILTIN'].should == 'stop-sign'
   end
   
   it "should add a created attribute to tasks and project" do
@@ -108,13 +112,7 @@ describe MindMapFactory, "simple_map" do
     task.font['SIZE'].should == '9'
     task.font['NAME'].should == 'SansSerif'
   end
-  
-  def attribute_for( item_name, attribute_name )
-    task = @xml.at_xpath("//node[@TEXT = '#{item_name}']")  
-    attribute = task && task.at_xpath("./attribute[@NAME = '#{attribute_name}']")
-    attribute && attribute['VALUE']
-  end
-  
+    
 end  
 
 describe MindMapFactory, "delta_map" do
@@ -151,4 +149,14 @@ describe MindMapFactory, "delta_map" do
     unchanged_task.should be_nil
   end
     
+end
+
+def node_for item_name
+  @xml.at_xpath("//node[@TEXT = '#{item_name}']")  
+end
+  
+def attribute_for item_name, attribute_name
+  item = node_for item_name
+  attribute = item && item.at_xpath("./attribute[@NAME = '#{attribute_name}']")
+  attribute && attribute['VALUE']
 end

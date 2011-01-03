@@ -35,9 +35,10 @@ class MindMapFactory
       if @filter.include? item
         element = doc.create_element( "node" ) do | e |
           # todo: passing filter smells
-          item.visit Namer.new(e, @filter)
-          item.visit Formatter.new(e, @filter )
-          item.visit AttributeStamper.new(e)
+          item.visit Namer.new( e, @filter )
+          item.visit Formatter.new( e, @filter )
+          item.visit IconStamper.new( e )
+          item.visit AttributeStamper.new( e )
           e['POSITION'] = pos if pos
         end
         @stack.last << ( element ) if @stack.last
@@ -167,7 +168,7 @@ class Formatter < ElementVisitor
   
   def visit_project project
     @element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
-    if project.inactive?
+    if project.on_hold?
       @element['COLOR'] = "#666666"
       add_child "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" 
     end
@@ -176,6 +177,18 @@ class Formatter < ElementVisitor
   def visit_task task
     @element['COLOR'] = "#444444"
     add_child "font", :NAME => "SansSerif", :SIZE => "9"
+  end
+  
+end
+
+class IconStamper < ElementVisitor
+  
+  def visit_project project
+    add_on_hold_icon if project.on_hold?
+  end
+  
+  def add_on_hold_icon
+    add_child "icon", :BUILTIN => 'stop-sign'
   end
   
 end
