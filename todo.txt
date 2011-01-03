@@ -10,7 +10,6 @@ X create spec for map factory
 X order children by rank
 - clean up to_s
 - check todos
-- why doesn't hash-default work?
 X implement visitor pattern for map formatting?
 X use Nokogiri slop for tests?
 - new map type: delta from last week? recently completed?
@@ -33,8 +32,8 @@ X use 'childless' colouring for folders that have only folders as kids
   </body>
 </html>
 </richcontent>
-- done projects (and tasks?) should have this added: <icon BUILTIN="button_ok"/> (before attributes)
-- inactive projects should have this added: <icon BUILTIN="stop-sign"/> (after font)
+X done projects (and tasks?) should have this added: <icon BUILTIN="button_ok"/> (before attributes)
+X inactive projects should have this added: <icon BUILTIN="stop-sign"/> (after font)
 - simple map shouldn't show 'done' tasks?
 ? cleanup tree traversal
 ? cleanup pos decision

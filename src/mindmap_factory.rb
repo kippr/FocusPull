@@ -17,7 +17,7 @@ class MindMapFactory
   def create_map( filter )
     @filter = filter
     @stack = []
-    @size = 0
+    @position_stamper = PositionStamper.new( @stack )
     doc = Nokogiri::XML::Document.new()
     root = doc.create_element( "map", :version => '0.9.0' )
     doc << root
@@ -27,26 +27,26 @@ class MindMapFactory
     push = lambda{ | a, b | hello( a, b ) }
     pop = lambda{ | a, b | goodbye( a, b) }
     @focus.traverse( doc, push, pop )
-    # todo: drop doc
-    doc      
   end
   
   private    
   #todo: not mad on the inject into behaviour here, needing to return doc is silly
     def hello( doc, item )
-      if @filter.include? item
-        element = doc.create_element( "node" ) do | e |
-          # todo: passing filter smells
-          item.visit Namer.new( e, @filter )
-          item.visit Formatter.new( e, @filter )
-          item.visit IconStamper.new( e )
-          item.visit AttributeStamper.new( e )
-          e['POSITION'] = pos if pos
-        end
-        @stack.last << ( element ) if @stack.last
-        @size += 1
+      e = doc.create_element( "node" )
+      if @filter.include?( item )
+        @stack.last << ( e ) if @stack.last # do not add kids to excluded parents..
+        @stack << e
+        # todo: passing filter smells
+        # todo: Move these into create_map?
+        item.visit Namer.new( e, @filter )
+        item.visit Formatter.new( e, @filter )
+        item.visit IconStamper.new( e )
+        item.visit AttributeStamper.new( e )
+        item.visit @position_stamper
+      else
+        # todo: this is a shame...
+        @stack << nil
       end
-      @stack << element
       doc
     end
     
@@ -54,19 +54,7 @@ class MindMapFactory
       @stack.pop
       doc
     end
-    
-    def pos
-      if first_level
-        @size % 2 == 0 ? "left" : "right"
-      else
-        nil
-      end
-    end
-    
-    def first_level
-      @stack.size == 2
-    end
-    
+        
 end
 
 class MapFilter
@@ -226,4 +214,36 @@ class AttributeStamper < ElementVisitor
     add_child( "attribute", :NAME => 'completed', :VALUE => item.completed_date.to_s ) if item.done?
   end
     
+end
+
+class PositionStamper
+  def initialize( stack )
+    @stack = stack
+    @size = 0
+  end
+  
+  # todo: this is ugly, and leads to stack overflow in case of errors
+  def method_missing name, *args, &block
+    #stamp_position
+  end
+  
+  def stamp_position
+    element['POSITION'] = pos 
+  end
+  
+  def element
+    @stack.last
+  end
+  def pos
+    if first_level
+      @size % 2 == 0 ? "left" : "right"
+    else
+      nil
+    end
+  end
+  
+  def first_level
+    @stack.size == 2
+  end
+  
 end
