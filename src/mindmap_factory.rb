@@ -31,7 +31,7 @@ module ElementMixin
   
   def add_child( name, *args, &block )
     child = element.document.create_element( name, *args, &block )
-    element << child
+    element << child if element  # do not try to add kids to current element if its not there
     child
   end  
 end
@@ -58,9 +58,10 @@ class MindMapFactory
     @visitors = create_visitors
     doc = create_doc
     # todo: is there a way to pass methods as procs?
-    push = lambda{ | a, b | hello( a, b ) }
-    pop = lambda{ | a, b | goodbye( a, b) }
-    @focus.traverse( doc, push, pop )
+    push = lambda{ | x, item | visit( item ) }
+    pop = lambda{ | x, item | @stack.pop }
+    @focus.traverse( nil, push, pop )
+    doc
   end
   
   private    
@@ -82,25 +83,16 @@ class MindMapFactory
       v << PositionStamper.new( @stack )
     end  
   
-  #todo: not mad on the inject into behaviour here, needing to return doc is silly
-    def hello( doc, item )
-      e = doc.create_element( "node" )
+    def visit item
       if @filter.include?( item )
-        @stack.last << ( e ) if @stack.last # do not add kids to excluded parents..
-        @stack << e
+        @stack << add_child( "node" )
         @visitors.each{ | visitor | visitor.accept item }
       else
-        # todo: this is a shame...
+        # todo: this is a shame, but how else to deal with pop?
         @stack << nil
       end
-      doc
     end
     
-    def goodbye( doc, node )
-      @stack.pop
-      doc
-    end
-        
 end
 
 
