@@ -38,6 +38,7 @@ class MindMapFactory
         @stack << e
         # todo: passing filter smells
         # todo: Move these into create_map?
+        e = @stack
         item.visit Namer.new( e, @filter )
         item.visit Formatter.new( e, @filter )
         item.visit IconStamper.new( e )
@@ -103,69 +104,77 @@ class TemporalFilter < MapFilter
   
 end
 
-class ElementVisitor
-  
-  def initialize( element )
-    @element = element
-    @logger = Logger.new(STDOUT)
-    @logger.level = Logger::INFO
-  end
-  
+module VisitorMixin
+
   def method_missing name, *args, &block
-    visit_default *args
+    visit_default *args if name.to_s.start_with?("visit")
   end
   
   def visit_default item
-    @logger.debug "Unhandled visit to #{self} with #{item}"
+  end
+  
+end
+
+module ElementMixin
+  def initialize( stack )
+    @stack = stack
+  end
+  
+  def element
+    @stack.last
   end
   
   def add_child( name, *args, &block )
-    @element << @element.document.create_element( name, *args, &block )
-  end
+    element << element.document.create_element( name, *args, &block )
+  end  
+end
+
+class ElementVisitor
+  include VisitorMixin, ElementMixin
   
 end
 
 class Namer < ElementVisitor
   
-  def initialize( element, filter )
-    super( element )
+  def initialize( stack, filter )
+    super( stack )
     @filter = filter
   end
   
   def visit_default item
-    @element['TEXT'] = item.name
+    element['TEXT'] = item.name
   end
   
   def visit_focus focus
-    @element['TEXT'] = @filter.label( focus )
+    element['TEXT'] = @filter.label( focus )
   end
   
 end
 
 class Formatter < ElementVisitor
   
-  def initialize( element, filter )
-    super( element )
+  def initialize( stack, filter )
+    super( stack )
     @filter = filter
   end
   
   def visit_folder folder
     kids = folder.select{ | kid | kid != folder && @filter.include?( kid ) }
     has_kids = kids.any?{ | kid | !kid.is_folder? }
-    @element['COLOR'] = has_kids ? '#006699' : '#bfd8e5'
+    element['COLOR'] = has_kids ? '#006699' : '#bfd8e5'
     add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") unless has_kids
   end
   
   def visit_project project
-    @element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
+    element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
     if project.on_hold?
-      @element['COLOR'] = "#666666"
+      element['COLOR'] = "#666666"
       add_child "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" 
     end
   end
   
   def visit_task task
-    @element['COLOR'] = "#444444"
+    element['COLOR'] = "#444444"
     add_child "font", :NAME => "SansSerif", :SIZE => "9"
   end
   
