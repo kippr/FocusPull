@@ -130,7 +130,7 @@ class Formatter
   end
   
   def visit_project project
-    element['FOLDED'] = 'true' if project.children.first #folding childless nodes confuses freemind
+    element['FOLDED'] = 'true' if project.any?{ | kid | kid != project && @filter.include?( kid ) }
     if project.on_hold?
       element['COLOR'] = "#666666"
       add_child "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" 

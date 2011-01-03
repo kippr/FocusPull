@@ -15,7 +15,6 @@
   </body>
 </html>
 </richcontent>
-B  In delta.mm, look at Saurav up to speed: folded, but all child tasks are excluded
 - simple map shouldn't show 'done' tasks?
 ? cleanup tree traversal
 ? cleanup pos decision
