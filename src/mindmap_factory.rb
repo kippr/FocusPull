@@ -115,8 +115,8 @@ class ElementVisitor
     visit_default *args
   end
   
-  def visit_default *args
-    @logger.debug "Unhandled visit to #{self} with #{args}"
+  def visit_default item
+    @logger.debug "Unhandled visit to #{self} with #{item}"
   end
   
   def add_child( name, *args, &block )
@@ -217,33 +217,30 @@ class AttributeStamper < ElementVisitor
 end
 
 class PositionStamper
+
   def initialize( stack )
     @stack = stack
-    @size = 0
   end
   
   # todo: this is ugly, and leads to stack overflow in case of errors
   def method_missing name, *args, &block
-    #stamp_position
+    visit_default *args
+  end
+  
+  def visit_default item
+    stamp_position if item.parent && item.parent.is_root?
   end
   
   def stamp_position
-    element['POSITION'] = pos 
+    element['POSITION'] = next_pos
   end
   
   def element
     @stack.last
   end
-  def pos
-    if first_level
-      @size % 2 == 0 ? "left" : "right"
-    else
-      nil
-    end
-  end
   
-  def first_level
-    @stack.size == 2
+  def next_pos
+    @pos = @pos == "right" ? "left" : "right"
   end
   
 end
