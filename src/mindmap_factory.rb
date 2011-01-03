@@ -141,13 +141,9 @@ module ElementMixin
   end  
 end
 
-class ElementVisitor
-  include VisitorMixin, ElementMixin
-  
-end
+class Namer 
+  include ElementMixin, VisitorMixin
 
-class Namer < ElementVisitor
-  
   def initialize( stack, filter )
     super( stack )
     @filter = filter
@@ -163,15 +159,16 @@ class Namer < ElementVisitor
   
 end
 
-class Formatter < ElementVisitor
+class Formatter
+  include ElementMixin, VisitorMixin
   
   def initialize( stack, filter )
     super( stack )
     @filter = filter
   end
   
-  def visit_folder folder
-    kids = folder.select{ | kid | kid != folder && @filter.include?( kid ) }
+  def visit_folder this_folder
+    kids = this_folder.select{ | kid | kid != this_folder && @filter.include?( kid ) }
     has_kids = kids.any?{ | kid | !kid.is_folder? }
     element['COLOR'] = has_kids ? '#006699' : '#bfd8e5'
     add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") unless has_kids
@@ -192,7 +189,8 @@ class Formatter < ElementVisitor
   
 end
 
-class IconStamper < ElementVisitor
+class IconStamper
+  include ElementMixin, VisitorMixin
   
   def visit_project project
     add_on_hold_icon if project.on_hold?
@@ -213,7 +211,8 @@ class IconStamper < ElementVisitor
   
 end
 
-class AttributeStamper < ElementVisitor
+class AttributeStamper
+  include ElementMixin, VisitorMixin
   
   def visit_project project
     add_status_for project
