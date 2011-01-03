@@ -124,9 +124,9 @@ class Formatter
   
   def visit_folder this_folder
     kids = this_folder.select{ | kid | kid != this_folder && @filter.include?( kid ) }
-    has_kids = kids.any?{ | kid | !kid.is_folder? }
-    element['COLOR'] = has_kids ? '#006699' : '#bfd8e5'
-    add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") unless has_kids
+    childless = kids.all?( &:is_folder? )
+    element['COLOR'] = childless ? '#bfd8e5' : '#006699' 
+    add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") if childless
   end
   
   def visit_project project
