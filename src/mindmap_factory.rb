@@ -133,8 +133,11 @@ class Formatter
     element['FOLDED'] = 'true' if project.any?{ | kid | kid != project && @filter.include?( kid ) }
     if project.on_hold? || project.dropped?
       element['COLOR'] = "#666666"
-      add_child "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" 
+      add_child "font", :ITALIC => 'true', :NAME => 'SansSerif', :SIZE => '12' 
     end
+    # this fades projects only included because kids are accepted, when they themselves 
+    # aren't (accept tests only self, include? also tests kids)
+    element['COLOR'] = "#666666" unless @filter.accept project
   end
   
   def visit_task task

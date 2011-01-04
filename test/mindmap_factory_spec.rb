@@ -135,6 +135,10 @@ describe MindMapFactory, "create_delta_map" do
   it "should not include tasks that didn't change" do
     node_for( 'Meet simon for lunch' ).should be_nil
   end
+
+  it "should include projects that have been dropped in the specified period" do
+    node_for( "iPad has open zone access" ).should_not be_nil
+  end  
     
   it "should include projects that didn't change but have child tasks that did" do
     unchanged_project = node_for( 'Spend less time in email' )
@@ -146,11 +150,10 @@ describe MindMapFactory, "create_delta_map" do
     unchanged_task.should be_nil
   end
   
-  it "should include projects that have been dropped in the specified period" do
-    node_for( "iPad has open zone access" ).should_not be_nil
+  it "should fade (unchanged) projects that are included only because sub-tasks changed" do
+    unchanged_project = node_for( "Spend less time in email" )
+    unchanged_project[ 'COLOR' ].should == '#666666'
   end
-  
-  it "should fade (unchanged) projects that are included only because sub-tasks changed"
     
 end
 
