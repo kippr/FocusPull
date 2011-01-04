@@ -145,6 +145,12 @@ describe MindMapFactory, "create_delta_map" do
     unchanged_task = node_for( 'Collect useless mails in sd' ) 
     unchanged_task.should be_nil
   end
+  
+  it "should include projects that have been dropped in the specified period" do
+    node_for( "iPad has open zone access" ).should_not be_nil
+  end
+  
+  it "should fade (unchanged) projects that are included only because sub-tasks changed"
     
 end
 

@@ -52,9 +52,15 @@ describe Focus do
   end
   
   it "should accept tasks as being marked complete" do
-    @mailTask.completed("2010-12-07T08:50:19.935Z")
+    @mailTask.completed( "2010-12-07T08:50:19.935Z" )
     @mailTask.status.should == "done"
-    @mailTask.completed_date.should == Date.parse("2010-12-07")
+    @mailTask.completed_date.should == Date.parse( "2010-12-07" )
+  end
+  
+  it "should use modified date as completed date when status is dropped" do
+    @openZoneProject.status = 'dropped'
+    @openZoneProject.updated_date = "2010-11-30"
+    @openZoneProject.completed_date.should == Date.parse( "2010-11-30" )
   end
   
   it "should implement the visitor pattern" do

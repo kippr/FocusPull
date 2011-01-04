@@ -1,6 +1,8 @@
 - check todos
-- colour dropped tasks differently?
+- distinguish 'heavy' folders from 'light' folders, somehow
 - in delta map, would be nice if projects that are only included b/c of tasks are faded
+- what do deleted tasks show up like?
+- make focusParser.parse a class method rather than instance
 - add 'filter text' to Portfolio node, maybe even replace TEXT with this:
 <richcontent TYPE="NODE"><html>
   <body>

@@ -117,7 +117,7 @@ class Task < Item
     @status = 'done'
     @completed_date = Date.parse( date )
   end
-  
+    
   def created_date=( date )
     @created_date = Date.parse( date )
   end
@@ -149,6 +149,11 @@ class Project < Task
   def dropped?
     status == 'dropped'
   end
+  
+  def completed_date
+    dropped? ? updated_date : @completed_date
+  end
+  
   
   def visit( visitor )
     visitor.visit_project( self )
