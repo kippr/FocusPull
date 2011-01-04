@@ -45,7 +45,7 @@ class MindMapFactory
   end
   
   def self.create_delta_map focus, start_date, end_date
-    factory = self.new( focus, :FOLD_TASKS => false )
+    factory = self.new( focus, :FOLD_TASKS => false, :HIGHLIGHT_ACTIVE_TASKS => true )
     factory.create_map( TemporalFilter.new( start_date, end_date ) )
   end
 
@@ -69,7 +69,10 @@ class MindMapFactory
   private    
     
     def default_options
-      { :FOLD_TASKS => true}
+      { 
+        :FOLD_TASKS => true, 
+        :HIGHLIGHT_ACTIVE_TASKS => false
+      }
     end
   
     def create_doc
@@ -85,7 +88,7 @@ class MindMapFactory
       v << Namer.new( @stack, @filter )
       v << Formatter.new( @stack, @filter )
       v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
-      v << IconStamper.new( @stack )
+      v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] )
       v << AttributeStamper.new( @stack )
       v << PositionStamper.new( @stack )
     end  
@@ -170,16 +173,32 @@ end
 class IconStamper
   include ElementMixin, VisitorMixin
   
+  def initialize( stack, filter, highlight_active_tasks )
+    super( stack )
+    @filter = filter
+    @highlight_active_tasks = highlight_active_tasks
+  end
+  
   def visit_project project
+    add_active_icon if @highlight_active_tasks && is_a_new( project )
     add_on_hold_icon if project.on_hold?
     add_dropped_icon if project.dropped?
     add_done_icon if project.done?
   end
   
   def visit_task task
+    add_active_icon if @highlight_active_tasks && is_a_new( task )
     add_done_icon if task.done?
   end
   
+  def is_a_new item
+    item.active? && @filter.accept( item )
+  end
+  
+  def add_active_icon
+    add_child "icon", :BUILTIN => 'idea'
+  end
+
   def add_dropped_icon
     add_child "icon", :BUILTIN => 'button_cancel'
   end

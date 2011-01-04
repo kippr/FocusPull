@@ -1,6 +1,5 @@
 - check todos
 - distinguish 'heavy' folders from 'light' folders, somehow
-- Don't collapse nodes in delta map
 - what do deleted tasks show up like?
 - make focusParser.parse a class method rather than instance
 - add 'filter text' to Portfolio node, maybe even replace TEXT with this:

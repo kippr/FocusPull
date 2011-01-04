@@ -126,6 +126,10 @@ class Task < Item
     @updated_date = Date.parse( date )
   end
       
+  def active?
+    status == 'active'
+  end
+
   def done?
     status == 'done'
   end

@@ -120,6 +120,14 @@
     <context idref="pf4w70-AZjc"/>
     <order>parallel</order>
   </task>
+  <task id="cc3ofbIVDlh">
+    <task idref="oHdUDVwYhFG"/>
+    <added>2010-12-09T13:54:47.888Z</added>
+    <name>Review progress on mails collected</name>
+    <rank>0</rank>
+    <context idref="pf4w70-AZjc"/>
+    <order>parallel</order>
+  </task>
   <task id="iCNXEbk-WAk">
     <task idref="oHdUDVwYhFG"/>
     <added>2010-11-25T09:59:09.242Z</added>
