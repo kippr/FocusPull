@@ -150,6 +150,11 @@ describe MindMapFactory, "create_delta_map" do
     unchanged_task.should be_nil
   end
   
+  it "should *not* fold projects with child tasks, by default" do
+    node_for( 'Spend less time in email' )['FOLDED'].should be_nil
+  end
+  
+  
   it "should fade (unchanged) projects that are included only because sub-tasks changed" do
     unchanged_project = node_for( "Spend less time in email" )
     unchanged_project[ 'COLOR' ].should == '#666666'

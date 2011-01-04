@@ -45,11 +45,13 @@ class MindMapFactory
   end
   
   def self.create_delta_map focus, start_date, end_date
-    self.new( focus ).create_map( TemporalFilter.new( start_date, end_date ) )
+    factory = self.new( focus, :FOLD_TASKS => false )
+    factory.create_map( TemporalFilter.new( start_date, end_date ) )
   end
 
-  def initialize( focus )
+  def initialize( focus, options = {} )
     super( [] )
+    @options = default_options.merge options
     @focus = focus
   end  
   
@@ -65,6 +67,10 @@ class MindMapFactory
   end
   
   private    
+    
+    def default_options
+      { :FOLD_TASKS => true}
+    end
   
     def create_doc
       doc = Nokogiri::XML::Document.new()
@@ -78,6 +84,7 @@ class MindMapFactory
       v = []
       v << Namer.new( @stack, @filter )
       v << Formatter.new( @stack, @filter )
+      v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
       v << IconStamper.new( @stack )
       v << AttributeStamper.new( @stack )
       v << PositionStamper.new( @stack )
@@ -130,7 +137,6 @@ class Formatter
   end
   
   def visit_project project
-    element['FOLDED'] = 'true' if project.any?{ | kid | kid != project && @filter.include?( kid ) }
     if project.on_hold? || project.dropped?
       element['COLOR'] = "#666666"
       add_child "font", :ITALIC => 'true', :NAME => 'SansSerif', :SIZE => '12' 
@@ -143,6 +149,20 @@ class Formatter
   def visit_task task
     element['COLOR'] = "#444444"
     add_child "font", :NAME => "SansSerif", :SIZE => "9"
+  end
+  
+end
+
+class TaskCollapser
+  include ElementMixin, VisitorMixin
+  
+  def initialize( stack, filter )
+    super( stack )
+    @filter = filter
+  end
+  
+  def visit_project project
+    element['FOLDED'] = 'true' if project.any?{ | kid | kid != project && @filter.include?( kid ) }
   end
   
 end
