@@ -1,7 +1,5 @@
 - check todos
-- new map type: delta from last week? recently completed?
 - colour dropped tasks differently?
-- there is a link b/w mindmap output nodes and focus nodes, so we can post-traverse
 - add 'filter text' to Portfolio node, maybe even replace TEXT with this:
 <richcontent TYPE="NODE"><html>
   <body>
@@ -14,8 +12,4 @@
   </body>
 </html>
 </richcontent>
-- simple map shouldn't show 'done' tasks?
 ? cleanup tree traversal
-? cleanup pos decision
-? visitor with extra args
-? make visit dispatch dynamic
