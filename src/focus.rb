@@ -41,7 +41,7 @@ class Item
   end
   
   def to_s
-    "#{self.class}: #{@name} <- #{self.parent}"
+    "#{self.class}: #{@name}"
   end
 end
 
@@ -93,15 +93,14 @@ end
 
 class Folder < Item
   
-  def visit( visitor )
-    visitor.visit_folder( self )
-  end
-  
   def is_folder?
     true
   end
   
-
+  def visit( visitor )
+    visitor.visit_folder( self )
+  end
+  
 end
 
 class Task < Item
@@ -131,13 +130,13 @@ class Task < Item
     status == 'done'
   end
   
-  def to_s
-    super + " [#{@status}]" 
-  end
-  
   def visit( visitor )
     visitor.visit_task( self )
   end
+
+  def to_s
+    super + " [#{@status}]" 
+  end  
 
 end
 

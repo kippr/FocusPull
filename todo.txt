@@ -1,4 +1,3 @@
-- clean up to_s
 - check todos
 - new map type: delta from last week? recently completed?
 - colour dropped tasks differently?
