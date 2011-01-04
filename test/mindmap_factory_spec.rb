@@ -79,6 +79,10 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'Switch to 3 network' ).icon['BUILTIN'].should == 'button_ok'
   end
   
+  it "should add an icon to projects that have been dropped" do
+    node_for( 'iPad has open zone access' ).icon['BUILTIN'].should == 'button_cancel'
+  end
+  
   it "should add a created attribute to tasks and project" do
     project = 'Switch to 3 network'
     attribute_for( project, 'created' ).should == '2010-12-08'

@@ -131,7 +131,7 @@ class Formatter
   
   def visit_project project
     element['FOLDED'] = 'true' if project.any?{ | kid | kid != project && @filter.include?( kid ) }
-    if project.on_hold?
+    if project.on_hold? || project.dropped?
       element['COLOR'] = "#666666"
       add_child "font", :ITALIC => 'true', :NAME => "SansSerif", :SIZE => "12" 
     end
@@ -149,6 +149,7 @@ class IconStamper
   
   def visit_project project
     add_on_hold_icon if project.on_hold?
+    add_dropped_icon if project.dropped?
     add_done_icon if project.done?
   end
   
@@ -156,6 +157,10 @@ class IconStamper
     add_done_icon if task.done?
   end
   
+  def add_dropped_icon
+    add_child "icon", :BUILTIN => 'button_cancel'
+  end
+
   def add_on_hold_icon
     add_child "icon", :BUILTIN => 'stop-sign'
   end

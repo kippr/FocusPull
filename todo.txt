@@ -1,5 +1,6 @@
 - check todos
 - colour dropped tasks differently?
+- in delta map, would be nice if projects that are only included b/c of tasks are faded
 - add 'filter text' to Portfolio node, maybe even replace TEXT with this:
 <richcontent TYPE="NODE"><html>
   <body>
@@ -12,4 +13,3 @@
   </body>
 </html>
 </richcontent>
-? cleanup tree traversal
