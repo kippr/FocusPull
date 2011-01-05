@@ -51,15 +51,18 @@ class MindMapFactory
   end
   
   def self.create_meta_map focus
-    factory = self.new( focus, :FOLD_TASKS => false, :HIGHLIGHT_ACTIVE_TASKS => false, :WEIGHT_EDGES => false )
+    factory = self.new( focus, :FOLD_TASKS => false, :FORMATTING => false, 
+      :WEIGHT_EDGES => false, :ADD_ICONS => false )
     factory.create_meta_map
   end
 
   def default_options
     { 
+      :FORMATTING => true, 
       :FOLD_TASKS => true, 
       :HIGHLIGHT_ACTIVE_TASKS => true,
-      :WEIGHT_EDGES => true
+      :WEIGHT_EDGES => true,
+      :ADD_ICONS => true
     }
   end
 
@@ -102,9 +105,9 @@ class MindMapFactory
     def create_visitors
       v = []
       v << Namer.new( @stack, @filter )
-      v << Formatter.new( @stack, @filter )
+      v << Formatter.new( @stack, @filter ) if @options[ :FORMATTING ]
       v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
-      v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] )
+      v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if @options[ :ADD_ICONS ]
       v << Edger.new( @stack, @filter ) if @options[ :WEIGHT_EDGES ]
       v << AttributeStamper.new( @stack )
       v << PositionStamper.new( @stack )
@@ -115,8 +118,7 @@ class MindMapFactory
       @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
       data = visitor.counts
       
-      node = add_child "node", :TEXT => "Meta", :COLOR => '#555555'#, :FOLDED => 'true'
-      #add_child "edge", :WIDTH => 'thin', :COLOR => '#555555'
+      node = add_child "node", :TEXT => "Meta"
       @stack << node
       add_meta_items data, "Projects", "right", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
       add_meta_items data, "Tasks", "left", "Active" => "active", "Done" => "done"
