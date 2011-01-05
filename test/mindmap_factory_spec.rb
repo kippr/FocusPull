@@ -121,6 +121,16 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
     node_for( 'Admin' ).edge['COLOR'].should == '#000088' # 1 active proj, 2 tasks
   end
+  
+  it "should add a meta-node with info on tree" do
+    meta = node_for( "Meta" )
+    meta.should_not be_nil
+    meta.parent.should == node_for( "Portfolio" )
+    node_for( "Projects" ).node.size.should == 4
+    node_for( "Projects" ).node.last['TEXT'].should == "Dropped: 1"
+    node_for( "Tasks" ).node.size.should == 2
+    node_for( "Tasks" ).node.first['TEXT'].should == "Active: 2"
+  end
     
   
     

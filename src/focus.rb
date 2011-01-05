@@ -18,7 +18,7 @@ class Item
     self.children.each { | child | child.each( &proc ) }
   end
   
-  def traverse( value, push, pop )
+  def traverse( value, push, pop = nil)
     value = push.call( value, self ) if push
     children.each{ | c | value = c.traverse( value, push, pop ) }
     pop.call( value, self ) if pop

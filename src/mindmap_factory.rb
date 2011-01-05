@@ -63,10 +63,45 @@ class MindMapFactory
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
     @focus.traverse( nil, push, pop )
+    add_meta_info
     doc
   end
   
   private    
+  
+    def add_meta_info
+      visitor = MetaVisitor.new
+      @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
+      data = visitor.counts
+      
+      # todo: don't like the push & pop
+      @stack << @stack.last.children.last
+
+      node = add_child "node", :TEXT => "Meta", :COLOR => '#555555', :FOLDED => 'true'
+      add_child "edge", :WIDTH => 'thin', :COLOR => '#555555'
+      @stack << node
+
+      @stack << add_child( "node", :TEXT => "Projects" )
+      @stack << add_child( "node", :TEXT => "Active: #{data['projects-active']}" )
+      @stack.pop
+      @stack << add_child( "node", :TEXT => "Done: #{data['projects-done']}" )
+      @stack.pop
+      @stack << add_child( "node", :TEXT => "On Hold: #{data['projects-inactive']}" )
+      @stack.pop
+      @stack << add_child( "node", :TEXT => "Dropped: #{data['projects-dropped']}" )
+      @stack.pop
+      @stack.pop
+
+      @stack << add_child( "node", :TEXT => "Tasks" )
+      @stack << add_child( "node", :TEXT => "Active: #{data['tasks-active']}" )
+      @stack.pop
+      @stack << add_child( "node", :TEXT => "Done: #{data['tasks-done']}" )
+      @stack.pop
+      @stack.pop
+
+      @stack.pop
+    end
+    
     
     def default_options
       { 
@@ -314,6 +349,29 @@ class PositionStamper
     @pos = @pos == "right" ? "left" : "right"
   end
   
+end
+
+class MetaVisitor
+  include VisitorMixin
+  
+  attr_reader :counts
+  
+  def initialize
+    @counts = Hash.new(0)
+  end
+  
+  def visit_project project
+    count( "projects", project )
+  end
+
+  def visit_task task
+    count( "tasks", task )
+  end
+  
+  def count type, item
+    @counts["#{type}-#{item.status}"] += 1
+  end
+    
 end
 
 class MapFilter
