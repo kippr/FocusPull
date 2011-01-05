@@ -12,15 +12,22 @@ xml = MindMapFactory.create_simple_map focus
 
 delta = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13"
 
+meta = MindMapFactory.create_meta_map focus
+
 File.open("../output/focus.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta.mm", "w") { |f| f.write( delta ) }
+File.open("../output/meta.mm", "w") { |f| f.write( meta ) }
 
 #Also handy to have
 parser = FocusParser.new( "../test", "omnisync-sample.tar", "tester" )
 focus = parser.parse
+
 xml = MindMapFactory.create_simple_map focus
+
 delta = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13"
+
+meta = MindMapFactory.create_meta_map focus
 
 File.open("../output/focus-sample.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta-sample.mm", "w") { |f| f.write( delta ) }
-
+File.open("../output/meta-sample.mm", "w") { |f| f.write( meta ) }

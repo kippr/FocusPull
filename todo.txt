@@ -1,5 +1,5 @@
 - check todos
-- add meta info to map
+- cleanup adding meta info to map
 - make 'weight' relative to total tree
 - what do deleted tasks show up like?
 - make focusParser.parse a class method rather than instance

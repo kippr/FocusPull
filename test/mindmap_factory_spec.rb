@@ -121,18 +121,6 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
     node_for( 'Admin' ).edge['COLOR'].should == '#000088' # 1 active proj, 2 tasks
   end
-  
-  it "should add a meta-node with info on tree" do
-    meta = node_for( "Meta" )
-    meta.should_not be_nil
-    meta.parent.should == node_for( "Portfolio" )
-    node_for( "Projects" ).node.size.should == 4
-    node_for( "Projects" ).node.last['TEXT'].should == "Dropped: 1"
-    node_for( "Tasks" ).node.size.should == 2
-    node_for( "Tasks" ).node.first['TEXT'].should == "Active: 2"
-  end
-    
-  
     
 end  
 
@@ -185,6 +173,26 @@ describe MindMapFactory, "create_delta_map" do
     # the mail project is only there b/c of sub-tasks and therefore shouldn't have icon
     node_for( 'Spend less time in email' ).at_xpath( './icon' ).should be_nil
     node_for( 'Review progress on mails collected' ).icon['BUILTIN'].should == 'idea'
+  end
+  
+end
+
+describe MindMapFactory, "create_meta_map" do
+  
+  before(:all) do
+    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @focus = @parser.parse
+    @map = MindMapFactory.create_meta_map( @focus )
+    @xml =  Nokogiri::Slop @map.to_s
+    @root = @xml.at_xpath( "/map" )
+  end
+  
+  it "should be rooted with a meta-node that has info on tree" do
+    @root.node['TEXT'].should ==  "Meta" 
+    node_for( "Projects" ).node.size.should == 4
+    node_for( "Projects" ).node.last['TEXT'].should == "Dropped: 1"
+    node_for( "Tasks" ).node.size.should == 2
+    node_for( "Tasks" ).node.first['TEXT'].should == "Active: 2"
   end
   
 end

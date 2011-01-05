@@ -41,12 +41,26 @@ class MindMapFactory
   include ElementMixin
 
   def self.create_simple_map focus
-    self.new( focus ).create_map( MapFilter.new )
+    factory = self.new( focus, :HIGHLIGHT_ACTIVE_TASKS => false )
+    factory.create_map( MapFilter.new )
   end
   
   def self.create_delta_map focus, start_date, end_date
-    factory = self.new( focus, :FOLD_TASKS => false, :HIGHLIGHT_ACTIVE_TASKS => true )
+    factory = self.new( focus, :FOLD_TASKS => false )
     factory.create_map( TemporalFilter.new( start_date, end_date ) )
+  end
+  
+  def self.create_meta_map focus
+    factory = self.new( focus, :FOLD_TASKS => false, :HIGHLIGHT_ACTIVE_TASKS => false, :WEIGHT_EDGES => false )
+    factory.create_meta_map
+  end
+
+  def default_options
+    { 
+      :FOLD_TASKS => true, 
+      :HIGHLIGHT_ACTIVE_TASKS => true,
+      :WEIGHT_EDGES => true
+    }
   end
 
   def initialize( focus, options = {} )
@@ -63,52 +77,19 @@ class MindMapFactory
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
     @focus.traverse( nil, push, pop )
-    add_meta_info
     doc
   end
   
-  private    
-  
-    def add_meta_info
-      visitor = MetaVisitor.new
-      @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
-      data = visitor.counts
-      
-      # todo: don't like the push & pop
-      @stack << @stack.last.children.last
-
-      node = add_child "node", :TEXT => "Meta", :COLOR => '#555555', :FOLDED => 'true'
-      add_child "edge", :WIDTH => 'thin', :COLOR => '#555555'
-      @stack << node
-
-      @stack << add_child( "node", :TEXT => "Projects" )
-      @stack << add_child( "node", :TEXT => "Active: #{data['projects-active']}" )
-      @stack.pop
-      @stack << add_child( "node", :TEXT => "Done: #{data['projects-done']}" )
-      @stack.pop
-      @stack << add_child( "node", :TEXT => "On Hold: #{data['projects-inactive']}" )
-      @stack.pop
-      @stack << add_child( "node", :TEXT => "Dropped: #{data['projects-dropped']}" )
-      @stack.pop
-      @stack.pop
-
-      @stack << add_child( "node", :TEXT => "Tasks" )
-      @stack << add_child( "node", :TEXT => "Active: #{data['tasks-active']}" )
-      @stack.pop
-      @stack << add_child( "node", :TEXT => "Done: #{data['tasks-done']}" )
-      @stack.pop
-      @stack.pop
-
-      @stack.pop
-    end
+  def create_meta_map( )
+    doc = create_doc
+    @filter = MapFilter.new
+    @visitors = create_visitors
+    add_meta_info
+    doc
+  end
     
+  private        
     
-    def default_options
-      { 
-        :FOLD_TASKS => true, 
-        :HIGHLIGHT_ACTIVE_TASKS => false
-      }
-    end
   
     def create_doc
       doc = Nokogiri::XML::Document.new()
@@ -124,10 +105,38 @@ class MindMapFactory
       v << Formatter.new( @stack, @filter )
       v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
       v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] )
-      v << Edger.new( @stack, @filter )
+      v << Edger.new( @stack, @filter ) if @options[ :WEIGHT_EDGES ]
       v << AttributeStamper.new( @stack )
       v << PositionStamper.new( @stack )
     end  
+    
+    def add_meta_info
+      visitor = MetaVisitor.new
+      @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
+      data = visitor.counts
+      
+      node = add_child "node", :TEXT => "Meta", :COLOR => '#555555'#, :FOLDED => 'true'
+      #add_child "edge", :WIDTH => 'thin', :COLOR => '#555555'
+      @stack << node
+      add_meta_items data, "Projects", "right", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
+      add_meta_items data, "Tasks", "left", "Active" => "active", "Done" => "done"
+
+    end
+    
+    def add_meta_items data, type, pos, statuses
+      @stack << add_child( "node", :TEXT => type, :POSITION => pos  )
+      statuses.each do | name, status |
+        items = data["#{type}-#{status}"]
+        @stack << add_child( "node", :TEXT => "#{name}: #{items.size}", :FOLDED => "true" )
+        items.each do | item |
+          visit item
+          @stack.pop
+        end
+        @stack.pop
+      end
+      @stack.pop
+      
+    end
   
     def visit item
       if @filter.include?( item )
@@ -357,19 +366,19 @@ class MetaVisitor
   attr_reader :counts
   
   def initialize
-    @counts = Hash.new(0)
+    @counts = Hash.new { | hash, key | hash[ key ] = [] }
   end
   
   def visit_project project
-    count( "projects", project )
+    track( "Projects", project )
   end
 
   def visit_task task
-    count( "tasks", task )
+    track( "Tasks", task )
   end
   
-  def count type, item
-    @counts["#{type}-#{item.status}"] += 1
+  def track type, item
+    @counts["#{type}-#{item.status}"] << item
   end
     
 end
