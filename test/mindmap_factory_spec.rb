@@ -116,6 +116,13 @@ describe MindMapFactory, "create_simple_map" do
     task.font['SIZE'].should == '9'
     task.font['NAME'].should == 'SansSerif'
   end
+  
+  it "should add thicker edges to 'heavy' folders" do
+    node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
+    node_for( 'Admin' ).edge['COLOR'].should == '#000088' # 1 active proj, 2 tasks
+  end
+    
+  
     
 end  
 
@@ -169,7 +176,7 @@ describe MindMapFactory, "create_delta_map" do
     node_for( 'Spend less time in email' ).at_xpath( './icon' ).should be_nil
     node_for( 'Review progress on mails collected' ).icon['BUILTIN'].should == 'idea'
   end
-    
+  
 end
 
 def node_for item_name

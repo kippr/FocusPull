@@ -89,6 +89,7 @@ class MindMapFactory
       v << Formatter.new( @stack, @filter )
       v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
       v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] )
+      v << Edger.new( @stack, @filter )
       v << AttributeStamper.new( @stack )
       v << PositionStamper.new( @stack )
     end  
@@ -136,7 +137,6 @@ class Formatter
     kids = this_folder.select{ | kid | kid != this_folder && @filter.include?( kid ) }
     childless = kids.all?( &:is_folder? )
     element['COLOR'] = childless ? '#bfd8e5' : '#006699' 
-    add_child( "edge", :COLOR => "#cccccc", :STYLE => "bezier", :WIDTH => "thin") if childless
   end
   
   def visit_project project
@@ -209,6 +209,67 @@ class IconStamper
 
   def add_done_icon
     add_child "icon", :BUILTIN => 'button_ok'
+  end
+  
+end
+
+class Edger
+  include ElementMixin
+  
+  def initialize( stack, filter )
+    super( stack )
+    @weight_calculator = WeightCalculator.new( filter )
+  end
+  
+  def accept item
+    weight = weigh item
+    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= 18 ? 1 : 2    
+  end
+  
+  def weigh item
+    item.inject( 0 ) do | weight, child |
+      weight + @weight_calculator.accept( child )
+    end
+  end
+  
+  def to_colour( weight )
+    case 
+      when (weight == 0)
+        '#cccccc'
+      when (weight <= 3)
+        '#000044'
+      when (weight <= 9)
+        '#000088'
+      when (weight <= 12)
+        '#0000aa'
+      else
+        '#0000ff'
+      end
+  end
+  
+end
+
+class WeightCalculator
+  include VisitorMixin
+  
+  def initialize( filter )
+    @filter = filter
+  end
+  
+  def accept item
+    @filter.accept( item ) ? item.visit( self ) : 0
+  end
+  
+  def visit_project project
+    project.active? ? 3 : 0
+  end
+
+  def visit_task task
+    task.active? ? 1 : 0
+  end
+  
+  def visit_default item
+    0
   end
   
 end
