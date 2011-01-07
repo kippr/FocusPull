@@ -119,13 +119,18 @@ class MindMapFactory
       data = visitor.counts
       
       @stack << add_child( "node", :TEXT => "Meta" )
-      @stack << add_child( "node", :TEXT => "By Status", :POSITION => "right" )
+      @stack << add_child( "node", :TEXT => "By status", :POSITION => "right" )
       add_meta_items data, "Projects", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
       add_meta_items data, "Tasks", "Active" => "active", "Done" => "done"
       @stack.pop
       
       @stack << add_child( "node", :TEXT => "Taskless projects", :POSITION => "left" )
       add_child( "node", :TEXT => "todo" )
+      @stack.pop
+
+      @stack << add_child( "node", :TEXT => "Aged projects", :POSITION => "left" )
+      add_child( "node", :TEXT => "todo" )
+      @stack.pop
       
     end
     

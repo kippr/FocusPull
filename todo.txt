@@ -3,6 +3,7 @@
 - make 'weight' relative to total tree
 - what do deleted tasks show up like?
 - make focusParser.parse a class method rather than instance
+- add child takes block, so it can call stack pop automatically?
 - add 'filter text' to Portfolio node, maybe even replace TEXT with this:
 <richcontent TYPE="NODE"><html>
   <body>
@@ -16,3 +17,4 @@
 </html>
 </richcontent>
 ? consider splitting mindmap_factory file up?
+? consider 'aged tasks' node for metamap?

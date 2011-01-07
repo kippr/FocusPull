@@ -195,7 +195,7 @@ describe MindMapFactory, "create_meta_map" do
     projects = node_for( "Projects" )
     projects.node.size.should == 4 # 4 statuses for projects
     projects.node.last['TEXT'].should == "Dropped: 1"
-    projects.parent['TEXT'].should == "By Status"
+    projects.parent['TEXT'].should == "By status"
     
     tasks = node_for( "Tasks" )
     tasks.node.size.should == 2 # 2 statuses for tasks
@@ -203,8 +203,12 @@ describe MindMapFactory, "create_meta_map" do
     tasks.node.first.node.size == 2 # Two sub-nodes of active, one for each active task
   end
   
-  it "should have a projects without active tasks node" do
+  it "should have a 'projects without active tasks' node" do
     node_for( "Taskless projects" ).should_not be_nil
+  end
+
+  it "should have an 'aged projects' node" do
+    node_for( "Aged projects" ).should_not be_nil
   end
   
 end
