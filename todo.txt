@@ -9,17 +9,5 @@
   - open task age
   - done project life
   - done task life
-- add 'filter text' to Portfolio node, maybe even replace TEXT with this:
-<richcontent TYPE="NODE"><html>
-  <body>
-    <p style="text-align: center">
-      Portfolio
-    </p>
-    <p style="text-align: center">
-      <font size="2">2010-12-08 - 2010-12-13</font>
-    </p>
-  </body>
-</html>
-</richcontent>
 ? consider splitting mindmap_factory file up?
 ? consider 'aged tasks' node for metamap?

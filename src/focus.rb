@@ -125,6 +125,14 @@ class Task < Item
   def updated_date=( date )
     @updated_date = Date.parse( date )
   end
+  
+  def age
+    if done?
+      @completed_date - @created_date
+    else
+      Date.today - @created_date
+    end
+  end
       
   def active?
     status == 'active'

@@ -226,7 +226,8 @@ describe MindMapFactory, "create_meta_map" do
   end
 
   it "should have an 'aged projects' node" do
-    node_for( "Aged projects" ).should_not be_nil
+    #todo: this test will start failing as other projects get 'old'
+    node_for( "Aged projects (1)" ).at_xpath(".//node[@TEXT = 'Meet simon for lunch']").should_not be_nil
   end
   
 end

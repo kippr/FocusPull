@@ -63,6 +63,18 @@ describe Focus do
     @openZoneProject.completed_date.should == Date.parse( "2010-11-30" )
   end
   
+  it "should use days from started to completed as age for done projects" do
+    @mailTask.created_date = "2010-11-10"
+    @mailTask.completed( "2010-11-20" ) 
+    @mailTask.age.should == 10 
+  end
+
+  it "should use days from started to today as age for active projects" do
+    @mailTask.created_date = ( Date.today - 30 ).to_s
+    @mailTask.status = 'inactive'
+    @mailTask.age.should == 30 
+  end
+  
   it "should implement the visitor pattern" do
     visitor = Visitor.new
     Project.new("", 0).visit( visitor ).should == "Visited a Project"

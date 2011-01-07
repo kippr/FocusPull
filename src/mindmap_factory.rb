@@ -40,6 +40,10 @@ end
 class MindMapFactory
   include ElementMixin
   
+  # todo: sensible values?
+  PROJECT_AGED=90
+  TASK_AGED=45 
+  
   #todo: this makes me want to weep... As soon as I add an html node, a whole bunch of 
   # tests start failing. Namespace issue with a magic html node? No idea :(
   # This hack just skips adding the html nodes
@@ -135,8 +139,21 @@ class MindMapFactory
       add_child( "node", :TEXT => "todo" )
       @stack.pop
 
-      @stack << add_child( "node", :TEXT => "Aged projects", :POSITION => "left" )
-      add_child( "node", :TEXT => "todo" )
+      #todo: remove duplication
+      aged_projects = data["Projects-aged"]
+      @stack << add_child( "node", :TEXT => "Aged projects (#{aged_projects.size})", :POSITION => "left", :FOLDED => 'true' )
+      aged_projects.each do | item |
+        visit item
+        @stack.pop
+      end
+      @stack.pop
+      
+      aged_tasks = data["Tasks-aged"]
+      @stack << add_child( "node", :TEXT => "Aged tasks (#{aged_tasks.size})", :POSITION => "left", :FOLDED => 'true' )
+      aged_tasks.each do | item |
+        visit item
+        @stack.pop
+      end
       @stack.pop
       
     end
@@ -400,10 +417,12 @@ class MetaVisitor
   
   def visit_project project
     track( "Projects", project )
+    @counts["Projects-aged"] << project if project.age >= MindMapFactory::PROJECT_AGED && !project.done?
   end
 
   def visit_task task
     track( "Tasks", task )
+    @counts["Tasks-aged"] << task if task.age >= MindMapFactory::TASK_AGED && !task.done?
   end
   
   def track type, item
