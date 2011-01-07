@@ -189,10 +189,22 @@ describe MindMapFactory, "create_meta_map" do
   
   it "should be rooted with a meta-node that has info on tree" do
     @root.node['TEXT'].should ==  "Meta" 
-    node_for( "Projects" ).node.size.should == 4
-    node_for( "Projects" ).node.last['TEXT'].should == "Dropped: 1"
-    node_for( "Tasks" ).node.size.should == 2
-    node_for( "Tasks" ).node.first['TEXT'].should == "Active: 2"
+  end
+  
+  it "should have projects and tasks nodes that aggregate per status" do
+    projects = node_for( "Projects" )
+    projects.node.size.should == 4 # 4 statuses for projects
+    projects.node.last['TEXT'].should == "Dropped: 1"
+    projects.parent['TEXT'].should == "By Status"
+    
+    tasks = node_for( "Tasks" )
+    tasks.node.size.should == 2 # 2 statuses for tasks
+    tasks.node.first['TEXT'].should == "Active: 2"
+    tasks.node.first.node.size == 2 # Two sub-nodes of active, one for each active task
+  end
+  
+  it "should have a projects without active tasks node" do
+    node_for( "Taskless projects" ).should_not be_nil
   end
   
 end

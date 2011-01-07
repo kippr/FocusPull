@@ -118,11 +118,15 @@ class MindMapFactory
       @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
       data = visitor.counts
       
-      node = add_child "node", :TEXT => "Meta"
-      @stack << node
+      @stack << add_child( "node", :TEXT => "Meta" )
+      @stack << add_child( "node", :TEXT => "By Status" )
       add_meta_items data, "Projects", "right", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
       add_meta_items data, "Tasks", "left", "Active" => "active", "Done" => "done"
-
+      @stack.pop
+      
+      @stack << add_child( "node", :TEXT => "Taskless projects" )
+      add_child( "node", :TEXT => "todo" )
+      
     end
     
     def add_meta_items data, type, pos, statuses
