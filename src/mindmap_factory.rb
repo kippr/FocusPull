@@ -119,18 +119,18 @@ class MindMapFactory
       data = visitor.counts
       
       @stack << add_child( "node", :TEXT => "Meta" )
-      @stack << add_child( "node", :TEXT => "By Status" )
-      add_meta_items data, "Projects", "right", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
-      add_meta_items data, "Tasks", "left", "Active" => "active", "Done" => "done"
+      @stack << add_child( "node", :TEXT => "By Status", :POSITION => "right" )
+      add_meta_items data, "Projects", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
+      add_meta_items data, "Tasks", "Active" => "active", "Done" => "done"
       @stack.pop
       
-      @stack << add_child( "node", :TEXT => "Taskless projects" )
+      @stack << add_child( "node", :TEXT => "Taskless projects", :POSITION => "left" )
       add_child( "node", :TEXT => "todo" )
       
     end
     
-    def add_meta_items data, type, pos, statuses
-      @stack << add_child( "node", :TEXT => type, :POSITION => pos  )
+    def add_meta_items data, type, statuses
+      @stack << add_child( "node", :TEXT => type  )
       statuses.each do | name, status |
         items = data["#{type}-#{status}"]
         @stack << add_child( "node", :TEXT => "#{name}: #{items.size}", :FOLDED => "true" )
