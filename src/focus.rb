@@ -1,3 +1,22 @@
+module VisitorMixin
+  
+  def accept item
+    item.visit self
+  end
+
+  def method_missing name, *args, &block
+    if name.to_s.start_with? "visit"
+      visit_default *args
+    else
+      super name, *args, &block
+    end
+  end
+  
+  def visit_default item
+  end
+  
+end
+
 class Item
   include Enumerable # Wow, I love Ruby!
 

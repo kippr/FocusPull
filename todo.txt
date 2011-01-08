@@ -1,5 +1,5 @@
 - check todos
-- show aged tasks and projects in metamap
+- move aged items under an 'Aged' node, which will help with failing test?
 - make 'weight' relative to total tree
 - what do deleted tasks show up like?
 - make focusParser.parse a class method rather than instance

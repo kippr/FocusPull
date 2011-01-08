@@ -1,24 +1,5 @@
 require File.join(File.dirname(__FILE__), '../src/focus')
 
-module VisitorMixin
-  
-  def accept item
-    item.visit self
-  end
-
-  def method_missing name, *args, &block
-    if name.to_s.start_with? "visit"
-      visit_default *args
-    else
-      super name, *args, &block
-    end
-  end
-  
-  def visit_default item
-  end
-  
-end
-
 module ElementMixin
 
   def initialize( stack )
