@@ -166,7 +166,7 @@ class Task < Item
   end
 
   def to_s
-    super + " [#{@status}]" 
+    super + " [#{self.age}]" 
   end  
 
 end

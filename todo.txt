@@ -9,5 +9,7 @@
   - open task age
   - done project life
   - done task life
+  - on hold projects?
+  - dropped projects?
 ? consider splitting mindmap_factory file up?
 ? consider 'aged tasks' node for metamap?
