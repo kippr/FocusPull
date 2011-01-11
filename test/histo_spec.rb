@@ -1,3 +1,5 @@
+require 'timecop'
+
 require File.join(File.dirname(__FILE__), '../src/focus')
 require File.join(File.dirname(__FILE__), '../src/histo')
 
@@ -15,9 +17,11 @@ describe Histogram do
   end
   
   it "should be enumerable, to produce all results" do
-    @histo.first.should == "Day, Open projects, Done projects, Active tasks, Done tasks"
-    @histo.to_a[ 12 ].should ==  "12, 0, 0, 0, 0"
-    @histo.to_a[ 102 ].should ==  "102, 1, 0, 0, 0"
+    Timecop.travel(2011, 1, 9) do
+      @histo.first.should == "Day, Open projects, Done projects, Active tasks, Done tasks"
+      @histo.to_a[ 12 ].should ==  "12, 0, 0, 0, 0"
+      @histo.to_a[ 102 ].should ==  "102, 1, 0, 0, 0"
+    end
   end
   
 end
