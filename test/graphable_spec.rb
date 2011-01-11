@@ -21,12 +21,18 @@ describe Graphable, "histogram" do
     @histo.to_a[ 102 ].should ==  "102, 1, 0, 0, 0"
   end
   
-  #todo: remove this
-  it "is being abused to write a test file out" do
-    File.open("output/histo.csv", "w") do |f| 
-      @histo.each { | l | f.puts l }
-    end
+end
+
+describe Graphable, "trend" do
+  
+  before(:all) do
+    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @trend = Graphable.trend( @parser.parse )
+  end
+
+  it "should be enumerable, to spit out all results in csv format" do
+    @trend.first.should == "Day, Added projects, Completed projects, Added actions, Completed actions"
+    @trend.to_a.should include("2010-11-24, 1, 0, 1, 0")
   end
   
 end
-

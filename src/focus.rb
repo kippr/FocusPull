@@ -59,6 +59,11 @@ class Item
     false
   end
   
+  # todo: this is evil
+  def created_date
+    Date.today
+  end
+  
   def to_s
     "#{self.class}: #{@name}"
   end
