@@ -1,13 +1,13 @@
 require 'timecop'
 
 require File.join(File.dirname(__FILE__), '../src/focus')
-require File.join(File.dirname(__FILE__), '../src/histo')
+require File.join(File.dirname(__FILE__), '../src/graphable')
 
-describe Histogram do
+describe Graphable, "histogram" do
 
   before(:all) do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @histo = Histogram.new( @parser.parse )
+    @histo = Graphable.histo( @parser.parse )
   end
   
   it "should plot done projects by age in days" do
@@ -16,7 +16,7 @@ describe Histogram do
     results.done_projects[ 2 ].size.should == 0
   end
   
-  it "should be enumerable, to produce all results" do
+  it "should be enumerable, to spit out all results in csv format" do
     Timecop.travel(2011, 1, 9) do
       @histo.first.should == "Day, Open projects, Done projects, Active tasks, Done tasks"
       @histo.to_a[ 12 ].should ==  "12, 0, 0, 0, 0"

@@ -1,9 +1,13 @@
 require File.join(File.dirname(__FILE__), '../src/focus')
 
-class Histogram
+class Graphable
   include Enumerable
   
-  def initialize( focus )
+  def self.histo focus
+    Graphable.new( focus )
+  end
+  
+  def initialize focus
     @focus = focus
   end
   
