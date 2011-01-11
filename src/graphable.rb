@@ -1,10 +1,9 @@
 require File.join(File.dirname(__FILE__), '../src/focus')
 
 class Graphable
-  include Enumerable
   
   def self.histo focus
-    Graphable.new( focus )
+    Graphable.new( focus ).results
   end
   
   def initialize focus
@@ -16,20 +15,13 @@ class Graphable
     @focus.each{ | item | visitor.accept item }
     visitor
   end
-  
-  def each( &block )
-    r = results
-    yield "Day, Open projects, Done projects, Active tasks, Done tasks" 
-    (1...r.size).each do | i |
-      yield "#{i}, #{r.open_projects[i].size}, #{r.done_projects[i].size}, #{r.active_tasks[i].size}, #{r.done_tasks[i].size}"
-    end
-  end
-  
+    
 end
 
 # todo: use this for meta map items by status collection?
+# todo: this thing is doing double duty as visitor & results :(
 class HistoVisitor
-  include VisitorMixin
+  include VisitorMixin, Enumerable
   
   attr_reader :done_projects, :done_tasks, :open_projects, :active_tasks
   
@@ -50,6 +42,13 @@ class HistoVisitor
   
   def size
     [@done_tasks, @done_projects, @active_tasks, @open_projects].max {|a,b| a.size <=> b.size }.size
+  end
+
+  def each( &block )
+    yield "Day, Open projects, Done projects, Active tasks, Done tasks" 
+    (1...size).each do | i |
+      yield "#{i}, #{@open_projects[i].size}, #{done_projects[i].size}, #{active_tasks[i].size}, #{done_tasks[i].size}"
+    end
   end
 
 end
