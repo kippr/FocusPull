@@ -24,4 +24,10 @@ describe Histogram do
     end
   end
   
+  it "is being abused to write a test file out" do
+    File.open("output/histo.csv", "w") do |f| 
+      @histo.each { | l | f.puts l }
+    end
+  end
+  
 end
