@@ -441,7 +441,7 @@ class TemporalFilter < MapFilter
   def initialize start_date, end_date, filter_option
     @start = Date.parse( start_date )
     @end = Date.parse( end_date )
-    @dates_for = @@filter_options[ filter_option ]#|| raise 
+    @dates_for = @@filter_options[ filter_option ] || raise( "#{filter_option} is invalid" )
     #todo: seems kinda ugly?
     @label_prefix = {
       :new_only => "Created ", :done_only => "Completed "
