@@ -32,8 +32,8 @@ class MindMapFactory
     attr_accessor :failing_test_hack
   end
 
-  def self.create_simple_map focus
-    factory = self.new( focus, :HIGHLIGHT_ACTIVE_TASKS => false )
+  def self.create_simple_map focus, extra_options = {}
+    factory = self.new( focus, {:HIGHLIGHT_ACTIVE_TASKS => false}.merge( extra_options ))
     factory.create_map( MapFilter.new )
   end
   
@@ -54,7 +54,8 @@ class MindMapFactory
       :FOLD_TASKS => true, 
       :HIGHLIGHT_ACTIVE_TASKS => true,
       :WEIGHT_EDGES => true,
-      :ADD_ICONS => true
+      :ADD_ICONS => true,
+      :ADD_ATTRIBUTES => false
     }
   end
   
@@ -101,7 +102,7 @@ class MindMapFactory
       v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
       v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if @options[ :ADD_ICONS ]
       v << Edger.new( @stack, @filter ) if @options[ :WEIGHT_EDGES ]
-      v << AttributeStamper.new( @stack )
+      v << AttributeStamper.new( @stack ) if @options[ :ADD_ATTRIBUTES ]
       v << PositionStamper.new( @stack )
     end  
     

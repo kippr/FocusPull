@@ -9,7 +9,8 @@ describe MindMapFactory, "create_simple_map" do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     MindMapFactory.failing_test_hack = true
-    @map = MindMapFactory.create_simple_map( @focus )
+    # attributes are disabled by default, but leave in tests, since that's handier that splitting all out
+    @map = MindMapFactory.create_simple_map( @focus, :ADD_ATTRIBUTES => true )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
