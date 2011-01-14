@@ -38,7 +38,7 @@ class MindMapFactory
   end
   
   def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done
-    factory = self.new( focus, :FOLD_TASKS => false )
+    factory = self.new( focus )
     factory.create_map( TemporalFilter.new( start_date, end_date, filter_option ) )
   end
   
