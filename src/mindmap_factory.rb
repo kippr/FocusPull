@@ -37,9 +37,9 @@ class MindMapFactory
     factory.create_map( MapFilter.new )
   end
   
-  def self.create_delta_map focus, start_date, end_date
+  def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done
     factory = self.new( focus, :FOLD_TASKS => false )
-    factory.create_map( TemporalFilter.new( start_date, end_date ) )
+    factory.create_map( TemporalFilter.new( start_date, end_date, filter_option ) )
   end
   
   def self.create_meta_map focus
@@ -431,29 +431,41 @@ end
 
 class TemporalFilter < MapFilter
   
-  def initialize start_date, end_date
+  @@filter_options = 
+  {
+    :both_new_and_done => Proc.new{ | item | [ item.created_date, item.completed_date ] },
+    :new_only => Proc.new{ | item | [ item.created_date ] },
+    :done_only => Proc.new{ | item | [ item.completed_date ] }
+  }
+  
+  def initialize start_date, end_date, filter_option
     @start = Date.parse( start_date )
     @end = Date.parse( end_date )
+    @dates_for = @@filter_options[ filter_option ]#|| raise 
+    #todo: seems kinda ugly?
+    @label_prefix = {
+      :new_only => "Created in ", :done_only => "Completed in "
+      }[filter_option] || ""
   end
   
   def visit_project project
-    starts_or_ends_in_range project
+    included_in_range? project
   end
   
   def visit_task task
-    starts_or_ends_in_range task
+    included_in_range? task
   end
   
-  def starts_or_ends_in_range item
-    in_range( item.created_date ) || in_range( item.completed_date )
+  def included_in_range? item
+    @dates_for.call( item ).any?{ | d | in_range( d ) }
   end
-  
+    
   def in_range date
     date && @start <= date && date <= @end
   end
   
   def label item
-    "#{@start}..#{@end}"
+    "#{@label_prefix}#{@start}..#{@end}"
   end
   
 end

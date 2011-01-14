@@ -4,6 +4,7 @@ require 'nokogiri'
 
 describe MindMapFactory, "create_simple_map" do
 
+  #todo: fair amount of duplication in the befores now...
   before(:all) do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
@@ -188,6 +189,40 @@ describe MindMapFactory, "create_delta_map" do
     node_for( 'Review progress on mails collected' ).icon['BUILTIN'].should == 'idea'
   end
   
+end
+
+describe MindMapFactory, "create_delta_map for completed items" do
+
+  before(:all) do
+    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @focus = @parser.parse
+    MindMapFactory.failing_test_hack = true
+    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :done_only )
+    @xml =  Nokogiri::Slop @map.to_s
+    @root = @xml.at_xpath( "/map" )
+  end
+  
+  after(:all) do
+    MindMapFactory.failing_test_hack = false
+  end
+
+  it "should include filtering dates in 'portfolio' node name" do
+    @root.node.richcontent['TYPE'].should == 'NODE'
+    @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
+    @root.node.richcontent.body.p[1].font.content.should == 'Completed in 2010-12-08..2010-12-13'
+  end
+
+  it "should include projects that have been dropped in the specified period" do
+    node_for( "iPad has open zone access" ).should_not be_nil
+  end  
+  
+  it "should not include newly created projects" do
+    node_for( 'Switch to 3 network' ).should be_nil
+  end
+  
+  it "should barf when an invalid filter type is passed"
+  
+
 end
 
 describe MindMapFactory, "create_meta_map" do

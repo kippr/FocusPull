@@ -13,3 +13,4 @@
   - dropped projects?
 ? consider splitting mindmap_factory file up?
 ? consider 'aged tasks' node for metamap?
+? is there a way I can filter for 'recently put on hold' items? Dont think so unless I assume using modified_date?
