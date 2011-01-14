@@ -209,7 +209,7 @@ describe MindMapFactory, "create_delta_map for completed items" do
   it "should include filtering dates in 'portfolio' node name" do
     @root.node.richcontent['TYPE'].should == 'NODE'
     @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
-    @root.node.richcontent.body.p[1].font.content.should == 'Completed in 2010-12-08..2010-12-13'
+    @root.node.richcontent.body.p[1].font.content.should == 'Completed 2010-12-08..2010-12-13'
   end
 
   it "should include projects that have been dropped in the specified period" do

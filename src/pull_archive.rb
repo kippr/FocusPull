@@ -5,7 +5,7 @@ require 'logger'
   @log = Logger.new(STDOUT)
   
   def download_archive( username, password )
-    agent = WWW::Mechanize.new
+    agent = Mechanize.new
     agent.user_agent_alias = 'Mac Safari'
       
     agent.get('https://www.omnigroup.com/sync/') do |page|

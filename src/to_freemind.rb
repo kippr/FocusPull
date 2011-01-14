@@ -11,11 +11,13 @@ focus = parser.parse
 xml = MindMapFactory.create_simple_map focus
 
 delta = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13"
+delta_done = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13", :done_only
 
 meta = MindMapFactory.create_meta_map focus
 
 File.open("../output/focus.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta.mm", "w") { |f| f.write( delta ) }
+File.open("../output/delta-new.mm", "w") { |f| f.write( delta_done ) }
 File.open("../output/meta.mm", "w") { |f| f.write( meta ) }
 
 #Also handy to have

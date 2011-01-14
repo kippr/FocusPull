@@ -444,7 +444,7 @@ class TemporalFilter < MapFilter
     @dates_for = @@filter_options[ filter_option ]#|| raise 
     #todo: seems kinda ugly?
     @label_prefix = {
-      :new_only => "Created in ", :done_only => "Completed in "
+      :new_only => "Created ", :done_only => "Completed "
       }[filter_option] || ""
   end
   
