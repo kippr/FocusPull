@@ -17,7 +17,7 @@ meta = MindMapFactory.create_meta_map focus
 
 File.open("../output/focus.mm", "w") { |f| f.write( xml ) }
 File.open("../output/delta.mm", "w") { |f| f.write( delta ) }
-File.open("../output/delta-new.mm", "w") { |f| f.write( delta_done ) }
+File.open("../output/delta-done.mm", "w") { |f| f.write( delta_done ) }
 File.open("../output/meta.mm", "w") { |f| f.write( meta ) }
 
 #Also handy to have

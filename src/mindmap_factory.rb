@@ -206,12 +206,14 @@ class Formatter
   end
   
   def visit_folder this_folder
+    element['STYLE'] = 'bubble'
     kids = this_folder.select{ | kid | kid != this_folder && @filter.include?( kid ) }
     childless = kids.all?( &:is_folder? )
     element['COLOR'] = childless ? '#bfd8e5' : '#006699' 
   end
   
   def visit_project project
+    element['STYLE'] = 'fork'
     if project.on_hold? || project.dropped?
       element['COLOR'] = "#666666"
       add_child "font", :ITALIC => 'true', :NAME => 'SansSerif', :SIZE => '12' 
@@ -222,6 +224,7 @@ class Formatter
   end
   
   def visit_task task
+    element['STYLE'] = 'fork'
     element['COLOR'] = "#444444"
     add_child "font", :NAME => "SansSerif", :SIZE => "9"
   end
