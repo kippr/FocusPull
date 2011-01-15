@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'highline/import'
-require 'activesupport'
+require 'active_support/core_ext'
 
 require File.join(File.dirname(__FILE__), 'pull_archive')
 require File.join(File.dirname(__FILE__), 'archive_parser')
