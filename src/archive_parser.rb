@@ -24,17 +24,12 @@ class FocusParser
     @parent_ref_of = Hash.new
     
     foreach_archive_xml do | content |
-      
       xml = Nokogiri::XML( content )
-      
-      parse_tasks( xml ) 
-      
+      parse_tasks( xml )       
       parse_folders( xml )
-      
     end
     
     resolve_links
-    
     root
   end
 
@@ -102,7 +97,7 @@ class FocusParser
       @log.debug( "Found parent link to '#{parentLink}'" )
       # need the 'or' for project nodes, which are structured as sub-els of tasks
       # todo: clean this up
-      id = ( itemNode.attribute( "id") && itemNode.attribute( "id").content ) || ( itemNode.parent.attribute('id') && itemNode.parent.attribute('id').content )
+      id = ( itemNode[ 'id' ] || itemNode.parent['id'] )
       @ref_to_node[  id ]  = item 
       @parent_ref_of[ item ] = parentLink && parentLink.content   
     end
