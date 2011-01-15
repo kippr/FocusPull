@@ -39,13 +39,18 @@ class FocusParser
   end
 
   private
+  
+    def xpath_content( node, xpath )
+      result = node.at_xpath( xpath )
+      result ? result.content : ""
+    end
     
     #todo: remove duplication with parse_folders, also rank now
     def parse_tasks( xml )
       xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
         @log.debug( "Found node: #{taskNode}")
-        name = taskNode.at_xpath( './xmlns:name' ).content
-        rank = taskNode.at_xpath( './xmlns:rank' ).content
+        name = xpath_content( taskNode, './xmlns:name' )
+        rank = xpath_content( taskNode, './xmlns:rank' )
         projectNode = taskNode.at_xpath( './xmlns:project' )
         
         if projectNode.nil?
@@ -66,8 +71,8 @@ class FocusParser
         end
 
         # todo: duplication
-        completed_node = taskNode.at_xpath( './xmlns:added' )
-        item.created_date = completed_node.content
+        added_node = taskNode.at_xpath( './xmlns:added' )
+        item.created_date = added_node.content if added_node
 
         modified_node = taskNode.at_xpath( './xmlns:modified' )
         item.updated_date = modified_node.content if modified_node
@@ -82,8 +87,8 @@ class FocusParser
       xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
         @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id").content}" )
         
-        name = folderNode.at_xpath( './xmlns:name' ).content
-        rank = folderNode.at_xpath( './xmlns:rank' ).content
+        name = xpath_content( folderNode, './xmlns:name' )
+        rank = xpath_content( folderNode, './xmlns:rank' )
         folder = Folder.new( name, rank )
         track_links( folder, folderNode )        
     

@@ -154,7 +154,7 @@ class Task < Item
     if done?
       @completed_date - @created_date
     else
-      Date.today - @created_date
+      Date.today - ( @created_date || 0 )
     end
   end
       

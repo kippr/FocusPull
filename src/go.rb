@@ -24,6 +24,10 @@ focus = parser.parse
 simple_map = MindMapFactory.create_simple_map focus
 @log.info "Saving delta map for period #{1.week.ago} to #{Date.today}"
 delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s
+@log.info "Saving completion delta map for period #{1.week.ago} to #{Date.today}"
+done_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :done_only
+@log.info "Saving additions delta map for period #{1.week.ago} to #{Date.today}"
+new_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :new_only
 @log.info "Saving meta map"
 meta_map = MindMapFactory.create_meta_map focus
 
@@ -32,6 +36,8 @@ FileUtils.mkpath(directory)
 
 File.open("#{directory}/focus.mm", "w") { |f| f.write( simple_map ) }
 File.open("#{directory}/delta.mm", "w") { |f| f.write( delta_map ) }
+File.open("#{directory}/delta-done.mm", "w") { |f| f.write( done_delta_map ) }
+File.open("#{directory}/delta-new.mm", "w") { |f| f.write( new_delta_map ) }
 File.open("#{directory}/meta.mm", "w") { |f| f.write( meta_map ) }
 
 

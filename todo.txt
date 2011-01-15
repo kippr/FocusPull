@@ -1,6 +1,7 @@
 - check todos
 - move aged items under an 'Aged' node, which will help with failing test?
 - make 'weight' relative to total tree
+- weight for (esp done) delta tree should include completed items!
 - what do deleted tasks show up like?
 - make focusParser.parse a class method rather than instance
 - add child takes block, so it can call stack pop automatically?
