@@ -297,33 +297,28 @@ class Edger
   end
   
   def accept item
-    weight = weigh item
-    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= 18 ? 1 : 2    
+    weight = @weight_calculator.weigh item
+    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= 20 ? 1 : 2    
   end
-  
-  def weigh item
-    item.inject( 0 ) do | weight, child |
-      weight + @weight_calculator.accept( child )
-    end
-  end
-  
+    
   def to_colour( weight )
-    case 
-      when (weight == 0)
-        '#cccccc'
-      when (weight <= 3)
-        '#000044'
-      when (weight <= 9)
-        '#000088'
-      when (weight <= 12)
-        '#0000aa'
-      else
-        '#0000ff'
-      end
+    max = 15
+    weight = [ weight, max ].min.to_f
+    if ( weight == 0 )
+      '#cccccc'
+    else
+      res =  weight / max * 255 
+      hex = res.to_i.to_s( 16 ).rjust( 2, '0' )
+      "#0000#{hex}"
+    end
   end
   
 end
 
+# Weighs each item in the tree, returning a percentage for each item
+# This percentage is the relative weight of this branch to overall tree weight
+# N.B. not all nodes contribute: projects are heavier than actions, folders are not weighed
+# Additionally, only items accepted by @filter contribute weight
 class WeightCalculator
   include VisitorMixin
   
@@ -331,6 +326,22 @@ class WeightCalculator
     @filter = filter
   end
   
+  def weigh item
+    # assumption: we will always start at root
+    # so run once 'unweighted' to get total tree, then run again
+    @total = weigh_subtree( item ) + 0.00001 unless @total # avoid div by zero
+    # actual run, with total definitely set
+    weight = weigh_subtree( item )
+    # don't let the subtree actually get a higher weight than the 'raw' weight in case of small trees
+    [ weight / @total * 100, weight ].min
+  end
+  
+  def weigh_subtree item
+    item.inject( 0 ) do | weight, child |
+      weight + accept( child )
+    end
+  end
+    
   def accept item
     @filter.accept( item ) ? item.visit( self ) : 0
   end
