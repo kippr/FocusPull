@@ -84,8 +84,8 @@ class Focus < Item
     self.select{ | n | n.class == Folder }
   end
 
-  def tasks
-    self.select{ | n | n.class == Task }
+  def actions
+    self.select{ | n | n.class == Action }
   end
   
   def project( name )
@@ -97,8 +97,8 @@ class Focus < Item
     folders.detect{ | n | n.name == name }
   end
   
-  def task( name )
-    tasks.detect{ | n | n.name == name }
+  def action( name )
+    actions.detect{ | n | n.name == name }
   end
   
   def parent
@@ -127,7 +127,7 @@ class Folder < Item
   
 end
 
-class Task < Item
+class Action < Item
 
   attr_reader :completed_date, :created_date, :updated_date
   attr_accessor :status
@@ -167,7 +167,7 @@ class Task < Item
   end
   
   def visit( visitor )
-    visitor.visit_task( self )
+    visitor.visit_action( self )
   end
 
   def to_s
@@ -176,7 +176,7 @@ class Task < Item
 
 end
 
-class Project < Task  
+class Project < Action  
 
   def on_hold?
     status == 'inactive'

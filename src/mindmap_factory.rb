@@ -99,7 +99,7 @@ class MindMapFactory
       v = []
       v << Namer.new( @stack, @filter )
       v << Formatter.new( @stack, @filter ) if @options[ :FORMATTING ]
-      v << TaskCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
+      v << ActionCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
       v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if @options[ :ADD_ICONS ]
       v << Edger.new( @stack, @filter ) if @options[ :WEIGHT_EDGES ]
       v << AttributeStamper.new( @stack ) if @options[ :ADD_ATTRIBUTES ]
@@ -114,10 +114,10 @@ class MindMapFactory
       @stack << add_child( "node", :TEXT => "Meta" )
       @stack << add_child( "node", :TEXT => "By status", :POSITION => "right" )
       add_meta_items data, "Projects", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
-      add_meta_items data, "Tasks", "Active" => "active", "Done" => "done"
+      add_meta_items data, "Actions", "Active" => "active", "Done" => "done"
       @stack.pop
       
-      @stack << add_child( "node", :TEXT => "Taskless projects", :POSITION => "left" )
+      @stack << add_child( "node", :TEXT => "Actionless projects", :POSITION => "left" )
       add_child( "node", :TEXT => "todo" )
       @stack.pop
 
@@ -130,9 +130,9 @@ class MindMapFactory
       end
       @stack.pop
       
-      aged_tasks = data["Tasks-aged"]
-      @stack << add_child( "node", :TEXT => "Aged tasks (#{aged_tasks.size})", :POSITION => "left", :FOLDED => 'true' )
-      aged_tasks.each do | item |
+      aged_actions = data["Actions-aged"]
+      @stack << add_child( "node", :TEXT => "Aged actions (#{aged_actions.size})", :POSITION => "left", :FOLDED => 'true' )
+      aged_actions.each do | item |
         visit item
         @stack.pop
       end
@@ -223,7 +223,7 @@ class Formatter
     element['COLOR'] = "#666666" unless @filter.accept project
   end
   
-  def visit_task task
+  def visit_action action
     element['STYLE'] = 'fork'
     element['COLOR'] = "#444444"
     add_child "font", :NAME => "SansSerif", :SIZE => "9"
@@ -231,7 +231,7 @@ class Formatter
   
 end
 
-class TaskCollapser
+class ActionCollapser
   include ElementMixin, VisitorMixin
   
   def initialize( stack, filter )
@@ -248,22 +248,22 @@ end
 class IconStamper
   include ElementMixin, VisitorMixin
   
-  def initialize( stack, filter, highlight_active_tasks )
+  def initialize( stack, filter, highlight_active_actions )
     super( stack )
     @filter = filter
-    @highlight_active_tasks = highlight_active_tasks
+    @highlight_active_actions = highlight_active_actions
   end
   
   def visit_project project
-    add_active_icon if @highlight_active_tasks && is_a_new( project )
+    add_active_icon if @highlight_active_actions && is_a_new( project )
     add_on_hold_icon if project.on_hold?
     add_dropped_icon if project.dropped?
     add_done_icon if project.done?
   end
   
-  def visit_task task
-    add_active_icon if @highlight_active_tasks && is_a_new( task )
-    add_done_icon if task.done?
+  def visit_action action
+    add_active_icon if @highlight_active_actions && is_a_new( action )
+    add_done_icon if action.done?
   end
   
   def is_a_new item
@@ -339,8 +339,8 @@ class WeightCalculator
     project.active? ? 3 : 0
   end
 
-  def visit_task task
-    task.active? ? 1 : 0
+  def visit_action action
+    action.active? ? 1 : 0
   end
   
   def visit_default item
@@ -357,9 +357,9 @@ class AttributeStamper
     add_dates_for project
   end
   
-  def visit_task task
-    add_status_for task
-    add_dates_for task
+  def visit_action action
+    add_status_for action
+    add_dates_for action
   end
   
   def add_status_for item
@@ -405,9 +405,9 @@ class MetaVisitor
     @counts["Projects-aged"] << project if project.age >= MindMapFactory::PROJECT_AGED && !project.done?
   end
 
-  def visit_task task
-    track( "Tasks", task )
-    @counts["Tasks-aged"] << task if task.age >= MindMapFactory::TASK_AGED && !task.done?
+  def visit_action action
+    track( "Actions", action )
+    @counts["Actions-aged"] << action if action.age >= MindMapFactory::TASK_AGED && !action.done?
   end
   
   def track type, item
@@ -456,8 +456,8 @@ class TemporalFilter < MapFilter
     included_in_range? project
   end
   
-  def visit_task task
-    included_in_range? task
+  def visit_action action
+    included_in_range? action
   end
   
   def included_in_range? item

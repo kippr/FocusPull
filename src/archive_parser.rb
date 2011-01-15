@@ -25,7 +25,7 @@ class FocusParser
     
     foreach_archive_xml do | content |
       xml = Nokogiri::XML( content )
-      parse_tasks( xml )       
+      parse_actions( xml )
       parse_folders( xml )
     end
     
@@ -41,18 +41,18 @@ class FocusParser
     end
     
     #todo: remove duplication with parse_folders, also rank now
-    def parse_tasks( xml )
-      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | taskNode |
-        @log.debug( "Found node: #{taskNode}")
-        name = xpath_content( taskNode, './xmlns:name' )
-        rank = xpath_content( taskNode, './xmlns:rank' )
-        projectNode = taskNode.at_xpath( './xmlns:project' )
+    def parse_actions( xml )
+      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | actionNode |
+        @log.debug( "Found node: #{actionNode}")
+        name = xpath_content( actionNode, './xmlns:name' )
+        rank = xpath_content( actionNode, './xmlns:rank' )
+        projectNode = actionNode.at_xpath( './xmlns:project' )
         
         if projectNode.nil?
         
-          item = Task.new( name, rank )
+          item = Action.new( name, rank )
 
-          track_links( item, taskNode )
+          track_links( item, actionNode )
                   
         else
         
@@ -66,13 +66,13 @@ class FocusParser
         end
 
         # todo: duplication
-        added_node = taskNode.at_xpath( './xmlns:added' )
+        added_node = actionNode.at_xpath( './xmlns:added' )
         item.created_date = added_node.content if added_node
 
-        modified_node = taskNode.at_xpath( './xmlns:modified' )
+        modified_node = actionNode.at_xpath( './xmlns:modified' )
         item.updated_date = modified_node.content if modified_node
 
-        completed_node = taskNode.at_xpath( './xmlns:completed' )
+        completed_node = actionNode.at_xpath( './xmlns:completed' )
         item.completed( completed_node.content ) if completed_node
         
       end
@@ -90,12 +90,12 @@ class FocusParser
       end
     end
     
-    # This is going to need cleanup, esp when we get to tasks, where path is different
+    # This is going to need cleanup, esp when we get to actions, where path is different
     def track_links( item, itemNode )
       #keep track of links for parent <-> kids
       parentLink = itemNode.at_xpath( './xmlns:folder/@idref' ) || itemNode.at_xpath( './xmlns:task/@idref' )
       @log.debug( "Found parent link to '#{parentLink}'" )
-      # need the 'or' for project nodes, which are structured as sub-els of tasks
+      # need the 'or' for project nodes, which are structured as sub-els of actions
       # todo: clean this up
       id = ( itemNode[ 'id' ] || itemNode.parent['id'] )
       @ref_to_node[  id ]  = item 

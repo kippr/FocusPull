@@ -30,12 +30,12 @@ end
 class HistoVisitor
   include VisitorMixin, Enumerable
   
-  attr_reader :done_projects, :done_tasks, :open_projects, :active_tasks
+  attr_reader :done_projects, :done_actions, :open_projects, :active_actions
   
   def initialize
-    @done_tasks = Results.new
+    @done_actions = Results.new
     @done_projects = Results.new
-    @active_tasks = Results.new
+    @active_actions = Results.new
     @open_projects = Results.new
   end
    
@@ -43,18 +43,18 @@ class HistoVisitor
       (project.done? ? @done_projects : @open_projects).add project.age, project
   end
 
-  def visit_task task
-      (task.done? ? @done_tasks : @active_tasks).add task.age, task
+  def visit_action action
+      (action.done? ? @done_actions : @active_actions).add action.age, action
   end
   
   def size
-    [@done_tasks, @done_projects, @active_tasks, @open_projects].max {|a,b| a.size <=> b.size }.size
+    [@done_actions, @done_projects, @active_actions, @open_projects].max {|a,b| a.size <=> b.size }.size
   end
 
   def each( &block )
-    yield "Day, Open projects, Done projects, Active tasks, Done tasks" 
+    yield "Day, Open projects, Done projects, Active actions, Done actions" 
     (1...size).each do | i |
-      yield "#{i}, #{open_projects[i].size}, #{done_projects[i].size}, #{active_tasks[i].size}, #{done_tasks[i].size}"
+      yield "#{i}, #{open_projects[i].size}, #{done_projects[i].size}, #{active_actions[i].size}, #{done_actions[i].size}"
     end
   end
 
@@ -64,13 +64,13 @@ end
 class TrendVisitor
   include VisitorMixin, Enumerable
 
-  attr_reader :added_projects, :added_tasks, :completed_projects, :completed_tasks
+  attr_reader :added_projects, :added_actions, :completed_projects, :completed_actions
   
   def initialize( earliest_date )
     @added_projects = Results.new
-    @added_tasks = Results.new
+    @added_actions = Results.new
     @completed_projects = Results.new
-    @completed_tasks = Results.new
+    @completed_actions = Results.new
     @earliest = earliest_date
   end
    
@@ -79,19 +79,19 @@ class TrendVisitor
     @completed_projects.add( project.completed_date - @earliest, project ) if project.done?
   end
 
-  def visit_task task
-    @added_tasks.add( task.created_date - @earliest, task )
-    @completed_tasks.add( task.completed_date - @earliest, task ) if task.done?
+  def visit_action action
+    @added_actions.add( action.created_date - @earliest, action )
+    @completed_actions.add( action.completed_date - @earliest, action ) if action.done?
   end
   
   def size
-    [@added_projects, @added_tasks, @completed_projects, @completed_tasks].max {|a,b| a.size <=> b.size }.size
+    [@added_projects, @added_actions, @completed_projects, @completed_actions].max {|a,b| a.size <=> b.size }.size
   end
   
   def each( &block )
     yield "Day, Added projects, Completed projects, Added actions, Completed actions" 
     (0...size).each do | i |
-      yield "#{@earliest + i}, #{added_projects[i].size}, #{completed_projects[i].size}, #{added_tasks[i].size}, #{completed_tasks[i].size}"
+      yield "#{@earliest + i}, #{added_projects[i].size}, #{completed_projects[i].size}, #{added_actions[i].size}, #{completed_actions[i].size}"
     end
   end 
   

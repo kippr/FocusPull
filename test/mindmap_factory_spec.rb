@@ -49,13 +49,13 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'Personal' )['COLOR'].should == "#006699"
   end
   
-  it "should colour folders with no projects or tasks as faded" do
+  it "should colour folders with no projects or actions as faded" do
     childless_folder = node_for( 'Secretive Project' )
     childless_folder['COLOR'].should == "#bfd8e5"
   end
   
   
-  it "should fold projects with child tasks" do
+  it "should fold projects with child actions" do
     node_for( 'Spend less time in email' )['FOLDED'].should be_true
     @root['FOLDED'].should_not be_true
   end
@@ -74,7 +74,7 @@ describe MindMapFactory, "create_simple_map" do
     attribute_for( 'Meet simon for lunch', 'status' ).should == 'inactive'
   end
   
-  it "should add a status attribute to tasks" do
+  it "should add a status attribute to actions" do
     attribute_for( 'Collect useless mails in sd', 'status' ).should == 'active'
   end
 
@@ -82,7 +82,7 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'Meet simon for lunch' ).icon['BUILTIN'].should == 'stop-sign'
   end
 
-  it "should add an icon to projects and tasks that are done" do
+  it "should add an icon to projects and actions that are done" do
     node_for( 'Switch to 3 network' ).icon['BUILTIN'].should == 'button_ok'
   end
   
@@ -90,43 +90,43 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'iPad has open zone access' ).icon['BUILTIN'].should == 'button_cancel'
   end
 
-  it "should *not* highlight active projects and tasks" do
+  it "should *not* highlight active projects and actions" do
     node_for( 'Spend less time in email' ).at_xpath( './icon' ).should be_nil
     node_for( 'Review progress on mails collected' ).at_xpath( './icon' ).should be_nil
   end
   
-  it "should add a created attribute to tasks and project" do
+  it "should add a created attribute to actions and project" do
     project = 'Switch to 3 network'
     attribute_for( project, 'created' ).should == '2010-12-08'
-    task = 'Collect useless mails in sd'
-    attribute_for( task, 'created' ).should == '2010-11-24'
+    action = 'Collect useless mails in sd'
+    attribute_for( action, 'created' ).should == '2010-11-24'
   end
 
-  it "should add a updated attribute to tasks and project" do
+  it "should add a updated attribute to actions and project" do
     project = 'Switch to 3 network'
     attribute_for( project, 'updated' ).should == '2010-12-16'
-    task = 'Record # of mails in inbox before and after'
-    attribute_for( task, 'updated' ).should == '2010-12-13'
+    action = 'Record # of mails in inbox before and after'
+    attribute_for( action, 'updated' ).should == '2010-12-13'
   end
 
-  it "should add a completed attribute to finished tasks and project" do
+  it "should add a completed attribute to finished actions and project" do
     project= 'Switch to 3 network'
     attribute_for( project, 'completed' ).should == '2010-12-16'
-    task = 'Record # of mails in inbox before and after'
-    attribute_for( task, 'completed' ).should == '2010-12-13'
+    action = 'Record # of mails in inbox before and after'
+    attribute_for( action, 'completed' ).should == '2010-12-13'
   end
     
-  it "should distinguish tasks" do
-    task = node_for( 'Collect useless mails in sd' )  
-    task['COLOR'].should == '#444444'
+  it "should distinguish actions" do
+    action = node_for( 'Collect useless mails in sd' )  
+    action['COLOR'].should == '#444444'
     # Prefer not to assert all the details, but freemind is picky about these
-    task.font['SIZE'].should == '9'
-    task.font['NAME'].should == 'SansSerif'
+    action.font['SIZE'].should == '9'
+    action.font['NAME'].should == 'SansSerif'
   end
   
   it "should add thicker edges to 'heavy' folders" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
-    node_for( 'Admin' ).edge['COLOR'].should == '#000088' # 1 active proj, 2 tasks
+    node_for( 'Admin' ).edge['COLOR'].should == '#000088' # 1 active proj, 2 actions
   end
     
 end  
@@ -157,7 +157,7 @@ describe MindMapFactory, "create_delta_map" do
     node_for( 'Switch to 3 network' ).parent['TEXT'].should == "Personal"
   end
   
-  it "should not include tasks that didn't change" do
+  it "should not include actions that didn't change" do
     node_for( 'Meet simon for lunch' ).should be_nil
   end
 
@@ -165,27 +165,27 @@ describe MindMapFactory, "create_delta_map" do
     node_for( "iPad has open zone access" ).should_not be_nil
   end  
     
-  it "should include projects that didn't change but have child tasks that did" do
+  it "should include projects that didn't change but have child actions that did" do
     unchanged_project = node_for( 'Spend less time in email' )
     unchanged_project.should_not be_nil
-    completed_task = node_for( 'Record # of mails in inbox before and after' )
-    completed_task.parent.should == unchanged_project 
+    completed_action = node_for( 'Record # of mails in inbox before and after' )
+    completed_action.parent.should == unchanged_project 
     # this is an unchanged child of unchanged project
-    unchanged_task = node_for( 'Collect useless mails in sd' ) 
-    unchanged_task.should be_nil
+    unchanged_action = node_for( 'Collect useless mails in sd' ) 
+    unchanged_action.should be_nil
   end
   
-  it "should fold projects with child tasks, by default" do
+  it "should fold projects with child actions, by default" do
     node_for( 'Spend less time in email' )['FOLDED'].should == 'true'
   end
   
-  it "should fade (unchanged) projects that are included only because sub-tasks changed" do
+  it "should fade (unchanged) projects that are included only because sub-actions changed" do
     unchanged_project = node_for( "Spend less time in email" )
     unchanged_project[ 'COLOR' ].should == '#666666'
   end
   
-  it "should highlight active projects and tasks, as these must have been added recently" do
-    # the mail project is only there b/c of sub-tasks and therefore shouldn't have icon
+  it "should highlight active projects and actions, as these must have been added recently" do
+    # the mail project is only there b/c of sub-actions and therefore shouldn't have icon
     node_for( 'Spend less time in email' ).at_xpath( './icon' ).should be_nil
     node_for( 'Review progress on mails collected' ).icon['BUILTIN'].should == 'idea'
   end
@@ -245,20 +245,20 @@ describe MindMapFactory, "create_meta_map" do
     @root.node['TEXT'].should ==  "Meta" 
   end
   
-  it "should have projects and tasks nodes that aggregate per status" do
+  it "should have projects and actions nodes that aggregate per status" do
     projects = node_for( "Projects" )
     projects.node.size.should == 4 # 4 statuses for projects
     projects.node.last['TEXT'].should == "Dropped: 1"
     projects.parent['TEXT'].should == "By status"
     
-    tasks = node_for( "Tasks" )
-    tasks.node.size.should == 2 # 2 statuses for tasks
-    tasks.node.first['TEXT'].should == "Active: 2"
-    tasks.node.first.node.size == 2 # Two sub-nodes of active, one for each active task
+    actions = node_for( "Actions" )
+    actions.node.size.should == 2 # 2 statuses for actions
+    actions.node.first['TEXT'].should == "Active: 2"
+    actions.node.first.node.size == 2 # Two sub-nodes of active, one for each active action
   end
   
-  it "should have a 'projects without active tasks' node" do
-    node_for( "Taskless projects" ).should_not be_nil
+  it "should have a 'projects without active actions' node" do
+    node_for( "Actionless projects" ).should_not be_nil
   end
 
   it "should have an 'aged projects' node" do

@@ -6,8 +6,8 @@ describe Focus do
     @focus = Focus.new
     @mailProject = Project.new( "Spend less time in email", 1)
     @mailProject.link_parent( @focus )
-    @mailTask = Task.new( "Collect useless mails in sd", 1)
-    @mailTask.link_parent( @mailProject )
+    @mailAction = Action.new( "Collect useless mails in sd", 1)
+    @mailAction.link_parent( @mailProject )
     @personalFolder = Folder.new( "Personal", 1)
     @personalFolder.link_parent( @focus )
     @openZoneProject = Project.new( "iPad has open zone access", 1 )
@@ -23,7 +23,7 @@ describe Focus do
   end
   
   it "should offer pre-order traversal" do
-    @focus.to_a.should == [ @focus, @mailProject, @mailTask, @personalFolder, @openZoneProject ]
+    @focus.to_a.should == [ @focus, @mailProject, @mailAction, @personalFolder, @openZoneProject ]
   end
   
   it "should offer pre-order traversal with callbacks" do
@@ -46,15 +46,15 @@ describe Focus do
     result.should == "iPad has open zone access->Personal->"
   end
   
-  it "should default task status to active" do
-    @mailTask.status.should == "active"
-    @mailTask.completed_date.should be_nil
+  it "should default action status to active" do
+    @mailAction.status.should == "active"
+    @mailAction.completed_date.should be_nil
   end
   
-  it "should accept tasks as being marked complete" do
-    @mailTask.completed( "2010-12-07T08:50:19.935Z" )
-    @mailTask.status.should == "done"
-    @mailTask.completed_date.should == Date.parse( "2010-12-07" )
+  it "should accept actions as being marked complete" do
+    @mailAction.completed( "2010-12-07T08:50:19.935Z" )
+    @mailAction.status.should == "done"
+    @mailAction.completed_date.should == Date.parse( "2010-12-07" )
   end
   
   it "should use modified date as completed date when status is dropped" do
@@ -64,21 +64,21 @@ describe Focus do
   end
   
   it "should use days from started to completed as age for done projects" do
-    @mailTask.created_date = "2010-11-10"
-    @mailTask.completed( "2010-11-20" ) 
-    @mailTask.age.should == 10 
+    @mailAction.created_date = "2010-11-10"
+    @mailAction.completed( "2010-11-20" ) 
+    @mailAction.age.should == 10 
   end
 
   it "should use days from started to today as age for active projects" do
-    @mailTask.created_date = ( Date.today - 30 ).to_s
-    @mailTask.status = 'inactive'
-    @mailTask.age.should == 30 
+    @mailAction.created_date = ( Date.today - 30 ).to_s
+    @mailAction.status = 'inactive'
+    @mailAction.age.should == 30 
   end
   
   it "should implement the visitor pattern" do
     visitor = Visitor.new
     Project.new("", 0).visit( visitor ).should == "Visited a Project"
-    Task.new("", 0).visit( visitor ).should == "Visited a Task"
+    Action.new("", 0).visit( visitor ).should == "Visited an Action"
     Folder.new("", 0).visit( visitor ).should == "Visited a Folder"
     Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
@@ -92,8 +92,8 @@ class Visitor
   def visit_project project
     "Visited a Project"
   end
-  def visit_task task
-    "Visited a Task"
+  def visit_action action
+    "Visited an Action"
   end
   def visit_focus portfolio
     "Visited Portfolio Root"

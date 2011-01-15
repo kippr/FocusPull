@@ -16,7 +16,7 @@ describe Graphable, "histogram" do
   end
   
   it "should be enumerable, to spit out all results in csv format" do
-    @histo.first.should == "Day, Open projects, Done projects, Active tasks, Done tasks"
+    @histo.first.should == "Day, Open projects, Done projects, Active actions, Done actions"
     @histo.to_a[ 12 ].should ==  "12, 0, 0, 0, 0"
     @histo.to_a[ 102 ].should ==  "102, 1, 0, 0, 0"
   end
