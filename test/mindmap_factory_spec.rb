@@ -126,7 +126,7 @@ describe MindMapFactory, "create_simple_map" do
   
   it "should add thicker edges to 'heavy' folders" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
-    node_for( 'Admin' ).edge['COLOR'].should == '#000088' # 1 active proj, 2 actions
+    node_for( 'Admin' ).edge['COLOR'].should == '#000055' # 1 active proj, 2 actions
   end
     
 end  
@@ -221,7 +221,9 @@ describe MindMapFactory, "create_delta_map for completed items" do
     node_for( 'Switch to 3 network' ).should be_nil
   end
   
-  it "should barf when an invalid filter type is passed"
+  it "should barf when an invalid filter type is passed" do
+    lambda{ MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :monkey ) }.should raise_error
+  end
   
 
 end
