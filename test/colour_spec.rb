@@ -1,0 +1,37 @@
+require File.join(File.dirname(__FILE__), '../src/colour')
+
+describe ColourFade do
+  
+  before( :all ) do
+    @bw = ColourFade.new( '#000000', '#ffffff' )
+  end
+  
+  it "should represent the fade from one html colour to another" do
+    @bw.at( 0 ).should == '#000000'
+    @bw.at( 1 ).should == '#ffffff'
+  end
+  
+  it "should only accept something in range of 0 to 1" do
+    @bw = ColourFade.new( '#000000', '#ffffff' )
+    lambda{ @bw.at( 1.0001 ) }.should raise_error
+    lambda{ @bw.at( -1.0 / 10 ) }.should raise_error    
+  end
+  
+  it "should calculate points in colour range" do
+    @bw.at( 0.5 ).should == '#7f7f7f'
+  end
+  
+  it "should translate html colours into rgb" do
+    @bw.as_rgb( '#007fff' ).should == [ 0, 127, 255 ]
+    @bw.as_rgb( '#007FFF' ).should == [ 0, 127, 255 ]
+  end
+  
+  it "should not accept invalid html colours" do
+    lambda{ puts @bw.as_rgb( '#CAFEgr') }.should raise_error
+  end
+
+  it "should translate rgb colours back into html" do
+    @bw.as_html( 0, 127, 255 ).should == '#007fff'
+  end
+
+end
