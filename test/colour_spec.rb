@@ -1,9 +1,9 @@
 require File.join(File.dirname(__FILE__), '../src/colour')
 
-describe ColourFade do
+describe ColourFader, "with two colours" do
   
   before( :all ) do
-    @bw = ColourFade.new( '#000000', '#ffffff' )
+    @bw = ColourFader.new( '#000000', '#ffffff' )
   end
   
   it "should represent the fade from one html colour to another" do
@@ -12,7 +12,6 @@ describe ColourFade do
   end
   
   it "should only accept something in range of 0 to 1" do
-    @bw = ColourFade.new( '#000000', '#ffffff' )
     lambda{ @bw.at( 1.0001 ) }.should raise_error
     lambda{ @bw.at( -1.0 / 10 ) }.should raise_error    
   end
@@ -34,4 +33,18 @@ describe ColourFade do
     @bw.as_html( 0, 127, 255 ).should == '#007fff'
   end
 
+end
+
+describe ColourFader, "with three colours" do
+  
+  before( :all ) do
+    @three = ColourFader.new( '#cccccc', '#ffffff', '#0000ff' )
+  end
+  
+  it "should calculate points in colour range" do
+    @three.at( 0.25 ).should == '#e5e5e5' # this is half way b/w cc & ff
+    @three.at( 0.75 ).should == '#7f7fff' # this is half way b/c blue and black
+  end
+    
+  
 end

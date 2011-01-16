@@ -1,16 +1,24 @@
-class ColourFade
+class ColourFader
   
-  def initialize colour1, colour2
-    @c1 = as_rgb( colour1 )
-    @c2 = as_rgb( colour2 )
+  def initialize *colours
+    @c = colours.collect{ |c| as_rgb( c ) }
+    raise "Should have at least two colours, got #{colours.size}" if colours.size < 2
   end
   
   def at ratio
     raise "Ratio #{ratio} not in range 0-1" unless (0.0..1.0).include? ratio
-    res = @c1.zip( @c2 ).collect do | c1, c2 |
-      ( ( c2 - c1 ) * ratio.to_f ) + c1
+    return as_html( *@c.last ) if ratio == 1.0 # special case to avoid falling off end of array
+    
+    sized_ratio = ratio * ( @c.size - 1 )
+    col1 = @c[ sized_ratio ]
+    col2 = @c[ sized_ratio + 1 ]
+    local_ratio = sized_ratio % 1
+    
+    rgb = col1.zip( col2 ).collect do | c1, c2 |
+      ( ( c2 - c1 ) * local_ratio ) + c1
     end
-    as_html( *res )
+    as_html( *rgb )
+    
   end
   
   def as_rgb colour
