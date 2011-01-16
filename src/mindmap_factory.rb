@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), '../src/focus')
+require File.join(File.dirname(__FILE__), '../src/colour')
 
 module ElementMixin
 
@@ -294,23 +295,20 @@ class Edger
   def initialize( stack, filter )
     super( stack )
     @weight_calculator = WeightCalculator.new( filter )
+    @fader = ColourFader.new( '#cccccc', '#000000', '#0000ff' )
+    @max = 20
   end
   
   def accept item
     weight = @weight_calculator.weigh item
-    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= 20 ? 1 : 2    
+    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= @max ? 1 : 2    
   end
     
   def to_colour( weight )
-    max = 15
-    weight = [ weight, max ].min.to_f
-    if ( weight == 0 )
-      '#cccccc'
-    else
-      res =  weight / max * 255 
-      hex = res.to_i.to_s( 16 ).rjust( 2, '0' )
-      "#0000#{hex}"
-    end
+    col_max = @max * 0.75
+    weight = [ weight, col_max ].min.to_f
+    ratio = weight / @max
+    @fader.at ratio
   end
   
 end
