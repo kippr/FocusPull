@@ -54,13 +54,13 @@ describe Focus do
   end
   
   it "should default action status to active" do
-    @mailAction.status.should == "active"
+    @mailAction.status.should == :active
     @mailAction.completed_date.should be_nil
   end
   
   it "should accept actions as being marked complete" do
     @mailAction.completed( "2010-12-07T08:50:19.935Z" )
-    @mailAction.status.should == "done"
+    @mailAction.status.should == :done
     @mailAction.completed_date.should == Date.parse( "2010-12-07" )
   end
   

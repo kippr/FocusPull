@@ -133,15 +133,19 @@ end
 class Action < Item
 
   attr_reader :completed_date, :created_date, :updated_date
-  attr_accessor :status
+  attr_reader :status
   
   def initialize( name, rank )
     super( name, rank )
-    @status = 'active'
+    @status = :active
+  end
+  
+  def status=( status_string )
+    @status = status_string.intern
   end
   
   def completed( date )
-    @status = 'done'
+    @status = :done
     @completed_date = Date.parse( date )
   end
     
@@ -162,11 +166,11 @@ class Action < Item
   end
       
   def active?
-    status == 'active'
+    status == :active
   end
 
   def done?
-    status == 'done'
+    status == :done
   end
   
   def visit( visitor )
@@ -182,11 +186,11 @@ end
 class Project < Action  
 
   def on_hold?
-    status == 'inactive'
+    status == :inactive
   end
 
   def dropped?
-    status == 'dropped'
+    status == :dropped
   end
   
   def completed_date

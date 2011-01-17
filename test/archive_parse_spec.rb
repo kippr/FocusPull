@@ -13,10 +13,10 @@ describe FocusParser, "#parse" do
   end
   
   it "should parse project status" do
-    @focus.project("iPad has open zone access").status.should == "dropped"
-    @focus.project("Spend less time in email").status.should == "active"
+    @focus.project("iPad has open zone access").status.should == :dropped
+    @focus.project("Spend less time in email").status.should == :active
     doneProject = @focus.project("Switch to 3 network")
-    doneProject.status.should == "done"
+    doneProject.status.should == :done
   end
   
   it "should parse start, modified, end dates" do

@@ -198,6 +198,10 @@ describe MindMapFactory, "create_delta_map" do
     node_for( 'Review progress on mails collected' ).icon['BUILTIN'].should == 'idea'
   end
   
+  it "should weight both active and done projects & actions" do
+    node_for( 'Spend less time in email' ).edge['COLOR'].should == '#959595'
+  end
+  
 end
 
 describe MindMapFactory, "create_delta_map for completed items" do
@@ -233,7 +237,6 @@ describe MindMapFactory, "create_delta_map for completed items" do
     lambda{ MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :monkey ) }.should raise_error
   end
   
-
 end
 
 describe MindMapFactory, "create_meta_map" do

@@ -34,21 +34,27 @@ class MindMapFactory
   end
 
   def self.create_simple_map focus, extra_options = {}
-    factory = self.new( focus, {:HIGHLIGHT_ACTIVE_TASKS => false}.merge( extra_options ))
+    local_defaults = {
+      :HIGHLIGHT_ACTIVE_TASKS => false
+    }
+    factory = self.new( focus, local_defaults.merge( extra_options ) )
     factory.create_map( MapFilter.new )
   end
   
   def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done, extra_options = {}
-    factory = self.new( focus, extra_options )
+    local_defaults = {
+      :WEIGHTED_STATUSES => [ :active, :done ]
+    }
+    factory = self.new( focus, local_defaults.merge( extra_options ) )
     factory.create_map( TemporalFilter.new( start_date, end_date, filter_option ) )
   end
   
   def self.create_meta_map focus, extra_options = {}
-    default_options = {
+    local_defaults = {
       :FOLD_TASKS => false, :FORMATTING => false, 
       :WEIGHT_EDGES => false, :ADD_ICONS => false
     }
-    factory = self.new( focus, default_options.merge( extra_options ) )
+    factory = self.new( focus, local_defaults.merge( extra_options ) )
     factory.create_meta_map
   end
 
@@ -58,6 +64,7 @@ class MindMapFactory
       :FOLD_TASKS => true, 
       :HIGHLIGHT_ACTIVE_TASKS => true,
       :WEIGHT_EDGES => true,
+      :WEIGHTED_STATUSES => [ :active ],
       :ADD_ICONS => true,
       :ADD_ATTRIBUTES => false,
       :EXCLUDE_NODES => []
@@ -68,7 +75,6 @@ class MindMapFactory
     super( [] )
     @options = default_options.merge options
     @focus = focus
-    @excluded_nodes = @options[ :EXCLUDE_NODES ]
   end  
   
   def create_map( filter )
@@ -78,7 +84,7 @@ class MindMapFactory
     # todo: is there a way to pass methods as procs?
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
-    @focus.traverse( nil, push, pop) { | n | !@excluded_nodes.include? n.name }
+    @focus.traverse( nil, push, pop) { | n | !@options[ :EXCLUDE_NODES ].include? n.name }
     doc
   end
   
@@ -107,7 +113,7 @@ class MindMapFactory
       v << Formatter.new( @stack, @filter ) if @options[ :FORMATTING ]
       v << ActionCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
       v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if @options[ :ADD_ICONS ]
-      v << Edger.new( @stack, @filter ) if @options[ :WEIGHT_EDGES ]
+      v << Edger.new( @stack, @filter, @options[ :WEIGHTED_STATUSES ] ) if @options[ :WEIGHT_EDGES ]
       v << AttributeStamper.new( @stack ) if @options[ :ADD_ATTRIBUTES ]
       v << PositionStamper.new( @stack )
     end  
@@ -297,9 +303,9 @@ end
 class Edger
   include ElementMixin
   
-  def initialize( stack, filter )
+  def initialize( stack, filter, statuses_to_weight )
     super( stack )
-    @weight_calculator = WeightCalculator.new( filter )
+    @weight_calculator = WeightCalculator.new( filter, statuses_to_weight )
     @fader = ColourFader.new( '#cccccc', '#000000', '#0000ff' )
     @max = 20
   end
@@ -325,8 +331,9 @@ end
 class WeightCalculator
   include VisitorMixin
   
-  def initialize( filter )
+  def initialize( filter, statuses_to_weight )
     @filter = filter
+    @statuses_to_weight = statuses_to_weight
   end
   
   def weigh item
@@ -350,11 +357,11 @@ class WeightCalculator
   end
   
   def visit_project project
-    project.active? ? 3 : 0
+    @statuses_to_weight.include?( project.status ) ? 3 : 0
   end
 
   def visit_action action
-    action.active? ? 1 : 0
+    @statuses_to_weight.include?( action.status ) ? 1 : 0
   end
   
   def visit_default item
