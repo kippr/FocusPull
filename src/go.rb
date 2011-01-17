@@ -21,7 +21,7 @@ archive.save("#{directory}/#{filename}")
 parser = FocusParser.new( directory, filename, username)
 focus = parser.parse
 
-options = { :EXCLUDE_NODES => [ 'Personal' ] }
+options = { :EXCLUDE_NODES => [ 'Personal', 'Meta' ] }
 
 @log.info "Saving simple map"
 simple_map = MindMapFactory.create_simple_map focus, options
