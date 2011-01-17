@@ -128,6 +128,14 @@ describe MindMapFactory, "create_simple_map" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
     node_for( 'Admin' ).edge['COLOR'].should == '#444444' # 1 active proj, 2 actions
   end
+  
+  it "should offer a way of excluding sub-trees" do
+    @map = MindMapFactory.create_simple_map( @focus, :EXCLUDE_NODES => ['Spend less time in email', 'Personal'] )
+    @xml =  Nokogiri::Slop @map.to_s
+    node_for( 'Personal' ).should be_nil
+    node_for( 'Spend less time in email' ).should be_nil
+    node_for( 'Admin' ).should_not be_nil
+  end
     
 end  
 

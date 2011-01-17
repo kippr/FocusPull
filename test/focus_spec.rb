@@ -46,6 +46,13 @@ describe Focus do
     result.should == "iPad has open zone access->Personal->"
   end
   
+  it "should offer an optional traversal filter block, whereby sub-trees can be ignored" do
+    collector = Proc.new{ | res, n |  res << n ; res }
+    results = @focus.traverse( [], collector, nil ){ | n | n.name != 'Personal' }
+    results.should_not include @personalFolder
+    results.should_not include @openZoneProject
+  end
+  
   it "should default action status to active" do
     @mailAction.status.should == "active"
     @mailAction.completed_date.should be_nil

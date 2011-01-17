@@ -38,14 +38,17 @@ class MindMapFactory
     factory.create_map( MapFilter.new )
   end
   
-  def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done
-    factory = self.new( focus )
+  def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done, extra_options = {}
+    factory = self.new( focus, extra_options )
     factory.create_map( TemporalFilter.new( start_date, end_date, filter_option ) )
   end
   
-  def self.create_meta_map focus
-    factory = self.new( focus, :FOLD_TASKS => false, :FORMATTING => false, 
-      :WEIGHT_EDGES => false, :ADD_ICONS => false )
+  def self.create_meta_map focus, extra_options = {}
+    default_options = {
+      :FOLD_TASKS => false, :FORMATTING => false, 
+      :WEIGHT_EDGES => false, :ADD_ICONS => false
+    }
+    factory = self.new( focus, default_options.merge( extra_options ) )
     factory.create_meta_map
   end
 
@@ -56,7 +59,8 @@ class MindMapFactory
       :HIGHLIGHT_ACTIVE_TASKS => true,
       :WEIGHT_EDGES => true,
       :ADD_ICONS => true,
-      :ADD_ATTRIBUTES => false
+      :ADD_ATTRIBUTES => false,
+      :EXCLUDE_NODES => []
     }
   end
   
@@ -64,6 +68,7 @@ class MindMapFactory
     super( [] )
     @options = default_options.merge options
     @focus = focus
+    @excluded_nodes = @options[ :EXCLUDE_NODES ]
   end  
   
   def create_map( filter )
@@ -73,9 +78,7 @@ class MindMapFactory
     # todo: is there a way to pass methods as procs?
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
-    # todo: don't like any of this..
-    folder_filter = PersonalFilter.new unless MindMapFactory.failing_test_hack
-    @focus.traverse( nil, push, pop, folder_filter )
+    @focus.traverse( nil, push, pop) { | n | !@excluded_nodes.include? n.name }
     doc
   end
   
@@ -481,14 +484,6 @@ class TemporalFilter < MapFilter
   
   def label item
     "#{@label_prefix}#{@start}..#{@end}"
-  end
-  
-end
-
-class PersonalFilter
-  
-  def accept item
-    item && item.name != 'Personal'
   end
   
 end

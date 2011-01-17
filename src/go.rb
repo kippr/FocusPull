@@ -20,14 +20,16 @@ archive.save("#{directory}/#{filename}")
 parser = FocusParser.new( directory, filename, username)
 focus = parser.parse
 
+options = { :EXCLUDE_NODES => [ 'Personal' ] }
+
 @log.info "Saving simple map"
-simple_map = MindMapFactory.create_simple_map focus
+simple_map = MindMapFactory.create_simple_map focus, options
 @log.info "Saving delta map for period #{1.week.ago} to #{Date.today}"
-delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s
+delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :both_new_and_done, options
 @log.info "Saving completion delta map for period #{1.week.ago} to #{Date.today}"
-done_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :done_only
+done_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :done_only, options
 @log.info "Saving additions delta map for period #{1.week.ago} to #{Date.today}"
-new_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :new_only
+new_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.today.to_s, :new_only, options
 @log.info "Saving meta map"
 meta_map = MindMapFactory.create_meta_map focus
 

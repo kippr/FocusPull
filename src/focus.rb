@@ -37,12 +37,13 @@ class Item
     self.children.each { | child | child.each( &proc ) }
   end
   
-  def traverse( value, push, pop = nil, filter = nil )
-    if ( filter.nil? || filter.accept( self ) )
+  def traverse( value, push, pop = nil, &filter_block )
+    if ( filter_block.nil? || yield( self ) )
       value = push.call( value, self ) if push
-      children.each{ | c | value = c.traverse( value, push, pop, filter ) }
-      pop.call( value, self ) if pop
+      children.each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
+      value = pop.call( value, self ) if pop
     end
+    value
   end
   
   def link_parent( parent )
