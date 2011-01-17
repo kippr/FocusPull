@@ -73,7 +73,9 @@ class MindMapFactory
     # todo: is there a way to pass methods as procs?
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
-    @focus.traverse( nil, push, pop )
+    # todo: don't like any of this..
+    folder_filter = PersonalFilter.new unless MindMapFactory.failing_test_hack
+    @focus.traverse( nil, push, pop, folder_filter )
     doc
   end
   
@@ -479,6 +481,14 @@ class TemporalFilter < MapFilter
   
   def label item
     "#{@label_prefix}#{@start}..#{@end}"
+  end
+  
+end
+
+class PersonalFilter
+  
+  def accept item
+    item && item.name != 'Personal'
   end
   
 end

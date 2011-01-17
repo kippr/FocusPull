@@ -126,7 +126,7 @@ describe MindMapFactory, "create_simple_map" do
   
   it "should add thicker edges to 'heavy' folders" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
-    node_for( 'Admin' ).edge['COLOR'].should == '#666666' # 1 active proj, 2 actions
+    node_for( 'Admin' ).edge['COLOR'].should == '#444444' # 1 active proj, 2 actions
   end
     
 end  
