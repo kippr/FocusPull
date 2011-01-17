@@ -307,7 +307,7 @@ class Edger
   def to_colour( weight )
     col_max = @max * 0.75
     weight = [ weight, col_max ].min.to_f
-    ratio = weight / @max
+    ratio = weight / col_max
     @fader.at ratio
   end
   
