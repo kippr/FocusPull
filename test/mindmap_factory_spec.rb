@@ -10,7 +10,7 @@ describe MindMapFactory, "create_simple_map" do
     @focus = @parser.parse
     MindMapFactory.failing_test_hack = true
     # attributes are disabled by default, but leave in tests, since that's handier that splitting all out
-    @map = MindMapFactory.create_simple_map( @focus, :ADD_ATTRIBUTES => true )
+    @map = MindMapFactory.create_simple_map( @focus, :ADD_ATTRIBUTES => true, :STATUSES_TO_INCLUDE => [ :active, :done, :inactive, :dropped ] )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end

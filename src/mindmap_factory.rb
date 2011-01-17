@@ -35,10 +35,12 @@ class MindMapFactory
 
   def self.create_simple_map focus, extra_options = {}
     local_defaults = {
-      :HIGHLIGHT_ACTIVE_TASKS => false
+      :HIGHLIGHT_ACTIVE_TASKS => false,
+      :STATUSES_TO_INCLUDE => [ :active, :inactive, :dropped ]
     }
-    factory = self.new( focus, local_defaults.merge( extra_options ) )
-    factory.create_map( MapFilter.new )
+    options = local_defaults.merge( extra_options )
+    factory = self.new( focus, options )
+    factory.create_map( StatusFilter.new( options[ :STATUSES_TO_INCLUDE ] ) )
   end
   
   def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done, extra_options = {}
@@ -333,7 +335,7 @@ class WeightCalculator
   
   def initialize( filter, statuses_to_weight )
     @filter = filter
-    @statuses_to_weight = statuses_to_weight
+    @statuses_to_weight = StatusFilter.new( statuses_to_weight )
   end
   
   def weigh item
@@ -353,15 +355,15 @@ class WeightCalculator
   end
     
   def accept item
-    @filter.accept( item ) ? item.visit( self ) : 0
+    @filter.accept( item ) && @statuses_to_weight.accept( item ) ? item.visit( self ) : 0
   end
   
   def visit_project project
-    @statuses_to_weight.include?( project.status ) ? 3 : 0
+    3
   end
 
   def visit_action action
-    @statuses_to_weight.include?( action.status ) ? 1 : 0
+    1
   end
   
   def visit_default item
@@ -452,6 +454,22 @@ class MapFilter
     Date.today
   end
   
+end
+
+class StatusFilter < MapFilter
+  
+  def initialize statuses_to_include
+    @statuses_to_include = statuses_to_include
+  end
+  
+  def visit_project project
+    @statuses_to_include.include? project.status
+  end
+
+  def visit_action action
+    @statuses_to_include.include? action.status
+  end
+    
 end
 
 class TemporalFilter < MapFilter
