@@ -9,7 +9,8 @@ require File.join(File.dirname(__FILE__), 'mindmap_factory')
 username = 'kippr'
 password = ask("Omnisync password for #{username}? ") { |q| q.echo = false }
 
-directory = "../archives/#{Time.now.strftime("%Y.%m.%d_%H%M")}"
+directory = "../archives/#{Time.now.strftime("%Y.%m.%d")}"
+FileUtils.rm_rf(directory)
 FileUtils.mkpath(directory)
 filename = "omnisync.tar"
 
