@@ -11,9 +11,14 @@ module ElementMixin
     @stack.last
   end
   
-  def add_child( name, *args, &block )
-    child = element.document.create_element( name, *args, &block )
+  def add_child( name, *args )
+    child = element.document.create_element( name, *args )
     element << child if element  # do not try to add kids to current element if its not there
+    if block_given?
+      @stack << child
+      yield
+      @stack.pop
+    end
     child
   end  
 end
@@ -90,6 +95,16 @@ class MindMapFactory
     doc
   end
   
+  def visit item
+    if @filter.include?( item )
+      @stack << add_child( "node" )
+      @visitors.each{ | visitor | visitor.accept item }
+    else
+      # todo: this is a shame, but how else to deal with pop?
+      @stack << nil
+    end
+  end
+  
   def create_meta_map( )
     doc = create_doc
     @filter = MapFilter.new
@@ -126,57 +141,56 @@ class MindMapFactory
       @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
       data = visitor.counts
       
-      @stack << add_child( "node", :TEXT => "Meta" )
-      @stack << add_child( "node", :TEXT => "By status", :POSITION => "right" )
-      add_meta_items data, "Projects", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
-      add_meta_items data, "Actions", "Active" => "active", "Done" => "done"
-      @stack.pop
+      add_child( "node", :TEXT => "Meta" ) do
+        add_child( "node", :TEXT => "By status", :POSITION => "right" ) do
+          add_meta_items data, "Projects", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
+          add_meta_items data, "Actions", "Active" => "active", "Done" => "done"
+        end
       
-      @stack << add_child( "node", :TEXT => "Actionless projects", :POSITION => "left" )
-      add_child( "node", :TEXT => "todo" )
-      @stack.pop
+        add_child( "node", :TEXT => "Actionless projects", :POSITION => "left" ) do
+          add_child( "node", :TEXT => "todo" )
+        end
 
-      #todo: remove duplication
-      aged_projects = data["Projects-aged"]
-      @stack << add_child( "node", :TEXT => "Aged projects (#{aged_projects.size})", :POSITION => "left", :FOLDED => 'true' )
-      aged_projects.each do | item |
-        visit item
-        @stack.pop
-      end
-      @stack.pop
+        #todo: remove duplication
+        add_aged :projects
       
-      aged_actions = data["Actions-aged"]
-      @stack << add_child( "node", :TEXT => "Aged actions (#{aged_actions.size})", :POSITION => "left", :FOLDED => 'true' )
-      aged_actions.each do | item |
-        visit item
-        @stack.pop
+        aged_actions = data["Actions-aged"]
+        add_child( "node", :TEXT => "Aged actions (#{aged_actions.size})", :POSITION => "left", :FOLDED => 'true' ) do
+          aged_actions.each do | item |
+            visit_single item
+          end
+        end
       end
-      @stack.pop
-      
     end
     
-    def add_meta_items data, type, statuses
-      @stack << add_child( "node", :TEXT => type  )
-      statuses.each do | name, status |
-        items = data["#{type}-#{status}"]
-        @stack << add_child( "node", :TEXT => "#{name}: #{items.size}", :FOLDED => "true" )
-        items.each do | item |
-          visit item
-          @stack.pop
+    def add_aged item_type
+      aged = @focus.send( item_type ).select{  |p| p.age >= MindMapFactory::PROJECT_AGED && !p.done?}
+      add_child( "node", :TEXT => "Aged #{item_type} (#{aged.size})", :POSITION => "left", :FOLDED => 'true' ) do
+        aged.each do | item |
+          visit_single item
         end
-        @stack.pop
       end
-      @stack.pop
-      
     end
-  
-    def visit item
+      
+    
+    def add_meta_items data, type, statuses
+      add_child( "node", :TEXT => type  ) do
+        statuses.each do | name, status |
+          items = data["#{type}-#{status}"]
+          add_child( "node", :TEXT => "#{name}: #{items.size}", :FOLDED => "true" ) do
+            items.each do | item |
+              visit_single item
+            end
+          end
+        end
+      end
+    end
+      
+    def visit_single item
       if @filter.include?( item )
-        @stack << add_child( "node" )
-        @visitors.each{ | visitor | visitor.accept item }
-      else
-        # todo: this is a shame, but how else to deal with pop?
-        @stack << nil
+        add_child( "node" ) do
+          @visitors.each{ | visitor | visitor.accept item }
+        end
       end
     end
     
@@ -196,18 +210,18 @@ class Namer
   end
   
   def visit_focus focus
-    @stack << add_child( "richcontent", :TYPE => "NODE" )
-    @stack << add_child( "html" ) unless MindMapFactory.failing_test_hack
-    @stack << add_child( "body" )
-    @stack << add_child( "p", :style => "text-align: center" )
-    add_child( "font", :SIZE => 4 ).content = "Portfolio" 
-    @stack.pop
-    @stack << add_child( "p", :style => "text-align: center" )
-    add_child( "font", :SIZE => 2 ).content = @filter.label( focus )     
-    @stack.pop
-    @stack.pop
-    @stack.pop unless MindMapFactory.failing_test_hack
-    @stack.pop
+    add_child( "richcontent", :TYPE => "NODE" ) do
+      @stack << add_child( "html" ) unless MindMapFactory.failing_test_hack
+      add_child( "body" ) do
+        add_child( "p", :style => "text-align: center" ) do
+          add_child( "font", :SIZE => 4 ).content = "Portfolio" 
+        end
+        add_child( "p", :style => "text-align: center" ) do
+          add_child( "font", :SIZE => 2 ).content = @filter.label( focus )     
+        end
+      end
+      @stack.pop unless MindMapFactory.failing_test_hack
+    end
   end
   
 end
@@ -426,7 +440,6 @@ class MetaVisitor
   
   def visit_project project
     track( "Projects", project )
-    @counts["Projects-aged"] << project if project.age >= MindMapFactory::PROJECT_AGED && !project.done?
   end
 
   def visit_action action
