@@ -177,19 +177,6 @@ class MindMapFactory
     end
       
     
-    def add_meta_items data, type, statuses
-      add_child( "node", :TEXT => type  ) do
-        statuses.each do | name, status |
-          items = data["#{type}-#{status}"]
-          add_child( "node", :TEXT => "#{name}: #{items.size}", :FOLDED => "true" ) do
-            items.each do | item |
-              visit_single item
-            end
-          end
-        end
-      end
-    end
-      
     def visit_single item
       if @filter.include?( item )
         add_child( "node" ) do
