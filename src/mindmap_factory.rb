@@ -121,6 +121,7 @@ class MindMapFactory
     end  
     
     def add_meta_info
+      # todo: don't use meta visitor, it's dumb
       visitor = MetaVisitor.new
       @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
       data = visitor.counts
