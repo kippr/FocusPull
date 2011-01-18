@@ -28,8 +28,8 @@ class MindMapFactory
   include ElementMixin
   
   # todo: sensible values?
-  PROJECT_AGED=90
-  TASK_AGED=45 
+  AGED_PROJECTS=90
+  AGED_ACTIONS=45 
   
   #todo: this makes me want to weep... As soon as I add an html node, a whole bunch of 
   # tests start failing. Namespace issue with a magic html node? No idea :(
@@ -135,36 +135,40 @@ class MindMapFactory
       v << PositionStamper.new( @stack )
     end  
     
-    def add_meta_info
-      # todo: don't use meta visitor, it's dumb
-      visitor = MetaVisitor.new
-      @focus.traverse( nil, lambda{ |a, b| visitor.accept b } )
-      data = visitor.counts
-      
+    def add_meta_info      
       add_child( "node", :TEXT => "Meta" ) do
+        
         add_child( "node", :TEXT => "By status", :POSITION => "right" ) do
-          add_meta_items data, "Projects", "Active" => "active", "Done" => "done", "On Hold" => "inactive", "Dropped" => "dropped"
-          add_meta_items data, "Actions", "Active" => "active", "Done" => "done"
+          add_by_status :projects, :active, :done, :inactive, :dropped
+          add_by_status :actions, :active, :done
         end
       
-        add_child( "node", :TEXT => "Actionless projects", :POSITION => "left" ) do
-          add_child( "node", :TEXT => "todo" )
+        add_child( "node", :TEXT => "Actionless projects", :POSITION => "left", :FOLDED => 'true' ) do
+          @focus.projects.select{ |p| p.children.empty? }.each{ |p| visit_single p }
         end
 
-        #todo: remove duplication
         add_aged :projects
-      
-        aged_actions = data["Actions-aged"]
-        add_child( "node", :TEXT => "Aged actions (#{aged_actions.size})", :POSITION => "left", :FOLDED => 'true' ) do
-          aged_actions.each do | item |
-            visit_single item
+        add_aged :actions
+        
+      end
+    end
+    
+    def add_by_status item_type, *statuses
+      add_child( "node", :TEXT => item_type.capitalize  ) do
+        statuses.each do | status |
+          items = @focus.send( item_type ).select{ |n| n.status == status }
+          add_child( "node", :TEXT => "#{status.capitalize}: #{items.size}", :FOLDED => "true" ) do
+            items.each do | item |
+              visit_single item
+            end
           end
         end
       end
     end
     
     def add_aged item_type
-      aged = @focus.send( item_type ).select{  |p| p.age >= MindMapFactory::PROJECT_AGED && !p.done?}
+      old_age = MindMapFactory.const_get "AGED_#{item_type.upcase}"
+      aged = @focus.send( item_type ).select{  |i| i.age >= old_age && !i.done?}
       add_child( "node", :TEXT => "Aged #{item_type} (#{aged.size})", :POSITION => "left", :FOLDED => 'true' ) do
         aged.each do | item |
           visit_single item
