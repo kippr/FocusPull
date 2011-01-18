@@ -107,7 +107,6 @@ class MindMapFactory
   
   def create_meta_map( )
     doc = create_doc
-    @filter = MapFilter.new
     @visitors = create_visitors
     add_meta_info
     doc
@@ -144,7 +143,7 @@ class MindMapFactory
         end
       
         add_child( "node", :TEXT => "Actionless projects", :POSITION => "left", :FOLDED => 'true' ) do
-          @focus.projects.select{ |p| p.children.empty? }.each{ |p| visit_single p }
+          @focus.projects.select{ |p| p.children.empty? }.each{ |p| add_item_node p }
         end
 
         add_aged :projects
@@ -159,7 +158,7 @@ class MindMapFactory
           items = @focus.send( item_type ).select{ |n| n.status == status }
           add_child( "node", :TEXT => "#{status.capitalize}: #{items.size}", :FOLDED => "true" ) do
             items.each do | item |
-              visit_single item
+              add_item_node item
             end
           end
         end
@@ -171,17 +170,15 @@ class MindMapFactory
       aged = @focus.send( item_type ).select{  |i| i.age >= old_age && !i.done?}
       add_child( "node", :TEXT => "Aged #{item_type} (#{aged.size})", :POSITION => "left", :FOLDED => 'true' ) do
         aged.each do | item |
-          visit_single item
+          add_item_node item
         end
       end
     end
       
     
-    def visit_single item
-      if @filter.include?( item )
-        add_child( "node" ) do
-          @visitors.each{ | visitor | visitor.accept item }
-        end
+    def add_item_node item
+      add_child( "node" ) do
+        @visitors.each{ | visitor | visitor.accept item }
       end
     end
     
