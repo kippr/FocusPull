@@ -87,7 +87,7 @@ class MindMapFactory
     def self.simple_map focus, filter, options
       stack = [create_doc]
       visitors = create_visitors( stack, filter, options )
-      map = SimpleMap.new( stack, focus, visitors, filter, options )
+      map = SimpleMap.new( stack, focus, visitors, filter, options[ :EXCLUDE_NODES ] )
       map.create
     end
   
@@ -115,19 +115,18 @@ end
 class SimpleMap
   include ElementMixin
   
-  def initialize( stack, focus, visitors, filter, options )
+  def initialize( stack, focus, visitors, filter, nodes_to_exclude )
     super( stack )
     @focus = focus
     @visitors = visitors
     @filter = filter
-    @options = options
+    @nodes_to_exclude = nodes_to_exclude
   end
   
   def create
-    # todo: is there a way to pass methods as procs?
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
-    @focus.traverse( nil, push, pop) { | n | !@options[ :EXCLUDE_NODES ].include? n.name }
+    @focus.traverse( nil, push, pop) { | n | !@nodes_to_exclude.include? n.name }
     @stack.first
   end
   
@@ -136,7 +135,7 @@ class SimpleMap
       @stack << add_child( "node" )
       @visitors.each{ | visitor | visitor.accept item }
     else
-      # todo: this is a shame, but how else to deal with pop?
+      # this is a shame, but how else to deal with pop?
       @stack << nil
     end
   end
