@@ -39,33 +39,40 @@ class MindMapFactory
   end
 
   def self.create_simple_map focus, extra_options = {}
-    local_defaults = {
+    options = default_options.merge( {
       :HIGHLIGHT_ACTIVE_TASKS => false,
       :STATUSES_TO_INCLUDE => [ :active, :inactive, :dropped ]
-    }
-    options = local_defaults.merge( extra_options )
-    factory = self.new( focus, options )
-    factory.create_map( StatusFilter.new( options[ :STATUSES_TO_INCLUDE ] ) )
+    } ).merge( extra_options )
+    filter = StatusFilter.new( options[ :STATUSES_TO_INCLUDE ] )
+    stack = [create_doc]
+    visitors = create_visitors( stack, filter, options )
+    map = SimpleMap.new( stack, focus, visitors, filter, options )
+    map.create_map
   end
   
   def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done, extra_options = {}
-    local_defaults = {
+    options = default_options.merge( {
       :WEIGHTED_STATUSES => [ :active, :done ]
-    }
-    factory = self.new( focus, local_defaults.merge( extra_options ) )
-    factory.create_map( TemporalFilter.new( start_date, end_date, filter_option ) )
+    } ).merge( extra_options )
+    filter = TemporalFilter.new( start_date, end_date, filter_option )
+    stack = [create_doc]
+    visitors = create_visitors( stack, filter, options )
+    map = SimpleMap.new( stack, focus, visitors, filter, options )
+    map.create_map
   end
   
   def self.create_meta_map focus, extra_options = {}
-    local_defaults = {
+    options = default_options.merge( {
       :FOLD_TASKS => false, :FORMATTING => false, 
       :WEIGHT_EDGES => false, :ADD_ICONS => false
-    }
-    factory = self.new( focus, local_defaults.merge( extra_options ) )
+    } ).merge( extra_options )
+    stack = [create_doc]
+    visitors = create_visitors( stack, MapFilter.new, options )
+    factory = MetaMap.new( stack, focus, visitors )
     factory.create_meta_map
   end
 
-  def default_options
+  def self.default_options
     { 
       :FORMATTING => true, 
       :FOLD_TASKS => true, 
@@ -83,16 +90,46 @@ class MindMapFactory
     @options = default_options.merge options
     @focus = focus
   end  
+    
+  private        
   
-  def create_map( filter )
+    def self.create_doc
+      doc = Nokogiri::XML::Document.new()
+      map = doc.create_element( "map", :version => '0.9.0' )
+      doc << map
+      map << doc.create_element( "attribute_registry", :SHOW_ATTRIBUTES => 'hide' )
+      map
+    end
+    
+    def self.create_visitors( stack, filter, options )
+      v = []
+      v << Namer.new( stack, filter )
+      v << Formatter.new( stack, filter ) if options[ :FORMATTING ]
+      v << ActionCollapser.new( stack, filter ) if options[ :FOLD_TASKS ]
+      v << IconStamper.new( stack, filter, options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if options[ :ADD_ICONS ]
+      v << Edger.new( stack, filter, options[ :WEIGHTED_STATUSES ] ) if options[ :WEIGHT_EDGES ]
+      v << AttributeStamper.new( stack ) if options[ :ADD_ATTRIBUTES ]
+      v << PositionStamper.new( stack )
+    end  
+end
+
+class SimpleMap
+  include ElementMixin
+  
+  def initialize( stack, focus, visitors, filter, options )
+    super( stack )
+    @focus = focus
+    @visitors = visitors
     @filter = filter
-    @visitors = create_visitors
-    doc = create_doc
+    @options = options
+  end
+  
+  def create_map( )
     # todo: is there a way to pass methods as procs?
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
     @focus.traverse( nil, push, pop) { | n | !@options[ :EXCLUDE_NODES ].include? n.name }
-    doc
+    @stack.first
   end
   
   def visit item
@@ -105,36 +142,19 @@ class MindMapFactory
     end
   end
   
-  def create_meta_map( )
-    doc = create_doc
-    @visitors = create_visitors
-    add_meta_info
-    doc
-  end
-    
-  private        
-    
+end
   
-    def create_doc
-      doc = Nokogiri::XML::Document.new()
-      @stack << doc
-      @stack << add_child( "map", :version => '0.9.0' )
-      add_child( "attribute_registry", :SHOW_ATTRIBUTES => 'hide' )
-      doc
-    end
-    
-    def create_visitors
-      v = []
-      v << Namer.new( @stack, @filter )
-      v << Formatter.new( @stack, @filter ) if @options[ :FORMATTING ]
-      v << ActionCollapser.new( @stack, @filter ) if @options[ :FOLD_TASKS ]
-      v << IconStamper.new( @stack, @filter, @options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if @options[ :ADD_ICONS ]
-      v << Edger.new( @stack, @filter, @options[ :WEIGHTED_STATUSES ] ) if @options[ :WEIGHT_EDGES ]
-      v << AttributeStamper.new( @stack ) if @options[ :ADD_ATTRIBUTES ]
-      v << PositionStamper.new( @stack )
-    end  
-    
-    def add_meta_info      
+class MetaMap
+  include ElementMixin
+
+  def initialize( stack, focus, visitors )
+    super( stack )
+    @focus = focus
+    @visitors = visitors
+  end
+
+  #todo: fix indent
+  def create_meta_map( )
       add_child( "node", :TEXT => "Meta" ) do
         
         add_child( "node", :TEXT => "By status", :POSITION => "right" ) do
@@ -150,6 +170,7 @@ class MindMapFactory
         add_aged :actions
         
       end
+      @stack.first
     end
     
     def add_by_status item_type, *statuses
@@ -181,7 +202,6 @@ class MindMapFactory
         @visitors.each{ | visitor | visitor.accept item }
       end
     end
-    
 end
 
 
