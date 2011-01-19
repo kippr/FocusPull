@@ -25,7 +25,6 @@ end
 
 
 class MindMapFactory
-  include ElementMixin
   
   # todo: sensible values?
   AGED_PROJECTS=90
@@ -38,6 +37,7 @@ class MindMapFactory
     attr_accessor :failing_test_hack
   end
 
+  # todo: refactor duplication
   def self.create_simple_map focus, extra_options = {}
     options = default_options.merge( {
       :HIGHLIGHT_ACTIVE_TASKS => false,
@@ -113,6 +113,7 @@ class MindMapFactory
     end  
 end
 
+#todo: options needed?
 class SimpleMap
   include ElementMixin
   
@@ -435,30 +436,6 @@ class PositionStamper
     @pos = @pos == "right" ? "left" : "right"
   end
   
-end
-
-class MetaVisitor
-  include VisitorMixin
-  
-  attr_reader :counts
-  
-  def initialize
-    @counts = Hash.new { | hash, key | hash[ key ] = [] }
-  end
-  
-  def visit_project project
-    track( "Projects", project )
-  end
-
-  def visit_action action
-    track( "Actions", action )
-    @counts["Actions-aged"] << action if action.age >= MindMapFactory::TASK_AGED && !action.done?
-  end
-  
-  def track type, item
-    @counts["#{type}-#{item.status}"] << item
-  end
-    
 end
 
 class MapFilter
