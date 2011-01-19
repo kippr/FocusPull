@@ -13,7 +13,7 @@ module ElementMixin
   
   def add_child( name, *args )
     child = element.document.create_element( name, *args )
-    element << child if element  # do not try to add kids to current element if its not there
+    element << child
     if block_given?
       @stack << child
       yield
@@ -38,38 +38,35 @@ class MindMapFactory
   end
 
   # todo: refactor duplication
-  def self.create_simple_map focus, extra_options = {}
-    options = default_options.merge( {
+  def self.create_simple_map focus, user_options = {}
+    simple_options = {
       :HIGHLIGHT_ACTIVE_TASKS => false,
       :STATUSES_TO_INCLUDE => [ :active, :inactive, :dropped ]
-    } ).merge( extra_options )
+    }
+    options = default_options.merge( simple_options ).merge( user_options )
     filter = StatusFilter.new( options[ :STATUSES_TO_INCLUDE ] )
-    stack = [create_doc]
-    visitors = create_visitors( stack, filter, options )
-    map = SimpleMap.new( stack, focus, visitors, filter, options )
-    map.create_map
+    simple_map focus, filter, options
   end
   
-  def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done, extra_options = {}
-    options = default_options.merge( {
-      :WEIGHTED_STATUSES => [ :active, :done ]
-    } ).merge( extra_options )
+  def self.create_delta_map focus, start_date, end_date, filter_option = :both_new_and_done, user_options = {}
+    delta_options = { :WEIGHTED_STATUSES => [ :active, :done ] }
     filter = TemporalFilter.new( start_date, end_date, filter_option )
-    stack = [create_doc]
-    visitors = create_visitors( stack, filter, options )
-    map = SimpleMap.new( stack, focus, visitors, filter, options )
-    map.create_map
+    options = default_options.merge( delta_options ).merge( user_options )
+    simple_map focus, filter, options
   end
   
-  def self.create_meta_map focus, extra_options = {}
-    options = default_options.merge( {
-      :FOLD_TASKS => false, :FORMATTING => false, 
-      :WEIGHT_EDGES => false, :ADD_ICONS => false
-    } ).merge( extra_options )
+  def self.create_meta_map focus, user_options = {}
+    meta_options = {
+      :FOLD_TASKS => false, 
+      :FORMATTING => false, 
+      :WEIGHT_EDGES => false, 
+      :ADD_ICONS => false
+    }
+    options = default_options.merge( meta_options ).merge( user_options )
     stack = [create_doc]
     visitors = create_visitors( stack, MapFilter.new, options )
-    factory = MetaMap.new( stack, focus, visitors )
-    factory.create_meta_map
+    map = MetaMap.new( stack, focus, visitors )
+    map.create
   end
 
   def self.default_options
@@ -84,14 +81,15 @@ class MindMapFactory
       :EXCLUDE_NODES => []
     }
   end
+      
+  private   
   
-  def initialize( focus, options = {} )
-    super( [] )
-    @options = default_options.merge options
-    @focus = focus
-  end  
-    
-  private        
+    def self.simple_map focus, filter, options
+      stack = [create_doc]
+      visitors = create_visitors( stack, filter, options )
+      map = SimpleMap.new( stack, focus, visitors, filter, options )
+      map.create
+    end
   
     def self.create_doc
       doc = Nokogiri::XML::Document.new()
@@ -125,7 +123,7 @@ class SimpleMap
     @options = options
   end
   
-  def create_map( )
+  def create
     # todo: is there a way to pass methods as procs?
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
@@ -154,26 +152,27 @@ class MetaMap
     @visitors = visitors
   end
 
-  #todo: fix indent
-  def create_meta_map( )
-      add_child( "node", :TEXT => "Meta" ) do
+  def create
+    add_child( "node", :TEXT => "Meta" ) do
         
-        add_child( "node", :TEXT => "By status", :POSITION => "right" ) do
-          add_by_status :projects, :active, :done, :inactive, :dropped
-          add_by_status :actions, :active, :done
-        end
-      
-        add_child( "node", :TEXT => "Actionless projects", :POSITION => "left", :FOLDED => 'true' ) do
-          @focus.projects.select{ |p| p.children.empty? }.each{ |p| add_item_node p }
-        end
-
-        add_aged :projects
-        add_aged :actions
-        
+      add_child( "node", :TEXT => "By status", :POSITION => "right" ) do
+        add_by_status :projects, :active, :done, :inactive, :dropped
+        add_by_status :actions, :active, :done
       end
-      @stack.first
+      
+      add_child( "node", :TEXT => "Actionless projects", :POSITION => "left", :FOLDED => 'true' ) do
+        @focus.projects.select{ |p| p.children.empty? }.each{ |p| add_item_node p }
+      end
+
+      add_aged :projects
+      add_aged :actions
+        
     end
-    
+    @stack.first
+  end
+
+  private
+  
     def add_by_status item_type, *statuses
       add_child( "node", :TEXT => item_type.capitalize  ) do
         statuses.each do | status |
