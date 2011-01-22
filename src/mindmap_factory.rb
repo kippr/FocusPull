@@ -436,6 +436,7 @@ class PositionStamper
   
 end
 
+# todo: does visitor make sense for filters?
 class MapFilter
   include VisitorMixin
   
@@ -475,17 +476,15 @@ class TemporalFilter < MapFilter
   {
     :both_new_and_done => Proc.new{ | item | [ item.created_date, item.completed_date ] },
     :new_only => Proc.new{ | item | [ item.created_date ] },
+    :new_projects_only => Proc.new{ | item | [ item.created_date ] },
     :done_only => Proc.new{ | item | [ item.completed_date ] }
   }
   
   def initialize start_date, end_date, filter_option
+    @filter_option = filter_option
     @start = Date.parse( start_date )
     @end = Date.parse( end_date )
     @dates_for = @@filter_options[ filter_option ] || raise( "#{filter_option} is invalid" )
-    #todo: seems kinda ugly?
-    @label_prefix = {
-      :new_only => "Created ", :done_only => "Completed "
-      }[filter_option] || ""
   end
   
   def visit_project project
@@ -493,7 +492,7 @@ class TemporalFilter < MapFilter
   end
   
   def visit_action action
-    included_in_range? action
+    @filter_option != :new_projects_only && included_in_range?( action )
   end
   
   def included_in_range? item
@@ -505,7 +504,11 @@ class TemporalFilter < MapFilter
   end
   
   def label item
-    "#{@label_prefix}#{@start}..#{@end}"
+    #todo: seems kinda ugly?
+    label_prefix = {
+      :new_only => "Created ", :done_only => "Completed "
+      }[ @filter_option ] || ""
+    "#{label_prefix}#{@start}..#{@end}"
   end
   
 end

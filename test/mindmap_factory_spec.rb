@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), '../src/focus')
+require File.join(File.dirname(__FILE__), '../src/archive_parser')
 require File.join(File.dirname(__FILE__), '../src/mindmap_factory')
 require 'nokogiri'
 
@@ -203,6 +204,27 @@ describe MindMapFactory, "create_delta_map" do
   end
   
 end
+
+describe MindMapFactory, "create_delta_map for new projects" do
+  
+  before(:all) do
+    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @focus = @parser.parse
+    MindMapFactory.failing_test_hack = true
+    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects_only )
+    @xml =  Nokogiri::Slop @map.to_s
+    @root = @xml.at_xpath( "/map" )
+  end
+  
+  it "should exclude new actions" do
+    node_for( "Review progress on mails collected" ).should be_nil
+  end
+  
+  after(:all) do
+    MindMapFactory.failing_test_hack = false
+  end
+  
+end  
 
 describe MindMapFactory, "create_delta_map for completed items" do
 
