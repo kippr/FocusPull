@@ -211,7 +211,7 @@ describe MindMapFactory, "create_delta_map for new projects" do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     MindMapFactory.failing_test_hack = true
-    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects_only )
+    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
@@ -219,6 +219,12 @@ describe MindMapFactory, "create_delta_map for new projects" do
   it "should exclude new actions" do
     node_for( "Review progress on mails collected" ).should be_nil
   end
+  
+  it "should specify new projects only in description 'portfolio' node name" do
+    @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
+    @root.node.richcontent.body.p[1].font.content.should == 'New projects 2010-12-08..2010-12-13'
+  end
+  
   
   after(:all) do
     MindMapFactory.failing_test_hack = false
@@ -232,7 +238,7 @@ describe MindMapFactory, "create_delta_map for completed items" do
     @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     MindMapFactory.failing_test_hack = true
-    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :done_only )
+    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :all_done )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end

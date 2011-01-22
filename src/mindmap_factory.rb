@@ -475,9 +475,9 @@ class TemporalFilter < MapFilter
   @@filter_options = 
   {
     :both_new_and_done => Proc.new{ | item | [ item.created_date, item.completed_date ] },
-    :new_only => Proc.new{ | item | [ item.created_date ] },
-    :new_projects_only => Proc.new{ | item | [ item.created_date ] },
-    :done_only => Proc.new{ | item | [ item.completed_date ] }
+    :all_new => Proc.new{ | item | [ item.created_date ] },
+    :new_projects => Proc.new{ | item | [ item.created_date ] },
+    :all_done => Proc.new{ | item | [ item.completed_date ] }
   }
   
   def initialize start_date, end_date, filter_option
@@ -492,7 +492,7 @@ class TemporalFilter < MapFilter
   end
   
   def visit_action action
-    @filter_option != :new_projects_only && included_in_range?( action )
+    @filter_option != :new_projects && included_in_range?( action )
   end
   
   def included_in_range? item
@@ -504,10 +504,12 @@ class TemporalFilter < MapFilter
   end
   
   def label item
-    #todo: seems kinda ugly?
-    label_prefix = {
-      :new_only => "Created ", :done_only => "Completed "
-      }[ @filter_option ] || ""
+    label_prefix = case @filter_option
+      when :new_projects then "New projects "
+      when :all_new then "Created "
+      when :all_done then "Completed "
+      else ""
+    end
     "#{label_prefix}#{@start}..#{@end}"
   end
   
