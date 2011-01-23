@@ -127,7 +127,7 @@ describe MindMapFactory, "create_simple_map" do
   
   it "should add thicker edges to 'heavy' folders" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
-    node_for( 'Admin' ).edge['COLOR'].should == '#444444' # 1 active proj, 2 actions
+    node_for( 'Admin' ).edge['COLOR'].should == '#000010' # 2 active projs, 2 actions
   end
   
   it "should offer a way of excluding sub-trees" do
@@ -163,7 +163,7 @@ describe MindMapFactory, "create_delta_map" do
   end
   
   it "should include newly created projects, and their parent folders" do
-    node_for( 'Switch to 3 network' ).parent['TEXT'].should == "Personal"
+    node_for( 'Setup 2011 vacsheet' ).parent['TEXT'].should == "Admin"
   end
   
   it "should not include actions that didn't change" do
@@ -220,6 +220,10 @@ describe MindMapFactory, "create_delta_map for new projects" do
     node_for( "Review progress on mails collected" ).should be_nil
   end
   
+  it "should not include new projects that were also completed in same period, these make more sense in done view" do
+    node_for( "Switch to 3 network" ).should be_nil
+  end
+  
   it "should specify new projects only in description 'portfolio' node name" do
     @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
     @root.node.richcontent.body.p[1].font.content.should == 'New projects 2010-12-08..2010-12-13'
@@ -258,7 +262,7 @@ describe MindMapFactory, "create_delta_map for completed items" do
   end  
   
   it "should not include newly created projects" do
-    node_for( 'Switch to 3 network' ).should be_nil
+    node_for( 'Setup 2011 vacsheet' ).should be_nil
   end
   
   it "should barf when an invalid filter type is passed" do

@@ -475,8 +475,8 @@ class TemporalFilter < MapFilter
   @@filter_options = 
   {
     :both_new_and_done => Proc.new{ | item | [ item.created_date, item.completed_date ] },
-    :all_new => Proc.new{ | item | [ item.created_date ] },
-    :new_projects => Proc.new{ | item | [ item.created_date ] },
+    :all_new => Proc.new{ | item | item.done? ? [] : [ item.created_date ] },
+    :new_projects => Proc.new{ | item | item.done? ? [] : [ item.created_date ] },
     :all_done => Proc.new{ | item | [ item.completed_date ] }
   }
   
@@ -488,7 +488,7 @@ class TemporalFilter < MapFilter
   end
   
   def visit_project project
-    included_in_range? project
+    included_in_range?( project ) && ( !@filter_option.to_s.include?( "new_" ) || !project.done?)
   end
   
   def visit_action action

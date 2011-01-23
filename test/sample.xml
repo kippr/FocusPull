@@ -87,6 +87,19 @@
     <completed>2010-12-16T09:44:46.919Z</completed>
     <order>parallel</order>
   </task>
+  <task id="bMAutUo5Hy2">
+    <project>
+      <folder idref="gXWjE0kW_aX"/>
+      <last-review>2010-12-15T19:04:46.648Z</last-review>
+      <review-interval>@1w</review-interval>
+      <status>active</status>
+    </project>
+    <added>2010-12-08T17:09:46.909Z</added>
+    <modified>2010-12-16T09:44:47.672Z</modified>
+    <name>Setup 2011 vacsheet</name>
+    <rank>2146435073</rank>
+    <order>parallel</order>
+  </task>
   <task id="cKEHwp5WQLt">
     <project>
       <folder idref="lTvKvwDOXV1"/>
