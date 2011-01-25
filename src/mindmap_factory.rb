@@ -29,6 +29,7 @@ class MindMapFactory
   # todo: sensible values?
   AGED_PROJECTS=90
   AGED_ACTIONS=45 
+  APPEND_WEIGHTS=false # used to eyeball weighting
   
   #todo: this makes me want to weep... As soon as I add an html node, a whole bunch of 
   # tests start failing. Namespace issue with a magic html node? No idea :(
@@ -337,7 +338,7 @@ class Edger
   def accept item
     weight = @weight_calculator.weigh item
     add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= @max ? 1 : 2
-    #element['TEXT'] = "#{element['TEXT']} %2.2f" % weight
+    element['TEXT'] = "#{element['TEXT']} %2.2f" % weight if MindMapFactory::APPEND_WEIGHTS
   end
     
   def to_colour( weight )
