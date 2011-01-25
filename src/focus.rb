@@ -67,6 +67,11 @@ class Item
     Date.today
   end
   
+  #todo: this is evil
+  def status
+    :active
+  end
+  
   def to_s
     "#{self.class}: #{@name}"
   end
@@ -127,17 +132,22 @@ class Folder < Item
   def visit( visitor )
     visitor.visit_folder( self )
   end
-  
+
+  # todo: define status method
+    
 end
 
 class Action < Item
 
   attr_reader :completed_date, :created_date, :updated_date
-  attr_reader :status
   
   def initialize( name, rank )
     super( name, rank )
     @status = :active
+  end
+  
+  def status
+    parent && parent.status == :inactive ? :inactive : @status
   end
   
   def status=( status_string )

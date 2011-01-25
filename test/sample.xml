@@ -167,6 +167,14 @@
     <context idref="pf4w70-AZjc"/>
     <order>parallel</order>
   </task>
+  <task id="cc3ofbIVDlf">
+    <task idref="b8QH2bRC8x0"/>
+    <added>2010-10-09T13:54:47.888Z</added>
+    <name>Send Simon a mail to ask when he can make lunch</name>
+    <rank>0</rank>
+    <context idref="pf4w70-AZjc"/>
+    <order>parallel</order>
+  </task>
   <perspective id="ProcessFlagged">
     <added>2010-11-30T22:09:24.232Z</added>
     <plist version="1.0"><dict><key>iconNameInBundle</key><string>ProcessFlagged</string><key>name</key><string>Flagged</string><key>uuid</key><string>ProcessFlagged</string><key>viewState</key><dict><key>viewMode</key><string>context</string><key>viewModeState</key><dict><key>context</key><dict><key>actionCompletionFilter</key><string>incomplete</string><key>actionDurationFilter</key><string>any</string><key>actionFlaggedFilter</key><string>flagged</string><key>collation</key><string>context</string><key>firstResponder</key><string>actionOutline</string><key>sidebarFilter</key><string>available-contexts</string><key>sort</key><string>due</string></dict></dict></dict></dict></plist>

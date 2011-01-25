@@ -70,6 +70,7 @@ describe MindMapFactory, "create_simple_map" do
     inactiveProject.font['NAME'].should == 'SansSerif'    
   end
   
+    
   it "should add a status attribute to projects" do
     # todo: this might be nice with a custom 'should be'?
     attribute_for( 'Meet simon for lunch', 'status' ).should == 'inactive'
@@ -77,6 +78,10 @@ describe MindMapFactory, "create_simple_map" do
   
   it "should add a status attribute to actions" do
     attribute_for( 'Collect useless mails in sd', 'status' ).should == 'active'
+  end
+
+  it "should consider actions in inactive projects inactive regardless of their status" do
+    attribute_for( 'Send Simon a mail to ask when he can make lunch', 'status' ).should == 'inactive'
   end
 
   it "should add an icon to projects that are on hold" do
