@@ -83,7 +83,6 @@ describe Focus do
   end
 
   it "should override the status for actions in dropped projects to be dropped" do
-    pending 
     @mailAction.status.should == :active
     @mailProject.status = 'dropped'
     @mailAction.status.should == :dropped

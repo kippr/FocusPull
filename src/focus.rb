@@ -147,7 +147,7 @@ class Action < Item
   end
   
   def status
-    parent && parent.status == :inactive ? :inactive : @status
+    parent && [ :inactive, :dropped ].include?( parent.status ) ? parent.status : @status 
   end
   
   def status=( status_string )
