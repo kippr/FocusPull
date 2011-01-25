@@ -160,7 +160,7 @@ class MetaMap
       end
       
       add_child( "node", :TEXT => "Actionless projects", :POSITION => "left", :FOLDED => 'true' ) do
-        @focus.projects.select{ |p| p.children.empty? }.each{ |p| add_item_node p }
+        @focus.projects.select{ |p| p.active? && p.children.empty? }.each{ |p| add_item_node p }
       end
 
       add_aged :projects
