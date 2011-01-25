@@ -11,7 +11,7 @@ focus = parser.parse
 xml = MindMapFactory.create_simple_map focus
 
 delta = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13"
-delta_done = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13", :done_only
+delta_done = MindMapFactory.create_delta_map focus, "2010-12-08", "2010-12-13", :all_done
 
 meta = MindMapFactory.create_meta_map focus
 

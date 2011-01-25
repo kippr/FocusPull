@@ -330,13 +330,14 @@ class Edger
   def initialize( stack, filter, statuses_to_weight )
     super( stack )
     @weight_calculator = WeightCalculator.new( filter, statuses_to_weight )
-    @fader = ColourFader.new( '#cccccc', '#000000', '#0000ff' )
+    @fader = ColourFader.new( '#cccccc', '#00ff00', '#ff6600', '#ff0000' )
     @max = 20
   end
   
   def accept item
     weight = @weight_calculator.weigh item
-    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= @max ? 1 : 2    
+    add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= @max ? 1 : 2
+    #element['TEXT'] = "#{element['TEXT']} %2.2f" % weight
   end
     
   def to_colour( weight )

@@ -127,7 +127,7 @@ describe MindMapFactory, "create_simple_map" do
   
   it "should add thicker edges to 'heavy' folders" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
-    node_for( 'Admin' ).edge['COLOR'].should == '#000010' # 2 active projs, 2 actions
+    node_for( 'Admin' ).edge['COLOR'].should == '#99a300' # 2 active projs, 2 actions
   end
   
   it "should offer a way of excluding sub-trees" do
@@ -200,7 +200,7 @@ describe MindMapFactory, "create_delta_map" do
   end
   
   it "should weight both active and done projects & actions" do
-    node_for( 'Spend less time in email' ).edge['COLOR'].should == '#959595'
+    node_for( 'Spend less time in email' ).edge['COLOR'].should == '#7ae07a'
   end
   
 end
