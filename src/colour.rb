@@ -1,14 +1,24 @@
 class ColourFader
   
+  def self.new_with_zero zero_colour, *colours
+    c = ColourFader.new( *colours )
+    c.set_zero( zero_colour )
+    c
+  end
+
   def initialize *colours
     @c = colours.collect{ |c| as_rgb( c ) }
-    raise "Should have at least two colours, got #{colours.size}" if colours.size < 2
+    raise "Should have at least two colours, got #{colours}" if colours.size < 2
+  end
+  
+  def set_zero zero_colour
+    @zero_colour = zero_colour
   end
   
   def at ratio
     raise "Ratio #{ratio} not in range 0-1" unless (0.0..1.0).include? ratio
     return as_html( *@c.last ) if ratio == 1.0 # special case to avoid falling off end of array
-    
+    return @zero_colour if @zero_colour && ratio == 0.0 # special case for when a starting zero colour defined
     sized_ratio = ratio * ( @c.size - 1 )
     col1 = @c[ sized_ratio ]
     col2 = @c[ sized_ratio + 1 ]

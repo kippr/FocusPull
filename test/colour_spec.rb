@@ -45,6 +45,22 @@ describe ColourFader, "with three colours" do
     @three.at( 0.25 ).should == '#e5e5e5' # this is half way b/w cc & ff
     @three.at( 0.75 ).should == '#7f7fff' # this is half way b/c blue and black
   end
-    
+  
+end
+
+describe ColourFader, "with a special colour at zero" do
+
+  before( :all ) do
+    @bw = ColourFader.new_with_zero( '#cccccc', '#000000', '#ffffff' )
+  end
+  
+  it "should have a special behaviour for zero" do
+    @bw.at( 0 ).should == '#cccccc'
+  end
+  
+  it "should represent the fade from one html colour to another as usual once not at zero" do
+    @bw.at( 0.00000000001 ).should == '#000000'
+    @bw.at( 1 ).should == '#ffffff'
+  end
   
 end
