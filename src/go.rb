@@ -1,10 +1,13 @@
 require 'rubygems'
 require 'highline/import'
 require 'active_support/core_ext'
+require 'cloud'
 
+require File.join(File.dirname(__FILE__), 'focus')
 require File.join(File.dirname(__FILE__), 'pull_archive')
 require File.join(File.dirname(__FILE__), 'archive_parser')
 require File.join(File.dirname(__FILE__), 'mindmap_factory')
+require File.join(File.dirname(__FILE__), 'cloud_factory')
 
 username = 'kippr'
 password = ask("Omnisync password for #{username}? ") { |q| q.echo = false }
@@ -34,7 +37,7 @@ new_delta_map = MindMapFactory.create_delta_map focus, 1.week.ago.to_s, Date.tod
 @log.info "Saving meta map"
 meta_map = MindMapFactory.create_meta_map focus
 
-directory = "../output/#{Time.now.strftime("%Y.%m.%d_%H%M")}"
+directory = "../output/#{Time.now.strftime("%Y.%m.%d")}"
 FileUtils.mkpath(directory)
 
 File.open("#{directory}/focus.mm", "w") { |f| f.write( simple_map ) }
@@ -43,6 +46,8 @@ File.open("#{directory}/delta-done.mm", "w") { |f| f.write( done_delta_map ) }
 File.open("#{directory}/delta-new.mm", "w") { |f| f.write( new_delta_map ) }
 File.open("#{directory}/meta.mm", "w") { |f| f.write( meta_map ) }
 
+
+CloudFactory.create_cloud focus, directory
 
 
 
