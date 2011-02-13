@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '../src/archive_parser')
+require 'focus'
 
 describe FocusParser, "#parse" do
 

@@ -1,8 +1,4 @@
 require 'cloud'
-require File.join(File.dirname(__FILE__), '../src/focus')
-require File.join(File.dirname(__FILE__), '../src/archive_parser')
-require File.join(File.dirname(__FILE__), '../src/mindmap_factory')
-require 'nokogiri'
 
 class CloudFactory
   
@@ -37,7 +33,7 @@ class CloudFactory
     @ordered_sizes = temp.ordered_sizes
     options = {:file => @input_file,
                :min_font_size => 12,
-               :max_words => 300,
+               :max_words => 250,
                :font => "Times-Roman",
                :palette => "heat",
                :lang => "EN",

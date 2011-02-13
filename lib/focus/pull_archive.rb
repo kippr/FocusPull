@@ -1,10 +1,10 @@
-require 'rubygems'
-require 'mechanize'
-require 'logger'
 
+module FocusPull
+  class ArchivePull
+  
   @log = Logger.new(STDOUT)
   
-  def download_archive( username, password )
+  def self.download_archive( username, password )
     agent = Mechanize.new
     agent.user_agent_alias = 'Mac Safari'
       
@@ -23,5 +23,7 @@ require 'logger'
       end
     end
   end
+  end
+end
 
 

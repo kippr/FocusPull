@@ -1,7 +1,4 @@
-require File.join(File.dirname(__FILE__), '../src/focus')
-require File.join(File.dirname(__FILE__), '../src/archive_parser')
-require File.join(File.dirname(__FILE__), '../src/mindmap_factory')
-require 'nokogiri'
+require 'focus'
 
 describe MindMapFactory, "create_simple_map" do
 

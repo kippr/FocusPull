@@ -1,6 +1,3 @@
-require File.join(File.dirname(__FILE__), '../src/focus')
-require File.join(File.dirname(__FILE__), '../src/colour')
-
 module ElementMixin
 
   def initialize( stack )

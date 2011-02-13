@@ -1,9 +1,3 @@
-require 'rubygems'
-require 'logger'
-require 'zip/zipfilesystem'
-require 'nokogiri'
-
-require File.join(File.dirname(__FILE__), 'focus')
 
 
 class FocusParser

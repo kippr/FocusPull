@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '../src/colour')
+require 'focus'
 
 describe ColourFader, "with two colours" do
   

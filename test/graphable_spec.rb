@@ -1,7 +1,5 @@
 require 'timecop'
-
-require File.join(File.dirname(__FILE__), '../src/focus')
-require File.join(File.dirname(__FILE__), '../src/graphable')
+require 'focus'
 
 describe Graphable, "histogram" do
 

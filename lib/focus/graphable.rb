@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), '../src/focus')
-
 # todo: this class in need of serious TLC
 class Graphable
   
