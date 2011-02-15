@@ -1,5 +1,5 @@
 
-module FocusPull
+module Focus
   class ArchivePull
   
   @log = Logger.new(STDOUT)

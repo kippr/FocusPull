@@ -1,5 +1,6 @@
 require 'cloud'
 
+module Focus
 class CloudFactory
   
   def self.create_cloud focus, output_path
@@ -74,4 +75,5 @@ class Weight
     1
   end
   
+end
 end

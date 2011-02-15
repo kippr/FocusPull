@@ -1,3 +1,4 @@
+module Focus
 module ElementMixin
 
   def initialize( stack )
@@ -512,4 +513,5 @@ class TemporalFilter < MapFilter
     "#{label_prefix}#{@start}..#{@end}"
   end
   
+end
 end

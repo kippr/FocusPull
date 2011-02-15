@@ -1,20 +1,20 @@
 require 'focus'
 
-describe MindMapFactory, "create_simple_map" do
+describe Focus::MindMapFactory, "create_simple_map" do
 
   #todo: fair amount of duplication in the befores now...
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    MindMapFactory.failing_test_hack = true
+    Focus::MindMapFactory.failing_test_hack = true
     # attributes are disabled by default, but leave in tests, since that's handier that splitting all out
-    @map = MindMapFactory.create_simple_map( @focus, :ADD_ATTRIBUTES => true, :STATUSES_TO_INCLUDE => [ :active, :done, :inactive, :dropped ] )
+    @map = Focus::MindMapFactory.create_simple_map( @focus, :ADD_ATTRIBUTES => true, :STATUSES_TO_INCLUDE => [ :active, :done, :inactive, :dropped ] )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   
   after(:all) do
-    MindMapFactory.failing_test_hack = false
+    Focus::MindMapFactory.failing_test_hack = false
   end
  
   it "should set map xml version" do
@@ -133,7 +133,7 @@ describe MindMapFactory, "create_simple_map" do
   end
   
   it "should offer a way of excluding sub-trees" do
-    @map = MindMapFactory.create_simple_map( @focus, :EXCLUDE_NODES => ['Spend less time in email', 'Personal'] )
+    @map = Focus::MindMapFactory.create_simple_map( @focus, :EXCLUDE_NODES => ['Spend less time in email', 'Personal'] )
     @xml =  Nokogiri::Slop @map.to_s
     node_for( 'Personal' ).should be_nil
     node_for( 'Spend less time in email' ).should be_nil
@@ -142,19 +142,19 @@ describe MindMapFactory, "create_simple_map" do
     
 end  
 
-describe MindMapFactory, "create_delta_map" do
+describe Focus::MindMapFactory, "create_delta_map" do
 
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    MindMapFactory.failing_test_hack = true
-    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13" )
+    Focus::MindMapFactory.failing_test_hack = true
+    @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13" )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   
   after(:all) do
-    MindMapFactory.failing_test_hack = false
+    Focus::MindMapFactory.failing_test_hack = false
   end
   
   
@@ -207,13 +207,13 @@ describe MindMapFactory, "create_delta_map" do
   
 end
 
-describe MindMapFactory, "create_delta_map for new projects" do
+describe Focus::MindMapFactory, "create_delta_map for new projects" do
   
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    MindMapFactory.failing_test_hack = true
-    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects )
+    Focus::MindMapFactory.failing_test_hack = true
+    @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
@@ -233,24 +233,24 @@ describe MindMapFactory, "create_delta_map for new projects" do
   
   
   after(:all) do
-    MindMapFactory.failing_test_hack = false
+    Focus::MindMapFactory.failing_test_hack = false
   end
   
 end  
 
-describe MindMapFactory, "create_delta_map for completed items" do
+describe Focus::MindMapFactory, "create_delta_map for completed items" do
 
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    MindMapFactory.failing_test_hack = true
-    @map = MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :all_done )
+    Focus::MindMapFactory.failing_test_hack = true
+    @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :all_done )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   
   after(:all) do
-    MindMapFactory.failing_test_hack = false
+    Focus::MindMapFactory.failing_test_hack = false
   end
 
   it "should include filtering dates in 'portfolio' node name" do
@@ -268,24 +268,24 @@ describe MindMapFactory, "create_delta_map for completed items" do
   end
   
   it "should barf when an invalid filter type is passed" do
-    lambda{ MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :monkey ) }.should raise_error
+    lambda{ Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :monkey ) }.should raise_error
   end
   
 end
 
-describe MindMapFactory, "create_meta_map" do
+describe Focus::MindMapFactory, "create_meta_map" do
   
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
-    MindMapFactory.failing_test_hack = false
-    @map = MindMapFactory.create_meta_map( @focus )
+    Focus::MindMapFactory.failing_test_hack = false
+    @map = Focus::MindMapFactory.create_meta_map( @focus )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   
   after(:all) do
-    MindMapFactory.failing_test_hack = false
+    Focus::MindMapFactory.failing_test_hack = false
   end
   
   it "should be rooted with a meta-node that has info on tree" do

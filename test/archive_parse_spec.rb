@@ -1,9 +1,9 @@
 require 'focus'
 
-describe FocusParser, "#parse" do
+describe Focus::FocusParser, "#parse" do
 
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
   end
   

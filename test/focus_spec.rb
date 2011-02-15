@@ -1,16 +1,16 @@
 require 'focus'
 
-describe Focus do
+describe Focus::Focus do
 
   before do
-    @focus = Focus.new
-    @mailProject = Project.new( "Spend less time in email", 1)
+    @focus = Focus::Focus.new
+    @mailProject = Focus::Project.new( "Spend less time in email", 1)
     @mailProject.link_parent( @focus )
-    @mailAction = Action.new( "Collect useless mails in sd", 1)
+    @mailAction = Focus::Action.new( "Collect useless mails in sd", 1)
     @mailAction.link_parent( @mailProject )
-    @personalFolder = Folder.new( "Personal", 1)
+    @personalFolder = Focus::Folder.new( "Personal", 1)
     @personalFolder.link_parent( @focus )
-    @openZoneProject = Project.new( "iPad has open zone access", 1 )
+    @openZoneProject = Focus::Project.new( "iPad has open zone access", 1 )
     @openZoneProject.link_parent( @personalFolder )
   end
 
@@ -102,10 +102,10 @@ describe Focus do
   
   it "should implement the visitor pattern" do
     visitor = Visitor.new
-    Project.new("", 0).visit( visitor ).should == "Visited a Project"
-    Action.new("", 0).visit( visitor ).should == "Visited an Action"
-    Folder.new("", 0).visit( visitor ).should == "Visited a Folder"
-    Focus.new.visit( visitor ).should == "Visited Portfolio Root"
+    Focus::Project.new("", 0).visit( visitor ).should == "Visited a Project"
+    Focus::Action.new("", 0).visit( visitor ).should == "Visited an Action"
+    Focus::Folder.new("", 0).visit( visitor ).should == "Visited a Folder"
+    Focus::Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
   
 end

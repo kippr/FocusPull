@@ -1,3 +1,4 @@
+module Focus
 module VisitorMixin
   
   def accept item
@@ -214,3 +215,4 @@ class Project < Action
   
 end
 
+end

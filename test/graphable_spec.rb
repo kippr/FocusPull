@@ -1,11 +1,11 @@
 require 'timecop'
 require 'focus'
 
-describe Graphable, "histogram" do
+describe Focus::Graphable, "histogram" do
 
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    Timecop.travel(2011, 1, 9) { @histo = Graphable.histo( @parser.parse ) }
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    Timecop.travel(2011, 1, 9) { @histo = Focus::Graphable.histo( @parser.parse ) }
   end
   
   it "should plot done projects by age in days" do
@@ -21,11 +21,11 @@ describe Graphable, "histogram" do
   
 end
 
-describe Graphable, "trend" do
+describe Focus::Graphable, "trend" do
   
   before(:all) do
-    @parser = FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @trend = Graphable.trend( @parser.parse )
+    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @trend = Focus::Graphable.trend( @parser.parse )
   end
 
   it "should be enumerable, to spit out all results in csv format" do

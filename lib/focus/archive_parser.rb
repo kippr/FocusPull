@@ -1,6 +1,7 @@
 
-
-class FocusParser
+module Focus
+  
+  class FocusParser
 
   def initialize( directory, filename, username )
     @log = Logger.new(STDOUT)
@@ -129,6 +130,5 @@ class FocusParser
         FileUtils.rm_r("#{@directory}/#{@username}")
       end
     end
-  
+  end
 end
-

@@ -1,3 +1,4 @@
+module Focus
 # todo: this class in need of serious TLC
 class Graphable
   
@@ -113,4 +114,5 @@ class Results < Array
     value
   end
   
+end
 end
