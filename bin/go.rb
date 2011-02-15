@@ -40,9 +40,9 @@ directory = "output/#{Time.now.strftime("%Y.%m.%d")}"
 FileUtils.mkpath(directory)
 
 File.open("#{directory}/focus.mm", "w") { |f| f.write( simple_map ) }
-File.open("#{directory}/delta.mm", "w") { |f| f.write( delta_map ) }
-File.open("#{directory}/delta-done.mm", "w") { |f| f.write( done_delta_map ) }
-File.open("#{directory}/delta-new.mm", "w") { |f| f.write( new_delta_map ) }
+File.open("#{directory}/changes-this-week.mm", "w") { |f| f.write( delta_map ) }
+File.open("#{directory}/completed-this-week.mm", "w") { |f| f.write( done_delta_map ) }
+File.open("#{directory}/new-projects-this-week.mm", "w") { |f| f.write( new_delta_map ) }
 File.open("#{directory}/meta.mm", "w") { |f| f.write( meta_map ) }
 
 
