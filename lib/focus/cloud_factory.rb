@@ -34,7 +34,7 @@ class CloudFactory
     @ordered_sizes = temp.ordered_sizes
     options = {:file => @input_file,
                :min_font_size => 12,
-               :max_words => 250,
+               :max_words => 180,
                :font => "Times-Roman",
                :palette => "heat",
                :lang => "EN",
