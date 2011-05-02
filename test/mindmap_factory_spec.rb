@@ -1,4 +1,5 @@
 require 'focus'
+require 'timecop'
 
 describe Focus::MindMapFactory, "create_simple_map" do
 
@@ -279,7 +280,8 @@ describe Focus::MindMapFactory, "create_meta_map" do
     @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     Focus::MindMapFactory.failing_test_hack = false
-    @map = Focus::MindMapFactory.create_meta_map( @focus )
+    # Create the map as at this time to avoid new projects aging and causing test failures
+    Timecop.travel(2011, 1, 9) { @map = Focus::MindMapFactory.create_meta_map( @focus ) }
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
@@ -317,7 +319,6 @@ describe Focus::MindMapFactory, "create_meta_map" do
   end
 
   it "should have an 'aged projects' node" do
-    #todo: this test will start failing as other projects get 'old'
     node_for( "Aged projects (1)" ).at_xpath(".//node[@TEXT = 'Meet simon for lunch']").should_not be_nil
   end
   
