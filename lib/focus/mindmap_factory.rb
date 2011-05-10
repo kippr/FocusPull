@@ -391,7 +391,7 @@ class WeightCalculator
   end
   
   def visit_project project
-    3
+    project.single_actions? ? 0 : 3
   end
 
   def visit_action action
