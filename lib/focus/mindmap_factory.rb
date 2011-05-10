@@ -146,7 +146,7 @@ class MetaMap
 
   def initialize( stack, focus, visitors )
     super( stack )
-    @focus = focus
+    @focus = SingleActionProjectHider.new( focus )
     @visitors = visitors
   end
 
@@ -202,6 +202,14 @@ class MetaMap
         @visitors.each{ | visitor | visitor.accept item }
       end
     end
+end
+
+class SingleActionProjectHider < SimpleDelegator
+  
+  def projects
+    __getobj__.projects.select{ |p| !p.single_actions? }
+  end
+  
 end
 
 
