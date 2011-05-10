@@ -208,6 +208,14 @@ class Project < Action
     dropped? ? updated_date : @completed_date
   end
   
+  def single_actions?
+    @single_actions || false
+  end
+  
+  def set_single_actions
+    @single_actions = true
+  end
+  
   
   def visit( visitor )
     visitor.visit_project( self )

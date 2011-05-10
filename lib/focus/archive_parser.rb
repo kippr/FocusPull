@@ -54,7 +54,8 @@ module Focus
           item = Project.new( name, rank )
 
           statusNode = projectNode.at_xpath( './xmlns:status' )
-          item.status = statusNode.content unless statusNode.nil?        
+          item.status = statusNode.content unless statusNode.nil?
+          item.set_single_actions if projectNode.at_xpath( './xmlns:singleton' )      
                     
           track_links( item, projectNode )
           

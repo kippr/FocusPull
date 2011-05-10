@@ -62,6 +62,10 @@ describe Focus::FocusParser, "#parse" do
     (proj_order < adm_order).should be_true
   end
   
+  it "should recognize single-action projects" do
+    @focus.project("Miscellaneous").single_actions?.should be_true
+  end
+  
   def rank_of_folder name
     folder, order = @focus.folders.zip(1..100).detect{ | f, o | f.name == name }
     folder.should_not be_nil
