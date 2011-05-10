@@ -130,7 +130,7 @@ describe Focus::MindMapFactory, "create_simple_map" do
   
   it "should add thicker edges to 'heavy' folders" do
     node_for( 'Personal' ).edge['COLOR'].should == '#cccccc' # nothing active
-    node_for( 'Admin' ).edge['COLOR'].should == '#88ff17' # 2 active projs, 2 actions
+    node_for( 'Admin' ).edge['COLOR'].should == '#bbff0d' # 2 active projs, 2 actions
   end
   
   it "should offer a way of excluding sub-trees" do
@@ -308,12 +308,12 @@ describe Focus::MindMapFactory, "create_meta_map" do
   
   context "when adding actionless projects node" do
     it "should have add active projects without a next step defined" do
-      actionless = node_for( "Actionless projects (1)" )
+      actionless = node_for( "Actionless projects (2)" )
       actionless.children.collect{ | n | n['TEXT'] }.should include( 'Setup 2011 vacsheet' )
     end
 
     it "should not include done or inactive projects" do
-      actionless = node_for( "Actionless projects (1)" )
+      actionless = node_for( "Actionless projects (2)" )
       actionless.children.collect{ | n | n['TEXT'] }.should_not include( 'iPad has open zone access' )
     end
   end
