@@ -1,5 +1,9 @@
 class Login
-  def self.model_name  
-    "loginbo "
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+  
+  def persisted?
+    false
   end
+  
 end
