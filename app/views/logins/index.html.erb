@@ -1,0 +1,18 @@
+<h1>OmniServer Sync data</h1>
+<p>
+	<%- flash.each do |key, msg| -%>
+		<div id="<%= key %>">
+			<p style="float:right;"><%= link_to_function 'X', "Effect.Fade('#{key}')" %></p>
+			<p><%= msg %></p>
+			<div class="clear"></div>
+		</div>
+	<%- end -%>
+</p>
+<p>
+	<%= form_for @login do |l| %>
+		Login <%=  text_field( :login, :name, :size => 10 ) %>
+		Password <%= password_field( :login, :password )%>
+		<%= l.submit('Retrieve focus data')%>
+	<% end %>
+	
+</p>

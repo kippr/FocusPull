@@ -1,5 +1,5 @@
 FocusPull::Application.routes.draw do
-  get "login/index"
+  #get "login/index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -53,7 +53,7 @@ FocusPull::Application.routes.draw do
   # just remember to delete public/index.html.
   # root :to => "welcome#index"
 
-root :to => "login#index"
+root :to => "logins#index"
 
   # See how all your routes lay out with "rake routes"
 
