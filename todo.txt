@@ -17,7 +17,6 @@
 ? is there a way I can filter for 'recently put on hold' items? Dont think so unless I assume using modified_date?
 
 
-- switch to gem for untarring
 - move filestorage onto amazon s3
 - pull gems into plugins dir?
 - merge in rails project somehow?
