@@ -1,7 +1,12 @@
 require 'focus'
 
-class HomeController < ApplicationController
+class LoginController < ApplicationController
+    
   def index
+    @login = Login.new
+  end
+  
+  def retrieve_archive
     
     #todo: what is the best way to log in a rails app?
     log = Logger.new(STDOUT)

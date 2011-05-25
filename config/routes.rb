@@ -52,7 +52,7 @@ FocusPull::Application.routes.draw do
   # just remember to delete public/index.html.
   # root :to => "welcome#index"
 
-root :to => "home#index"
+root :to => "login#index"
 
   # See how all your routes lay out with "rake routes"
 

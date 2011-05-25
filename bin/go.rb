@@ -18,7 +18,7 @@ filename = "omnisync.tar"
 
 archive = Focus::ArchivePull.download_archive( username, password )
 archive.save("#{directory}/#{filename}")
-log.info("Saved #{filename} into #{directory}")
+log.info("Saved #{filename} into #{directory}") 
 
 parser = Focus::FocusParser.new( directory, filename, username)
 focus = parser.parse
