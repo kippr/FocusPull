@@ -2,7 +2,9 @@ require 'nokogiri'
 require 'mechanize'
 require 'logger'
 require 'zip/zipfilesystem'
-#
+require 'archive/tar/minitar'
+
+
 require 'focus/focus'
 require 'focus/colour'
 require 'focus/mindmap_factory'

@@ -109,9 +109,7 @@ module Focus
     def foreach_archive_xml
       @log.debug( "untarring #{@directory}/#{@filename} for #{@username}" )
       begin
-        command = "tar xf #{@directory}/#{@filename}"
-        success = system( command )
-        raise "Could not untar #{@filename}" unless success && $?.exitstatus == 0
+        Archive::Tar::Minitar.unpack "#{@directory}/#{@filename}", "."
         
         FileUtils.mv( @username, @directory )
         
