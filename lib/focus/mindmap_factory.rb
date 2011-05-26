@@ -339,7 +339,7 @@ class Edger
   def initialize( stack, filter, statuses_to_weight )
     super( stack )
     @weight_calculator = WeightCalculator.new( filter, statuses_to_weight )
-    @fader = ColourFader.new_with_zero( '#cccccc', '#00ff33', '#ffff00' )
+    @fader = ColourFader.new_with_zero( '#cccccc', '#00ff33', '#ffff00', '#ff0000' )
     @max = 20
   end
   
