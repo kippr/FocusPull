@@ -26,6 +26,7 @@ class LoginsController < ApplicationController
     focus = parser.parse
     
     session[ :focus] = focus
+    session[ :focus_date ] = directory
     flash[:notice] = "Archive retrieved and processed successfully"
   end
   
