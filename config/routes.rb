@@ -8,7 +8,12 @@ FocusPull::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
   
-  match 'focus/simple_map.mm' => 'maps#send_simple_map'
+  match 'focus/portfolio.mm' => 'maps#send_simple_map'
+  match 'focus/changes-this-week.mm' => 'maps#send_delta_map'
+  match 'focus/completed-this-week.mm' => 'maps#send_done_map'
+  match 'focus/new-projects-this-week.mm' => 'maps#send_new_project_map'
+  match 'focus/meta-map.mm' => 'maps#send_meta_map'
+    
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
