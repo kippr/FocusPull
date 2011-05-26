@@ -1,4 +1,4 @@
-class Login < ActiveResource::Base
+class Login
   extend ActiveModel::Naming
   include ActiveModel::Conversion
   

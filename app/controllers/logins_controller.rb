@@ -25,7 +25,7 @@ class LoginsController < ApplicationController
     parser = Focus::FocusParser.new( directory, filename, login.name)
     focus = parser.parse
     
-    #session[ :focus] = focus
+    session[ :focus] = focus
     flash[:notice] = "Archive retrieved and processed successfully"
   end
   
