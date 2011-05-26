@@ -11,11 +11,11 @@ FocusPull::Application.routes.draw do
   match 'login' => 'login#form'
   match 'login/retrieve_archive' => 'login#retrieve_archive'
   
-  match 'focus/portfolio.mm' => 'maps#send_simple_map'
-  match 'focus/changes-this-week.mm' => 'maps#send_delta_map'
-  match 'focus/completed-this-week.mm' => 'maps#send_done_map'
-  match 'focus/new-projects-this-week.mm' => 'maps#send_new_project_map'
-  match 'focus/meta-map.mm' => 'maps#send_meta_map'
+  match 'focus/Portfolio.mm' => 'maps#send_simple_map'
+  match 'focus/Changes-this-week.mm' => 'maps#send_delta_map'
+  match 'focus/Completed-this-week.mm' => 'maps#send_done_map'
+  match 'focus/New-projects-this-week.mm' => 'maps#send_new_project_map'
+  match 'focus/Metamap.mm' => 'maps#send_meta_map'
   match 'focus' => 'maps#list'
     
 
