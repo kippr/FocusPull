@@ -11,7 +11,7 @@ class MapsController < ApplicationController
     focus = session[ :focus ]
     simple_map = Focus::MindMapFactory.create_simple_map focus, options
   
-    render :xml => simple_map, :content_type => 'application/xml'
+    send_data simple_map, :type => 'application/freemind'
   
   end
   
