@@ -20,3 +20,7 @@
 - move filestorage onto amazon s3
 - pull gems into plugins dir?
 - merge in rails project somehow?
+
+- add date_select("post", "written_on", :default => 6.days.ago)
+- refactor create to something else
+- check if focus is in session, send to login page?

@@ -8,11 +8,15 @@ FocusPull::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
   
+  match 'login' => 'login#form'
+  match 'login/retrieve_archive' => 'login#retrieve_archive'
+  
   match 'focus/portfolio.mm' => 'maps#send_simple_map'
   match 'focus/changes-this-week.mm' => 'maps#send_delta_map'
   match 'focus/completed-this-week.mm' => 'maps#send_done_map'
   match 'focus/new-projects-this-week.mm' => 'maps#send_new_project_map'
   match 'focus/meta-map.mm' => 'maps#send_meta_map'
+  match 'focus' => 'maps#list'
     
 
   # Sample of named route:
@@ -21,7 +25,6 @@ FocusPull::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-  resources :logins
 
   # Sample resource route with options:
   #   resources :products do
@@ -60,7 +63,7 @@ FocusPull::Application.routes.draw do
   # just remember to delete public/index.html.
   # root :to => "welcome#index"
 
-root :to => "logins#index"
+root :to => "login#form"
 
   # See how all your routes lay out with "rake routes"
 

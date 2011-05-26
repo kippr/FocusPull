@@ -1,0 +1,9 @@
+<h1>OmniSync Login</h1>
+<p>
+	<%= form_tag( 'login/retrieve_archive' ) do |l| %>
+		Login <%=  text_field( :login, :name, :size => 10 ) %>
+		Password <%= password_field( :login, :password )%>
+		<%= submit_tag('Retrieve focus data')%>
+	<% end %>
+	
+</p>
