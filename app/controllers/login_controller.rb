@@ -12,8 +12,7 @@ class LoginController < ApplicationController
   
   def retrieve_archive
     if !params[ :login ]
-      session[ :focus ] = nil
-      session[ :focus_date ] = nil
+      reset_session
       redirect_to :controller => 'login', :action => 'form'
     else
       #todo: what is the best way to log in a rails app?
@@ -35,6 +34,8 @@ class LoginController < ApplicationController
     
       session[ :focus] = focus
       session[ :focus_date ] = Time.now.strftime("%Y.%m.%d %H:%M")
+      session[ :focus_user ]= login.name
+      
       flash[:notice] = "Archive retrieved and processed successfully"
     
       redirect_to :controller => "maps", :action => "list"
