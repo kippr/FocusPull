@@ -85,7 +85,7 @@ class Focus < Item
   end
         
   def projects
-    select_for Project
+    select_for Project  
   end
 
   def folders
@@ -97,16 +97,15 @@ class Focus < Item
   end
   
   def project( name )
-    projects.detect{ | n | n.name == name }
+    detect_for( Project, name )
   end
 
-  # todo: remove duplication w project
   def folder( name )
-    folders.detect{ | n | n.name == name }
+    detect_for( Folder, name )
   end
   
   def action( name )
-    actions.detect{ | n | n.name == name }
+    detect_for( Action, name )
   end
   
   def parent
@@ -122,8 +121,12 @@ class Focus < Item
   end
   
   private
-    def select_for type
+    def select_for( type )
       self.select{ | n | n.class == type }
+    end
+    
+    def detect_for( type, name )
+      self.detect{ | n | n.class == type && n.name == name }
     end
 
 end
