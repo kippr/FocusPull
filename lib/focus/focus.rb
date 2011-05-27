@@ -85,16 +85,15 @@ class Focus < Item
   end
         
   def projects
-    self.select{ | n | n.class == Project }
+    select_for Project
   end
 
-  # todo: remove duplication w projects, inefficiency of double scan?
   def folders
-    self.select{ | n | n.class == Folder }
+    select_for Folder
   end
 
   def actions
-    self.select{ | n | n.class == Action }
+    select_for Action
   end
   
   def project( name )
@@ -121,6 +120,11 @@ class Focus < Item
   def visit( visitor, *args )
     visitor.visit_focus( self )
   end
+  
+  private
+    def select_for type
+      self.select{ | n | n.class == type }
+    end
 
 end
 
