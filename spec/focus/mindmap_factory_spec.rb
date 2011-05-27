@@ -1,6 +1,5 @@
 require 'focus'
 require 'timecop'
-require 'focus/test_helper'
 
 describe Focus::MindMapFactory, "create_simple_map" do
 
