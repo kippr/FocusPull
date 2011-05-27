@@ -3,7 +3,7 @@ require 'focus'
 describe Focus::FocusParser, "#parse" do
 
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
   end
   

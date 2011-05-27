@@ -4,7 +4,7 @@ require 'focus'
 describe Focus::Graphable, "histogram" do
 
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     Timecop.travel(2011, 1, 9) { @histo = Focus::Graphable.histo( @parser.parse ) }
   end
   
@@ -24,7 +24,7 @@ end
 describe Focus::Graphable, "trend" do
   
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @trend = Focus::Graphable.trend( @parser.parse )
   end
 

@@ -5,7 +5,7 @@ describe Focus::MindMapFactory, "create_simple_map" do
 
   #todo: fair amount of duplication in the befores now...
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     Focus::MindMapFactory.failing_test_hack = true
     # attributes are disabled by default, but leave in tests, since that's handier that splitting all out
@@ -146,7 +146,7 @@ end
 describe Focus::MindMapFactory, "create_delta_map" do
 
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     Focus::MindMapFactory.failing_test_hack = true
     @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13" )
@@ -211,7 +211,7 @@ end
 describe Focus::MindMapFactory, "create_delta_map for new projects" do
   
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     Focus::MindMapFactory.failing_test_hack = true
     @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects )
@@ -242,7 +242,7 @@ end
 describe Focus::MindMapFactory, "create_delta_map for completed items" do
 
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     Focus::MindMapFactory.failing_test_hack = true
     @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :all_done )
@@ -277,7 +277,8 @@ end
 describe Focus::MindMapFactory, "create_meta_map" do
   
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+    #todo: remove all dupe across test methods in setup
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
     Focus::MindMapFactory.failing_test_hack = false
     # Create the map as at this time to avoid new projects aging and causing test failures
