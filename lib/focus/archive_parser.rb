@@ -30,11 +30,6 @@ module Focus
 
   private
   
-    def xpath_content( node, xpath, default = "" )
-      result = node.at_xpath( xpath )
-      result ? result.content : default
-    end
-    
     def parse_actions
       for_sorted( "task" ).each do | action_node |
         @log.debug( "Found node: #{action_node}")
@@ -44,20 +39,16 @@ module Focus
         if project_node.nil?
 
           item = Action.new( name )
-          track_links( item, action_node )
                   
         else
         
           item = Project.new( name )
           item.status = xpath_content( project_node, './xmlns:status', nil)
-          item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )
-                    
-          track_links( item, project_node )
+          item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )                    
           
         end
-
-        item.created_date = xpath_content( action_node, './xmlns:added', nil )
-        item.updated_date = xpath_content( action_node, './xmlns:modified', nil )
+        
+        parse_common( item, action_node )
         item.completed( xpath_content( action_node, './xmlns:completed', nil ) )
         
       end
@@ -69,14 +60,22 @@ module Focus
 
         name = xpath_content( folder_node, './xmlns:name' )
         folder = Folder.new( name )
-        track_links( folder, folder_node )        
-    
+        parse_common folder, folder_node
       end
     end
     
-    def for_sorted( node_type )
-      nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
-      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ).to_i }
+    def parse_common( item, node )
+      item.created_date = xpath_content( node, './xmlns:added', nil )
+      item.updated_date = xpath_content( node, './xmlns:modified', nil )
+      track_links( item, node )        
+    end
+    
+    def resolve_links
+      @log.debug( "Resolving links for #{@ref_to_node}")
+      @ref_to_node.each_pair do | ref, node |
+        # replace the string key ref we stored on each node with the actual parent
+        node.link_parent( @ref_to_node[ @parent_ref_of[ node ] ] )
+      end
     end
     
     def track_links( item, item_node )
@@ -89,13 +88,16 @@ module Focus
       @parent_ref_of[ item ] = parent_id
     end
     
-    def resolve_links
-      @log.debug( "Resolving links for #{@ref_to_node}")
-      @ref_to_node.each_pair do | ref, node |
-        # replace the string key ref we stored on each node with the actual parent
-        node.link_parent( @ref_to_node[ @parent_ref_of[ node ] ] )
-      end
+    def for_sorted( node_type )
+      nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
+      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ).to_i }
     end
+    
+    def xpath_content( node, xpath, default = "" )
+      result = node.at_xpath( xpath )
+      result ? result.content : default
+    end
+    
     
     def foreach_archive_xml
       @log.debug( "untarring #{@directory}/#{@filename} for #{@username}" )

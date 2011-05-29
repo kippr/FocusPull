@@ -24,6 +24,7 @@ class Item
   attr_reader :name
   attr_reader :parent
   attr_reader :children
+  attr_reader :created_date, :updated_date
   
   def initialize( name )
     @name = name
@@ -59,11 +60,14 @@ class Item
     false
   end
   
-  # todo: this is evil
-  def created_date
-    Date.today
+  def created_date=( date )
+    @created_date = Date.parse( date ) if date
   end
-  
+
+  def updated_date=( date )
+    @updated_date = Date.parse( date ) if date
+  end
+    
   #todo: this is evil
   def status
     :active
@@ -112,6 +116,10 @@ class Focus < Item
     true
   end
   
+  def created_date
+    Date.today
+  end
+  
   def visit( visitor, *args )
     visitor.visit_focus( self )
   end
@@ -143,7 +151,7 @@ end
 
 class Action < Item
 
-  attr_reader :completed_date, :created_date, :updated_date
+  attr_reader :completed_date
   
   def initialize( name )
     super( name )
@@ -164,15 +172,7 @@ class Action < Item
       @completed_date = Date.parse( date )
     end
   end
-    
-  def created_date=( date )
-    @created_date = Date.parse( date ) if date
-  end
-
-  def updated_date=( date )
-    @updated_date = Date.parse( date ) if date
-  end
-  
+      
   def age
     if done?
       @completed_date - @created_date
