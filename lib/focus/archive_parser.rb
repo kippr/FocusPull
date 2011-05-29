@@ -32,42 +32,33 @@ module Focus
   
     def parse_actions
       for_sorted( "task" ).each do | action_node |
-        @log.debug( "Found node: #{action_node}")
-        name = xpath_content( action_node, './xmlns:name' )
+        @log.debug( "Processing action: #{action_node}")
         project_node = action_node.at_xpath( './xmlns:project' )
-        
-        if project_node.nil?
-
-          item = Action.new( name )
-                  
-        else
-        
-          item = Project.new( name )
+        if project_node
+          item = create_node( action_node, Project )
           item.status = xpath_content( project_node, './xmlns:status', nil)
           item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )                    
-          
+        else
+          item = create_node( action_node, Action )
         end
-        
-        parse_common( item, action_node )
-        item.completed( xpath_content( action_node, './xmlns:completed', nil ) )
-        
+        item.completed( xpath_content( action_node, './xmlns:completed', nil ) )        
       end
     end
         
     def parse_folders
       for_sorted( 'folder' ).each do | folder_node |
-        @log.debug( "Found folder: #{folder_node} with id #{folder_node.attribute( "id").content}" )
-
-        name = xpath_content( folder_node, './xmlns:name' )
-        folder = Folder.new( name )
-        parse_common folder, folder_node
+        @log.debug( "Processing folder: #{folder_node}" )
+        create_node( folder_node, Folder )
       end
     end
     
-    def parse_common( item, node )
+    def create_node( node, type )
+      name = xpath_content( node, './xmlns:name' )
+      item = type.new( name )
       item.created_date = xpath_content( node, './xmlns:added', nil )
       item.updated_date = xpath_content( node, './xmlns:modified', nil )
-      track_links( item, node )        
+      track_links( item, node )
+      item        
     end
     
     def resolve_links
