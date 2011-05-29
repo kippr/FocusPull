@@ -39,17 +39,16 @@ module Focus
       for_sorted( "task" ).each do | action_node |
         @log.debug( "Found node: #{action_node}")
         name = xpath_content( action_node, './xmlns:name' )
-        rank = xpath_content( action_node, './xmlns:rank' )
         project_node = action_node.at_xpath( './xmlns:project' )
         
         if project_node.nil?
 
-          item = Action.new( name, rank )
+          item = Action.new( name )
           track_links( item, action_node )
                   
         else
         
-          item = Project.new( name, rank )
+          item = Project.new( name )
           item.status = xpath_content( project_node, './xmlns:status', nil)
           item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )
                     
@@ -69,8 +68,7 @@ module Focus
         @log.debug( "Found folder: #{folder_node} with id #{folder_node.attribute( "id").content}" )
 
         name = xpath_content( folder_node, './xmlns:name' )
-        rank = xpath_content( folder_node, './xmlns:rank' )
-        folder = Folder.new( name, rank )
+        folder = Folder.new( name )
         track_links( folder, folder_node )        
     
       end
@@ -78,7 +76,7 @@ module Focus
     
     def for_sorted( node_type )
       nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
-      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ) }
+      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ).to_i }
     end
     
     def track_links( item, item_node )

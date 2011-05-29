@@ -4,13 +4,13 @@ describe Focus::Focus do
 
   before do
     @focus = Focus::Focus.new
-    @mailProject = Focus::Project.new( "Spend less time in email", 1)
+    @mailProject = Focus::Project.new( "Spend less time in email")
     @mailProject.link_parent( @focus )
-    @mailAction = Focus::Action.new( "Collect useless mails in sd", 1)
+    @mailAction = Focus::Action.new( "Collect useless mails in sd")
     @mailAction.link_parent( @mailProject )
-    @personalFolder = Focus::Folder.new( "Personal", 1)
+    @personalFolder = Focus::Folder.new( "Personal" )
     @personalFolder.link_parent( @focus )
-    @openZoneProject = Focus::Project.new( "iPad has open zone access", 1 )
+    @openZoneProject = Focus::Project.new( "iPad has open zone access" )
     @openZoneProject.link_parent( @personalFolder )
   end
 
@@ -102,9 +102,9 @@ describe Focus::Focus do
   
   it "should implement the visitor pattern" do
     visitor = Visitor.new
-    Focus::Project.new("", 0).visit( visitor ).should == "Visited a Project"
-    Focus::Action.new("", 0).visit( visitor ).should == "Visited an Action"
-    Focus::Folder.new("", 0).visit( visitor ).should == "Visited a Folder"
+    Focus::Project.new( "" ).visit( visitor ).should == "Visited a Project"
+    Focus::Action.new( "" ).visit( visitor ).should == "Visited an Action"
+    Focus::Folder.new( "" ).visit( visitor ).should == "Visited a Folder"
     Focus::Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
   

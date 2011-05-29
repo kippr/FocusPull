@@ -23,12 +23,10 @@ class Item
 
   attr_reader :name
   attr_reader :parent
-  attr_reader :rank 
   attr_reader :children
   
-  def initialize( name, rank )
+  def initialize( name )
     @name = name
-    @rank = rank.to_i
     @children = []
   end
 
@@ -78,8 +76,8 @@ end
 
 class Focus < Item
   
-  def initialize( )
-    super( "Portfolio", 0 )
+  def initialize
+    super( "Portfolio")
   end
         
   def projects
@@ -147,8 +145,8 @@ class Action < Item
 
   attr_reader :completed_date, :created_date, :updated_date
   
-  def initialize( name, rank )
-    super( name, rank )
+  def initialize( name )
+    super( name )
     @status = :active
   end
   
