@@ -35,7 +35,6 @@ module Focus
       result ? result.content : default
     end
     
-    #todo: remove duplication with parse_folders, also rank now
     def parse_actions( xml )
       xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | action_node |
         @log.debug( "Found node: #{action_node}")
@@ -68,7 +67,7 @@ module Focus
     def parse_folders( xml )
       xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folder_node |
         @log.debug( "Found folder: #{folder_node} with id #{folder_node.attribute( "id").content}" )
-        
+
         name = xpath_content( folder_node, './xmlns:name' )
         rank = xpath_content( folder_node, './xmlns:rank' )
         folder = Folder.new( name, rank )
@@ -77,16 +76,14 @@ module Focus
       end
     end
     
-    # This is going to need cleanup, esp when we get to actions, where path is different
-    def track_links( item, itemNode )
-      #keep track of links for parent <-> kids
-      parentLink = itemNode.at_xpath( './xmlns:folder/@idref' ) || itemNode.at_xpath( './xmlns:task/@idref' )
-      @log.debug( "Found parent link to '#{parentLink}'" )
-      # need the 'or' for project nodes, which are structured as sub-els of actions
-      # todo: clean this up
-      id = ( itemNode[ 'id' ] || itemNode.parent['id'] )
+    def track_links( item, item_node )
+      # parent id is held as idref
+      parent_id = xpath_content( item_node, './/@idref', nil )
+      @log.debug( "Found parent link to '#{parent_id}'" )
+      # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
+      id = item_node[ 'id' ] || item_node.parent[ 'id' ]
       @ref_to_node[  id ]  = item 
-      @parent_ref_of[ item ] = parentLink && parentLink.content   
+      @parent_ref_of[ item ] = parent_id
     end
     
     def resolve_links
