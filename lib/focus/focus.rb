@@ -159,7 +159,7 @@ class Action < Item
   end
   
   def status=( status_string )
-    @status = status_string.intern
+    @status = status_string.intern if status_string
   end
   
   def completed( date )

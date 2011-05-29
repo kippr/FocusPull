@@ -41,9 +41,9 @@ module Focus
         @log.debug( "Found node: #{action_node}")
         name = xpath_content( action_node, './xmlns:name' )
         rank = xpath_content( action_node, './xmlns:rank' )
-        projectNode = action_node.at_xpath( './xmlns:project' )
+        project_node = action_node.at_xpath( './xmlns:project' )
         
-        if projectNode.nil?
+        if project_node.nil?
 
           item = Action.new( name, rank )
           track_links( item, action_node )
@@ -51,11 +51,10 @@ module Focus
         else
         
           item = Project.new( name, rank )
-          statusNode = projectNode.at_xpath( './xmlns:status' )
-          item.status = statusNode.content unless statusNode.nil?
-          item.set_single_actions if projectNode.at_xpath( './xmlns:singleton' )      
+          item.status = xpath_content( project_node, './xmlns:status', nil)
+          item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )
                     
-          track_links( item, projectNode )
+          track_links( item, project_node )
           
         end
 
