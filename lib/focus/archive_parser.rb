@@ -19,9 +19,9 @@ module Focus
     @parent_ref_of = Hash.new
     
     foreach_archive_xml do | content |
-      xml = Nokogiri::XML( content )
-      parse_actions( xml )
-      parse_folders( xml )
+      @xml = Nokogiri::XML( content )
+      parse_actions
+      parse_folders
     end
     
     resolve_links
@@ -35,8 +35,8 @@ module Focus
       result ? result.content : default
     end
     
-    def parse_actions( xml )
-      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | action_node |
+    def parse_actions
+      for_sorted( "task" ).each do | action_node |
         @log.debug( "Found node: #{action_node}")
         name = xpath_content( action_node, './xmlns:name' )
         rank = xpath_content( action_node, './xmlns:rank' )
@@ -64,8 +64,8 @@ module Focus
       end
     end
         
-    def parse_folders( xml )
-      xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folder_node |
+    def parse_folders
+      for_sorted( 'folder' ).each do | folder_node |
         @log.debug( "Found folder: #{folder_node} with id #{folder_node.attribute( "id").content}" )
 
         name = xpath_content( folder_node, './xmlns:name' )
@@ -74,6 +74,11 @@ module Focus
         track_links( folder, folder_node )        
     
       end
+    end
+    
+    def for_sorted( node_type )
+      nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
+      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ) }
     end
     
     def track_links( item, item_node )

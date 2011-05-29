@@ -51,8 +51,6 @@ class Item
     @parent = parent
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
-     #todo: consider moving sorting of children out, rank is an obtrusive item not used for anything else
-     parent.children.sort!{ | a,b | a.rank <=> b.rank }
   end
   
   def is_root?
