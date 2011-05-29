@@ -30,29 +30,27 @@ module Focus
 
   private
   
-    def xpath_content( node, xpath )
+    def xpath_content( node, xpath, default = "" )
       result = node.at_xpath( xpath )
-      result ? result.content : ""
+      result ? result.content : default
     end
     
     #todo: remove duplication with parse_folders, also rank now
     def parse_actions( xml )
-      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | actionNode |
-        @log.debug( "Found node: #{actionNode}")
-        name = xpath_content( actionNode, './xmlns:name' )
-        rank = xpath_content( actionNode, './xmlns:rank' )
-        projectNode = actionNode.at_xpath( './xmlns:project' )
+      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | action_node |
+        @log.debug( "Found node: #{action_node}")
+        name = xpath_content( action_node, './xmlns:name' )
+        rank = xpath_content( action_node, './xmlns:rank' )
+        projectNode = action_node.at_xpath( './xmlns:project' )
         
         if projectNode.nil?
-        
-          item = Action.new( name, rank )
 
-          track_links( item, actionNode )
+          item = Action.new( name, rank )
+          track_links( item, action_node )
                   
         else
         
           item = Project.new( name, rank )
-
           statusNode = projectNode.at_xpath( './xmlns:status' )
           item.status = statusNode.content unless statusNode.nil?
           item.set_single_actions if projectNode.at_xpath( './xmlns:singleton' )      
@@ -61,27 +59,21 @@ module Focus
           
         end
 
-        # todo: duplication
-        added_node = actionNode.at_xpath( './xmlns:added' )
-        item.created_date = added_node.content if added_node
-
-        modified_node = actionNode.at_xpath( './xmlns:modified' )
-        item.updated_date = modified_node.content if modified_node
-
-        completed_node = actionNode.at_xpath( './xmlns:completed' )
-        item.completed( completed_node.content ) if completed_node
+        item.created_date = xpath_content( action_node, './xmlns:added', nil )
+        item.updated_date = xpath_content( action_node, './xmlns:modified', nil )
+        item.completed( xpath_content( action_node, './xmlns:completed', nil ) )
         
       end
     end
-    
-    def parse_folders( xml )
-      xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
-        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id").content}" )
         
-        name = xpath_content( folderNode, './xmlns:name' )
-        rank = xpath_content( folderNode, './xmlns:rank' )
+    def parse_folders( xml )
+      xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folder_node |
+        @log.debug( "Found folder: #{folder_node} with id #{folder_node.attribute( "id").content}" )
+        
+        name = xpath_content( folder_node, './xmlns:name' )
+        rank = xpath_content( folder_node, './xmlns:rank' )
         folder = Folder.new( name, rank )
-        track_links( folder, folderNode )        
+        track_links( folder, folder_node )        
     
       end
     end

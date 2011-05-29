@@ -163,16 +163,18 @@ class Action < Item
   end
   
   def completed( date )
-    @status = :done
-    @completed_date = Date.parse( date )
+    if date
+      @status = :done
+      @completed_date = Date.parse( date )
+    end
   end
     
   def created_date=( date )
-    @created_date = Date.parse( date )
+    @created_date = Date.parse( date ) if date
   end
 
   def updated_date=( date )
-    @updated_date = Date.parse( date )
+    @updated_date = Date.parse( date ) if date
   end
   
   def age
