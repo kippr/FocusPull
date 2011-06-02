@@ -60,6 +60,18 @@ module Focus
       track_links( item, node )
       item        
     end
+        
+    def track_links( item, item_node )
+      if item.name
+        # parent id is held as idref
+        parent_id = xpath_content( item_node, './/@idref', nil )
+        @log.debug( "Found parent link to '#{parent_id}'" )
+        # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
+        id = item_node[ 'id' ] || item_node.parent[ 'id' ]
+        @ref_to_node[  id ]  = item 
+        @parent_ref_of[ item ] = parent_id
+      end
+    end
     
     def resolve_links
       @log.debug( "Resolving links for #{@ref_to_node}")
@@ -67,16 +79,6 @@ module Focus
         # replace the string key ref we stored on each node with the actual parent
         node.link_parent( @ref_to_node[ @parent_ref_of[ node ] ] )
       end
-    end
-    
-    def track_links( item, item_node )
-      # parent id is held as idref
-      parent_id = xpath_content( item_node, './/@idref', nil )
-      @log.debug( "Found parent link to '#{parent_id}'" )
-      # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
-      id = item_node[ 'id' ] || item_node.parent[ 'id' ]
-      @ref_to_node[  id ]  = item 
-      @parent_ref_of[ item ] = parent_id
     end
     
     def for_sorted( node_type )
