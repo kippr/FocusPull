@@ -23,12 +23,11 @@ class Item
 
   attr_reader :name
   attr_reader :parent
-  attr_reader :rank 
   attr_reader :children
+  attr_reader :created_date, :updated_date
   
-  def initialize( name, rank )
+  def initialize( name )
     @name = name
-    @rank = rank.to_i
     @children = []
   end
 
@@ -51,8 +50,6 @@ class Item
     @parent = parent
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
-     #todo: consider moving sorting of children out, rank is an obtrusive item not used for anything else
-     parent.children.sort!{ | a,b | a.rank <=> b.rank }
   end
   
   def is_root?
@@ -63,11 +60,14 @@ class Item
     false
   end
   
-  # todo: this is evil
-  def created_date
-    Date.today
+  def created_date=( date )
+    @created_date = Date.parse( date ) if date
   end
-  
+
+  def updated_date=( date )
+    @updated_date = Date.parse( date ) if date
+  end
+    
   #todo: this is evil
   def status
     :active
@@ -80,34 +80,32 @@ end
 
 class Focus < Item
   
-  def initialize( )
-    super( "Portfolio", 0 )
+  def initialize
+    super( "Portfolio")
   end
         
   def projects
-    self.select{ | n | n.class == Project }
+    select_for Project  
   end
 
-  # todo: remove duplication w projects, inefficiency of double scan?
   def folders
-    self.select{ | n | n.class == Folder }
+    select_for Folder
   end
 
   def actions
-    self.select{ | n | n.class == Action }
+    select_for Action
   end
   
   def project( name )
-    projects.detect{ | n | n.name == name }
+    detect_for( Project, name )
   end
 
-  # todo: remove duplication w project
   def folder( name )
-    folders.detect{ | n | n.name == name }
+    detect_for( Folder, name )
   end
   
   def action( name )
-    actions.detect{ | n | n.name == name }
+    detect_for( Action, name )
   end
   
   def parent
@@ -118,9 +116,22 @@ class Focus < Item
     true
   end
   
+  def created_date
+    Date.today
+  end
+  
   def visit( visitor, *args )
     visitor.visit_focus( self )
   end
+  
+  private
+    def select_for( type )
+      self.select{ | n | n.class == type }
+    end
+    
+    def detect_for( type, name )
+      self.detect{ | n | n.class == type && n.name == name }
+    end
 
 end
 
@@ -140,10 +151,10 @@ end
 
 class Action < Item
 
-  attr_reader :completed_date, :created_date, :updated_date
+  attr_reader :completed_date
   
-  def initialize( name, rank )
-    super( name, rank )
+  def initialize( name )
+    super( name )
     @status = :active
   end
   
@@ -152,22 +163,16 @@ class Action < Item
   end
   
   def status=( status_string )
-    @status = status_string.intern
+    @status = status_string.intern if status_string
   end
   
   def completed( date )
-    @status = :done
-    @completed_date = Date.parse( date )
+    if date
+      @status = :done
+      @completed_date = Date.parse( date )
+    end
   end
-    
-  def created_date=( date )
-    @created_date = Date.parse( date )
-  end
-
-  def updated_date=( date )
-    @updated_date = Date.parse( date )
-  end
-  
+      
   def age
     if done?
       @completed_date - @created_date

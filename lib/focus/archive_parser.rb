@@ -19,9 +19,9 @@ module Focus
     @parent_ref_of = Hash.new
     
     foreach_archive_xml do | content |
-      xml = Nokogiri::XML( content )
-      parse_actions( xml )
-      parse_folders( xml )
+      @xml = Nokogiri::XML( content )
+      parse_actions
+      parse_folders
     end
     
     resolve_links
@@ -30,72 +30,47 @@ module Focus
 
   private
   
-    def xpath_content( node, xpath )
-      result = node.at_xpath( xpath )
-      result ? result.content : ""
-    end
-    
-    #todo: remove duplication with parse_folders, also rank now
-    def parse_actions( xml )
-      xml.xpath( '/xmlns:omnifocus/xmlns:task' ).each do | actionNode |
-        @log.debug( "Found node: #{actionNode}")
-        name = xpath_content( actionNode, './xmlns:name' )
-        rank = xpath_content( actionNode, './xmlns:rank' )
-        projectNode = actionNode.at_xpath( './xmlns:project' )
-        
-        if projectNode.nil?
-        
-          item = Action.new( name, rank )
-
-          track_links( item, actionNode )
-                  
+    def parse_actions
+      for_sorted( "task" ).each do | action_node |
+        @log.debug( "Processing action: #{action_node}")
+        project_node = action_node.at_xpath( './xmlns:project' )
+        if project_node
+          item = create_node( action_node, Project )
+          item.status = xpath_content( project_node, './xmlns:status', nil)
+          item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )                    
         else
-        
-          item = Project.new( name, rank )
-
-          statusNode = projectNode.at_xpath( './xmlns:status' )
-          item.status = statusNode.content unless statusNode.nil?
-          item.set_single_actions if projectNode.at_xpath( './xmlns:singleton' )      
-                    
-          track_links( item, projectNode )
-          
+          item = create_node( action_node, Action )
         end
-
-        # todo: duplication
-        added_node = actionNode.at_xpath( './xmlns:added' )
-        item.created_date = added_node.content if added_node
-
-        modified_node = actionNode.at_xpath( './xmlns:modified' )
-        item.updated_date = modified_node.content if modified_node
-
-        completed_node = actionNode.at_xpath( './xmlns:completed' )
-        item.completed( completed_node.content ) if completed_node
+        item.completed( xpath_content( action_node, './xmlns:completed', nil ) )        
+      end
+    end
         
+    def parse_folders
+      for_sorted( 'folder' ).each do | folder_node |
+        @log.debug( "Processing folder: #{folder_node}" )
+        create_node( folder_node, Folder )
       end
     end
     
-    def parse_folders( xml )
-      xml.xpath('/xmlns:omnifocus/xmlns:folder').each do | folderNode |
-        @log.debug( "Found folder: #{folderNode} with id #{folderNode.attribute( "id").content}" )
-        
-        name = xpath_content( folderNode, './xmlns:name' )
-        rank = xpath_content( folderNode, './xmlns:rank' )
-        folder = Folder.new( name, rank )
-        track_links( folder, folderNode )        
-    
-      end
+    def create_node( node, type )
+      name = xpath_content( node, './xmlns:name' )
+      item = type.new( name )
+      item.created_date = xpath_content( node, './xmlns:added', nil )
+      item.updated_date = xpath_content( node, './xmlns:modified', nil )
+      track_links( item, node )
+      item        
     end
-    
-    # This is going to need cleanup, esp when we get to actions, where path is different
-    def track_links( item, itemNode )
-      #keep track of links for parent <-> kids
-      parentLink = itemNode.at_xpath( './xmlns:folder/@idref' ) || itemNode.at_xpath( './xmlns:task/@idref' )
-      @log.debug( "Found parent link to '#{parentLink}'" )
-      # need the 'or' for project nodes, which are structured as sub-els of actions
-      # todo: clean this up
-      id = ( itemNode[ 'id' ] || itemNode.parent['id'] )
-      @ref_to_node[  id ]  = item 
-      @parent_ref_of[ item ] = parentLink && parentLink.content   
+        
+    def track_links( item, item_node )
+      if item.name
+        # parent id is held as idref
+        parent_id = xpath_content( item_node, './/@idref', nil )
+        @log.debug( "Found parent link to '#{parent_id}'" )
+        # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
+        id = item_node[ 'id' ] || item_node.parent[ 'id' ]
+        @ref_to_node[  id ]  = item 
+        @parent_ref_of[ item ] = parent_id
+      end
     end
     
     def resolve_links
@@ -105,6 +80,17 @@ module Focus
         node.link_parent( @ref_to_node[ @parent_ref_of[ node ] ] )
       end
     end
+    
+    def for_sorted( node_type )
+      nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
+      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ).to_i }
+    end
+    
+    def xpath_content( node, xpath, default = "" )
+      result = node.at_xpath( xpath )
+      result ? result.content : default
+    end
+    
     
     def foreach_archive_xml
       @log.debug( "untarring #{@directory}/#{@filename} for #{@username}" )

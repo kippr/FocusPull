@@ -3,11 +3,8 @@ require 'timecop'
 
 describe Focus::MindMapFactory, "create_simple_map" do
 
-  #todo: fair amount of duplication in the befores now...
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @focus = @parser.parse
-    Focus::MindMapFactory.failing_test_hack = true
+    @focus = parse_test_archive
     # attributes are disabled by default, but leave in tests, since that's handier that splitting all out
     @map = Focus::MindMapFactory.create_simple_map( @focus, :ADD_ATTRIBUTES => true, :STATUSES_TO_INCLUDE => [ :active, :done, :inactive, :dropped ] )
     @xml =  Nokogiri::Slop @map.to_s
@@ -15,7 +12,7 @@ describe Focus::MindMapFactory, "create_simple_map" do
   end
   
   after(:all) do
-    Focus::MindMapFactory.failing_test_hack = false
+    reset_factory
   end
  
   it "should set map xml version" do
@@ -146,16 +143,14 @@ end
 describe Focus::MindMapFactory, "create_delta_map" do
 
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @focus = @parser.parse
-    Focus::MindMapFactory.failing_test_hack = true
+    @focus = parse_test_archive
     @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13" )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   
   after(:all) do
-    Focus::MindMapFactory.failing_test_hack = false
+    reset_factory
   end
   
   
@@ -211,12 +206,14 @@ end
 describe Focus::MindMapFactory, "create_delta_map for new projects" do
   
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @focus = @parser.parse
-    Focus::MindMapFactory.failing_test_hack = true
+    @focus = parse_test_archive
     @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :new_projects )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
+  end
+  
+  after(:all) do
+    reset_factory
   end
   
   it "should exclude new actions" do
@@ -230,28 +227,21 @@ describe Focus::MindMapFactory, "create_delta_map for new projects" do
   it "should specify new projects only in description 'portfolio' node name" do
     @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
     @root.node.richcontent.body.p[1].font.content.should == 'New projects 2010-12-08..2010-12-13'
-  end
-  
-  
-  after(:all) do
-    Focus::MindMapFactory.failing_test_hack = false
-  end
+  end  
   
 end  
 
 describe Focus::MindMapFactory, "create_delta_map for completed items" do
 
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @focus = @parser.parse
-    Focus::MindMapFactory.failing_test_hack = true
+    @focus = parse_test_archive
     @map = Focus::MindMapFactory.create_delta_map( @focus, "2010-12-08", "2010-12-13", :all_done )
     @xml =  Nokogiri::Slop @map.to_s
     @root = @xml.at_xpath( "/map" )
   end
   
   after(:all) do
-    Focus::MindMapFactory.failing_test_hack = false
+    reset_factory
   end
 
   it "should include filtering dates in 'portfolio' node name" do
@@ -277,9 +267,7 @@ end
 describe Focus::MindMapFactory, "create_meta_map" do
   
   before(:all) do
-    @parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
-    @focus = @parser.parse
-    Focus::MindMapFactory.failing_test_hack = false
+    @focus = parse_test_archive
     # Create the map as at this time to avoid new projects aging and causing test failures
     Timecop.travel(2011, 1, 9) { @map = Focus::MindMapFactory.create_meta_map( @focus ) }
     @xml =  Nokogiri::Slop @map.to_s
@@ -287,7 +275,7 @@ describe Focus::MindMapFactory, "create_meta_map" do
   end
   
   after(:all) do
-    Focus::MindMapFactory.failing_test_hack = false
+    reset_factory
   end
   
   it "should be rooted with a meta-node that has info on tree" do
@@ -339,3 +327,15 @@ def attribute_for item_name, attribute_name
   attribute = item && item.at_xpath("./attribute[@NAME = '#{attribute_name}']")
   attribute && attribute['VALUE']
 end
+
+def parse_test_archive
+  parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
+  focus = parser.parse
+  Focus::MindMapFactory.failing_test_hack = true
+  focus
+end
+
+def reset_factory
+  Focus::MindMapFactory.failing_test_hack = false
+end
+

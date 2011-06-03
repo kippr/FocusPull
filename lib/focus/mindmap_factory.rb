@@ -27,6 +27,7 @@ class MindMapFactory
   # todo: sensible values?
   AGED_PROJECTS=90
   AGED_ACTIONS=45 
+  # todo: make this an option to generate percent time spent reports?
   APPEND_WEIGHTS=false # used to eyeball weighting
   
   #todo: this makes me want to weep... As soon as I add an html node, a whole bunch of 
@@ -346,7 +347,7 @@ class Edger
   def accept item
     weight = @weight_calculator.weigh item
     add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= @max ? 1 : 2
-    element['TEXT'] = "#{element['TEXT']} %2.2f" % weight if MindMapFactory::APPEND_WEIGHTS
+    element['TEXT'] = "#{element['TEXT']}" + " %2.2f" % @weight_calculator.percent_weight( item ) if MindMapFactory::APPEND_WEIGHTS
   end
     
   def to_colour( weight )
@@ -370,14 +371,24 @@ class WeightCalculator
     @statuses_to_weight = StatusFilter.new( statuses_to_weight )
   end
   
+  #todo: dupe of percent but better than running 2x?
   def weigh item
+    weight = raw_weight item
+    # don't let the subtree actually get a higher weight than the 'raw' weight in case of small trees
+    [ weight / @total * 100, weight ].min   
+  end
+  
+  def percent_weight item
+    raw_weight( item ) / @total * 100
+  end
+  
+  # todo: make private?
+  def raw_weight item
     # assumption: we will always start at root
     # so run once 'unweighted' to get total tree, then run again
     @total = weigh_subtree( item ) + 0.00001 unless @total # avoid div by zero
     # actual run, with total definitely set
     weight = weigh_subtree( item )
-    # don't let the subtree actually get a higher weight than the 'raw' weight in case of small trees
-    [ weight / @total * 100, weight ].min
   end
   
   def weigh_subtree item
