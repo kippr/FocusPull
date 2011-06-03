@@ -36,12 +36,10 @@ GEM
     builder (2.1.2)
     color (1.4.1)
     columnize (0.3.2)
-    diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     hoe (2.8.0)
       rake (>= 0.8.7)
-    hpricot (0.8.3)
     i18n (0.5.0)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
@@ -54,12 +52,6 @@ GEM
       nokogiri (>= 1.2.1)
     mime-types (1.16)
     minitar (0.5.3)
-    ninajansen-cloud (0.0.9)
-      RubyInline (>= 3.8.1)
-      diff-lcs (>= 1.1.2)
-      hpricot (>= 0.8.1)
-      mime-types (>= 1.15)
-      pdf-writer (>= 1.1.8)
     nokogiri (1.4.4)
     pdf-writer (1.1.8)
       color (>= 1.4.0)
@@ -110,7 +102,6 @@ DEPENDENCIES
   RubyInline
   mechanize
   minitar
-  ninajansen-cloud
   nokogiri
   pdf-writer
   rails (= 3.0.7)
