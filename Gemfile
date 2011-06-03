@@ -24,7 +24,7 @@ gem 'minitar'
 gem 'mechanize'
 gem 'zip'
 
-gem 'ninajansen-cloud'
+#gem 'ninajansen-cloud'
 gem 'pdf-writer'
 gem 'RubyInline'
 
