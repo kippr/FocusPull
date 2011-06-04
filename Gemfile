@@ -33,7 +33,12 @@ gem 'zip'
 # and rake tasks are available in development mode:
 group :development, :test do
 #   gem 'webrat'
+	gem 'sqlite3-ruby', :require => 'sqlite3'
 
   # To use debugger
   gem 'ruby-debug19'
+end
+
+group :production do
+	gem 'pg'
 end
