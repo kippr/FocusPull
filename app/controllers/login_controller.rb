@@ -16,18 +16,16 @@ class LoginController < ApplicationController
       redirect_to :controller => 'login', :action => 'form'
     else
       #todo: what is the best way to log in a rails app?
-      log = Logger.new(STDOUT)
       login = Login.new( params[ :login ] )
-      puts @login.inspect
     
       directory = "archives/#{Time.now.strftime("%Y.%m.%d")}"
       FileUtils.rm_rf(directory)
       FileUtils.mkpath(directory)
       filename = "omnisync.tar"
 
-      archive = Focus::ArchivePull.download_archive( login.name, login.password )
+      archive = Focus::ArchivePull.download_archive( login.name, login.password, self )
       archive.save("#{directory}/#{filename}")
-      log.info("Saved #{filename} into #{directory}")
+      info "Saved #{filename}"
 
       parser = Focus::FocusParser.new( directory, filename, login.name)
       focus = parser.parse
@@ -36,10 +34,16 @@ class LoginController < ApplicationController
       session[ :focus_date ] = Time.now.strftime("%Y.%m.%d %H:%M")
       session[ :focus_user ]= login.name
       
-      flash[:notice] = "Archive retrieved and processed successfully"
+      info "Archive retrieved and processed successfully"
     
       redirect_to :controller => "maps", :action => "list"
     end
+  end
+  
+  def info msg
+    puts "Controller was told: #{msg}"
+    flash[:notice] ||= []
+    flash[:notice] << msg
   end
 
 end

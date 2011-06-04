@@ -1,19 +1,10 @@
-<style type="text/css">
-#notice { background-color: #A4E7A0; border: 1px solid #26722D; }
-#error { background-color: #F0A8A8; border: 1px solid #900; }
-#notice, #error { width: 90%; margin: 0 auto 10px auto; padding: 5px; }
-#notice p, #error p { margin-left: 20px; padding: 0; font-size: .75em; color: #000; }
-#notice a, #error a { text-decoration: none; padding: 0 3px; }
-#notice a { border: 1px solid #26722D; color: #26722D; }
-#error a { border: 1px solid #900; color: #900; }
-#notice a:hover, #error a:hover { color: #333; border: 1px solid #333; }
-</style>
-<p>
-	<%- flash.each do |key, msg| -%>
-		<div id="<%= key %>">
-			<p style="float:right;"><%= link_to_function 'X', "Effect.Fade('#{key}')" %></p>
-			<p><%= msg %></p>
-			<div class="clear"></div>
-		</div>
-	<%- end -%>
-</p>
+<%- msg_type, msg_id, msg = msg -%>
+<div class="<%= msg_type %>" id="<%= msg_id %>">
+	<p style="float:right;">X</p>
+	<p><%= msg %></p>
+	<div class="clear"></div>
+	<script>
+	$("#<%= msg_id %>").click(function(){$(this).slideUp()});
+	$("#<%= msg_id %>").delay(7000).slideUp("slow");
+	</script>
+</div>

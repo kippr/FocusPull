@@ -1,0 +1,17 @@
+<p>
+<div id="notice_area"/>	
+<script>
+    $(document).ready(function(){ 
+		setInterval(function(){
+      		$('#notice_area').load('/messages');
+    		}, 1000)});
+</script>
+	<%- #todo: this whole thing is ugly 
+	i=0 ; flash.each do |msg_type, msgs | 
+		msgs.each do | msg |
+		msg_id = "#{msg_type}-#{i}";i=i+1 -%>
+		<%= render( 'shared/notice', :msg => [ msg_type, msg_id, msg ] )  %>
+		
+
+	<%- end end -%>
+</p>
