@@ -36,12 +36,11 @@ class MapsController < ApplicationController
     end
     
     def from
-      25.days.ago.to_s
+      6.days.ago.to_s
     end
     
     def to
-      22.days.ago.to_s
-      #Date.today.to_s
+      Date.today.to_s
     end
   
 end
