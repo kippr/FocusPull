@@ -17,7 +17,8 @@ FocusPull::Application.routes.draw do
   match 'focus/New-projects-this-week.mm' => 'maps#send_new_project_map'
   match 'focus/Metamap.mm' => 'maps#send_meta_map'
   match 'focus' => 'maps#list'
-    
+  
+  match 'messages' => 'messages#current'  
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase

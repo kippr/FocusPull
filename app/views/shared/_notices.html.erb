@@ -1,10 +1,11 @@
 <p>
-<div id="notice_area"/>	
 <script>
-    $(document).ready(function(){ 
+/*    $(document).ready(function(){ 
 		setInterval(function(){
-      		$('#notice_area').load('/messages');
-    		}, 1000)});
+      		//$('#notice_area').load('/messages');
+			$.get('/messages', function(res){ $(res).insertBefore( $('#notice_area') )  } ) ;
+    		}, 3000);
+});*/
 </script>
 	<%- #todo: this whole thing is ugly 
 	i=0 ; flash.each do |msg_type, msgs | 
@@ -14,4 +15,5 @@
 		
 
 	<%- end end -%>
+	<div id="notice_area"></div>	
 </p>
