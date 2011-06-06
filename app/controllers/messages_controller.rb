@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
   
   def current
-    render :partial => 'shared/notice', :locals => { :msg => [ "notice", "notice-#{Time.now.to_i}", "Hello - #{Time.now}" ] }
+    render :partial => 'shared/notice', :locals => { :msg => Notice.new( "Hello-#{Time.now}" ) }
   end
   
 end
