@@ -31,12 +31,9 @@ class LoginController < ApplicationController
 
       parser = Focus::FocusParser.new( directory, filename, login.name)
       focus = parser.parse
-
-      info "Archive retrieved and processed successfully"
-    
-      session[ :focus] = focus
-      session[ :focus_date ] = Time.now.strftime("%Y.%m.%d %H:%M")
       session[ :focus_user ]= login.name
+
+      info "Archive retrieved and processed successfully"    
       
     
       redirect_to :controller => "maps", :action => "list"

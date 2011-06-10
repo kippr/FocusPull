@@ -16,6 +16,8 @@ FocusPull::Application.routes.draw do
   match 'focus/Completed-this-week.mm' => 'maps#send_done_map'
   match 'focus/New-projects-this-week.mm' => 'maps#send_new_project_map'
   match 'focus/Metamap.mm' => 'maps#send_meta_map'
+  match 'focus/wordcloud.pdf' => 'clouds#create'
+
   match 'focus' => 'maps#list'
   
   # Sample of named route:

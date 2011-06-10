@@ -4,16 +4,26 @@ module Focus
 class CloudFactory
   
   def self.create_cloud focus, output_path
-    factory = CloudFactory.new focus, output_path
-    factory.create_input_file
-    factory.create_cloud
-    factory.write_pdf
+    self.new_cloud( focus, output_path ).dump_pdf
   end
+
+  def self.create_cloud_pdf focus, output_path
+    self.new_cloud( focus, output_path ).pdf
+  end
+  
+  private 
+    def self.new_cloud( focus, output_path )
+      factory = CloudFactory.new focus, output_path
+      factory.create_input_file
+      factory.create_cloud      
+    end
   
   def initialize focus, output_path
     @focus, @output_path = focus, output_path
   end
   
+  #todo: is there a package private type thing available?
+  public
   def create_input_file
     @input_file = "#{@output_path}/focus_words.txt"
     for_weight = Weight.new
@@ -44,10 +54,7 @@ class CloudFactory
     @cloud = WordCloud.new(options)
     @cloud.place_boxes("mostly-horizontal")
     @cloud.put_placed_boxes_in_pdf
-  end
-  
-  def write_pdf
-    @cloud.dump_pdf
+    @cloud
   end
   
 end

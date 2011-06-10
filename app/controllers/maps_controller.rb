@@ -23,10 +23,6 @@ class MapsController < ApplicationController
   end
   
   private
-    def focus
-      session[ :focus ]
-    end
-    
     def options
       options = { :EXCLUDE_NODES => [ 'Personal' ] }
     end
