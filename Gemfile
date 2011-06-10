@@ -27,7 +27,6 @@ gem 'zip'
 gem 'ninajansen-cloud'
 gem 'pdf-writer'
 gem 'RubyInline'
-gem 'magic_encoding'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

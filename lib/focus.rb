@@ -12,10 +12,6 @@ require 'focus/graphable'
 require 'focus/archive_parser'
 require 'focus/pull_archive'
 require 'focus/colour'
-
-require 'magic_encoding'
-#magic_encoding
-
 require 'focus/cloud_factory'
 
 module Focus
