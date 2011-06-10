@@ -24,9 +24,10 @@ class LoginController < ApplicationController
       FileUtils.mkpath(directory)
       filename = "omnisync.tar"
 
-      archive = Focus::ArchivePull.download_archive( login.name, login.password, self )
+      archive = Focus::ArchivePull.download_archive( login.name, login.password )
+
       archive.save("#{directory}/#{filename}")
-      info "Saved #{filename}"
+      logger.debug "Saved #{filename}"
 
       parser = Focus::FocusParser.new( directory, filename, login.name)
       focus = parser.parse

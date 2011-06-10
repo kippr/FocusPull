@@ -3,10 +3,7 @@ class Notice
   def initialize msg
     @msg = msg
     @create_time = Time.now
-  end
-  
-  def message
-    "#{f_create_time} - #{@msg}"
+    @default_period = 7000
   end
   
   def id
@@ -17,13 +14,16 @@ class Notice
     "notice"
   end
   
+  def period
+    @default_period
+  end
+  
+  def message
+    @msg
+  end
+  
   def to_s
     "#{self.class.name} - #{self.message}"
   end
-  
-  private
-    def f_create_time
-      @create_time.strftime("%H:%M:%S")
-    end
-    
+      
 end

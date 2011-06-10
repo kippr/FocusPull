@@ -1,16 +1,16 @@
 <p>
-<script>
-/*    $(document).ready(function(){ 
-		setInterval(function(){
-      		//$('#notice_area').load('/messages');
-			$.get('/messages', function(res){ $(res).insertBefore( $('#notice_area') )  } ) ;
-    		}, 3000);
-});*/
-</script>
-	<%- #todo: this whole thing is ugly 
-	flash.each do |msg_type, msgs | 
+	<%- #todo: helper method instead?
+	flash.each do |msg_type, msgs |
 		msgs.each do | msg | %>
-			<%= render( 'shared/notice',  :msg => msg ) =%>
-	<%- end end -%>
-	<div id="notice_area"></div>	
+		<div class="<%= msg.type %>" id="<%= msg.id %>">
+			<p style="float:right;">X</p>
+			<p><%= msg.message %></p>
+			<div class="clear"></div>
+			<script>
+			$("#<%= msg.id %>").click(function(){$(this).slideUp("fast")});
+			$("#<%= msg.id %>").delay(<%= msg.period %>).slideUp("slow");
+			</script>
+		</div>
+		<%- end -%>
+	<%- end -%>
 </p>
