@@ -24,7 +24,7 @@ gem 'minitar'
 gem 'mechanize'
 gem 'zip'
 
-gem "cloud", :path => "~/code/cloud"
+gem "cloud", :git => "git://github.com/kippr/cloud.git"
 #gem 'ninajansen-cloud'
 gem 'pdf-writer'
 gem 'RubyInline'

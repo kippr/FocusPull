@@ -1,5 +1,6 @@
-PATH
-  remote: /Users/kip/code/cloud
+GIT
+  remote: git://github.com/kippr/cloud.git
+  revision: e670ee4a63cbc94fdc0c
   specs:
     cloud (0.0.9)
       RubyInline (>= 3.8.1)
