@@ -75,11 +75,11 @@ class Weight
   end
 
   def visit_project item
-    item.single_actions? ? 0 : 3
+    item.single_actions? ? 0 : ( item.active? ? 3 : 0)
   end
   
   def visit_action item
-    1
+    item.active? ? 1 : 0
   end
   
 end
