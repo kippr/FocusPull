@@ -30,8 +30,8 @@ class CloudFactory
     File.open(@input_file , "w") do |f| 
       @focus.each do |node| 
         for_weight.of node  do 
-          node.name.split(" ").each do |s| 
-            f.puts( s ) if s.length > 2
+          node.name.split(/[^a-zA-Z0-9]/).each do |s| 
+            f.puts( s.downcase ) if s.length > 2 || /[A-Z][A-Z]/.match( s )
           end
         end
       end
