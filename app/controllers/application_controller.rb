@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
     session[ :focus ]
   end
 
-  def focus=
+  def store_focus focus
     session[ :focus ] = focus
     session[ :focus_date ] = Time.now.strftime("%Y.%m.%d %H:%M")
   end

@@ -30,7 +30,7 @@ class LoginController < ApplicationController
       logger.debug "Saved #{filename}"
 
       parser = Focus::FocusParser.new( directory, filename, login.name)
-      focus = parser.parse
+      store_focus( parser.parse )
       session[ :focus_user ]= login.name
 
       info "Archive retrieved and processed successfully"    
