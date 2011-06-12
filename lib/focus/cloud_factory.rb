@@ -26,6 +26,7 @@ class CloudFactory
   public
   def create_input_file
     @input_file = "#{@output_path}/focus_words.txt"
+    logger.debug( "Preparing to write word list to #{@input_file}" )
     for_weight = Weight.new
     File.open(@input_file , "w") do |f| 
       @focus.each do |node| 
