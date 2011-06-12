@@ -26,7 +26,8 @@ gem 'zip'
 
 gem "cloud", :git => "git://github.com/kippr/cloud.git"
 #gem 'ninajansen-cloud'
-gem 'pdf-writer'
+gem 'pdf-writer', :git => "git://github.com/metaskills/pdf-writer.git"
+#gem 'pdf-writer'
 gem 'RubyInline'
 gem 'hpricot', '0.8.3'
 gem 'hoe', '2.8.0'
