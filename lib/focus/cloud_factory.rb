@@ -75,7 +75,7 @@ class Weight
   end
 
   def visit_project item
-    2
+    item.single_actions? ? 0 : 3
   end
   
   def visit_action item
