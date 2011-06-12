@@ -32,7 +32,7 @@ class MapsController < ApplicationController
     end
     
     def from
-      6.days.ago.to_s
+      8.days.ago.to_s
     end
     
     def to
