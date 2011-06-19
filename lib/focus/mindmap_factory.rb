@@ -126,7 +126,13 @@ class SimpleMap
   def create
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
-    @focus.traverse( nil, push, pop) { | n | !@nodes_to_exclude.include? n.name }
+    @focus.travel do | event, item |
+      case event
+        when :start then visit( item ) unless @nodes_to_exclude.include? item.name
+        when :end then @stack.pop unless @nodes_to_exclude.include? item.name
+      end
+    end
+#    @focus.traverse( nil, push, pop) { | n | !@nodes_to_exclude.include? n.name }
     @stack.first
   end
   

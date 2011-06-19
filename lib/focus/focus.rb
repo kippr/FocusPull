@@ -46,10 +46,31 @@ class Item
     value
   end
   
+  def travel( &block )
+    yield( :start, self )
+    children.each{ | c | c.travel( &block ) }
+    yield( :end, self )
+  end
+  
+  def preorder
+    Preorder.new( self )
+  end
+  
   def link_parent( parent )
     @parent = parent
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
+  end
+  
+  # todo: not a thread safe implementation!
+  # also, too complicated: swaps in a filtered deep copy of children, then calls clone 
+  # (for shallow copy of other attributes)
+  def filter_copy &accept_filter
+    kids = @children
+    @children = @children.select( &accept_filter ).collect{ | c | c.filter_copy( &accept_filter ) }
+    copy = self.clone
+    @children = kids
+    copy
   end
   
   def is_root?
@@ -226,6 +247,17 @@ class Project < Action
     visitor.visit_project( self )
   end
   
+end
+
+class Preorder < SimpleDelegator
+  include Enumerable
+
+  def each( &block )
+    __getobj__.travel do | event, item |
+      yield item if :start == event
+    end
+  end
+
 end
 
 end

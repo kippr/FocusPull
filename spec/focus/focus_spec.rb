@@ -23,7 +23,7 @@ describe Focus::Focus do
   end
   
   it "should offer pre-order traversal" do
-    @focus.to_a.should == [ @focus, @mailProject, @mailAction, @personalFolder, @openZoneProject ]
+    @focus.preorder.to_a.should == [ @focus, @mailProject, @mailAction, @personalFolder, @openZoneProject ]
   end
   
   it "should offer pre-order traversal with callbacks" do
@@ -99,13 +99,40 @@ describe Focus::Focus do
     @mailAction.status = 'inactive'
     @mailAction.age.should == 30 
   end
-  
+    
   it "should implement the visitor pattern" do
     visitor = Visitor.new
     Focus::Project.new( "" ).visit( visitor ).should == "Visited a Project"
     Focus::Action.new( "" ).visit( visitor ).should == "Visited an Action"
     Focus::Folder.new( "" ).visit( visitor ).should == "Visited a Folder"
     Focus::Focus.new.visit( visitor ).should == "Visited Portfolio Root"
+  end
+  
+  describe "filtered copy" do
+    
+    before do
+      @full_copy = @focus.filter_copy{ | n |  true }
+    end
+  
+    it "should create a replicated focus tree" do
+      @full_copy.to_a.to_s.should == @focus.to_a.to_s      
+    end
+    
+    it "should be a deep copy" do
+      node_from_focus = @focus.to_a[2]
+      node_from_copy = @full_copy.to_a[2]
+      
+      node_from_copy.status.should == node_from_focus.status
+      node_from_copy.status = :inactive
+      node_from_copy.status.should_not == node_from_focus.status
+    end
+    
+    it "should copy only nodes that match filter" do
+      partial_copy = @focus.filter_copy{ | n | !n.name.start_with? "Spend less" }
+      partial_copy.children.size.should == 1
+      partial_copy.first.name == "Personal"
+    end
+    
   end
   
 end
