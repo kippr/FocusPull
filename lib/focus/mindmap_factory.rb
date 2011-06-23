@@ -104,7 +104,7 @@ class MindMapFactory
       v << Formatter.new( stack, filter ) if options[ :FORMATTING ]
       v << ActionCollapser.new( stack, filter ) if options[ :FOLD_TASKS ]
       v << IconStamper.new( stack, filter, options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if options[ :ADD_ICONS ]
-      v << Edger.new( stack, filter, options[ :WEIGHTED_STATUSES ], options[ :APPEND_WEIGHTS ] ) if options[ :WEIGHT_EDGES ]
+      v << Edger.new( stack, filter, options[ :EXCLUDE_NODES ], options[ :WEIGHTED_STATUSES ], options[ :APPEND_WEIGHTS ] ) if options[ :WEIGHT_EDGES ]
       v << AttributeStamper.new( stack ) if options[ :ADD_ATTRIBUTES ]
       v << PositionStamper.new( stack )
     end  
@@ -114,6 +114,7 @@ end
 class SimpleMap
   include ElementMixin
   
+  # todo: put the nodes to exclude into filter! Duh!
   def initialize( stack, focus, visitors, filter, nodes_to_exclude )
     super( stack )
     @focus = focus
@@ -342,9 +343,9 @@ end
 class Edger
   include ElementMixin
   
-  def initialize( stack, filter, statuses_to_weight, append_weights )
+  def initialize( stack, filter, nodes_to_exclude, statuses_to_weight, append_weights )
     super( stack )
-    @weight_calculator = WeightCalculator.new( filter, statuses_to_weight )
+    @weight_calculator = WeightCalculator.new( filter, nodes_to_exclude, statuses_to_weight )
     @fader = ColourFader.new_with_zero( '#cccccc', '#00ff33', '#ffff00', '#ff0000' )
     @max = 20
     @append_weights = append_weights
@@ -372,9 +373,11 @@ end
 class WeightCalculator
   include VisitorMixin
   
-  def initialize( filter, statuses_to_weight )
+  def initialize( filter, nodes_to_exclude, statuses_to_weight )
     @filter = filter
     @statuses_to_weight = StatusFilter.new( statuses_to_weight )
+    @nodes_to_exclude = nodes_to_exclude
+    puts nodes_to_exclude
   end
   
   #todo: dupe of percent but better than running 2x?
@@ -404,6 +407,14 @@ class WeightCalculator
   end
     
   def accept item
+    #todo: ugly hack, ahhh!
+    ancestor = item
+    ancestor_names = [ ]
+    until ancestor.parent.nil?
+      ancestor_names << ancestor.name
+      ancestor = ancestor.parent
+    end
+    return 0 if @nodes_to_exclude.any?{ |ex| ancestor_names.include?( ex ) }
     @filter.accept( item ) && @statuses_to_weight.accept( item ) ? item.visit( self ) : 0
   end
   

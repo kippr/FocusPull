@@ -11,7 +11,7 @@
 	<%= form_tag( '/focus/customDelta.mm' ) do %>
 	From: <%= date_select( 'map', 'from' , :default => 7.days.ago ) %><br/>
 	To:  <%= date_select( 'map', 'to' ) %><br/>
-	Exclude: <%= text_field_tag( 'exclude', value = "Personal" )%><br/>
+	Exclude these: <%= text_field_tag( 'exclude', value = "Personal" )%><br/>
 	Show weights:  <%= check_box_tag( 'show weights' ) %><br/>
 	And choose <%= submit_tag( 'Completed' ) %> or 
 	<%= submit_tag( 'New projects' ) %>
