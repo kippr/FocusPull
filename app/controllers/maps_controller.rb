@@ -25,7 +25,9 @@ class MapsController < ApplicationController
   def custom_delta
     from = parse_date( "map", "from" )
     to = parse_date( "map", "to" )
-    type = params[ :commit ] == "Completed" ? :all_done : :new_projects 
+    type = params[ "commit" ] == "Completed" ? :all_done : :new_projects 
+    show_weights = params[ "show weights" ]
+    options = options().merge({ :APPEND_WEIGHTS => show_weights })
     send_map Focus::MindMapFactory.create_delta_map( focus, from.to_s, to.to_s, type, options )
   end
   

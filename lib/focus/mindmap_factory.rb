@@ -27,8 +27,6 @@ class MindMapFactory
   # todo: sensible values?
   AGED_PROJECTS=90
   AGED_ACTIONS=45 
-  # todo: make this an option to generate percent time spent reports?
-  APPEND_WEIGHTS=false # used to eyeball weighting
   
   #todo: this makes me want to weep... As soon as I add an html node, a whole bunch of 
   # tests start failing. Namespace issue with a magic html node? No idea :(
@@ -78,6 +76,7 @@ class MindMapFactory
       :WEIGHTED_STATUSES => [ :active ],
       :ADD_ICONS => true,
       :ADD_ATTRIBUTES => false,
+      :APPEND_WEIGHTS => false,
       :EXCLUDE_NODES => []
     }
   end
@@ -105,7 +104,7 @@ class MindMapFactory
       v << Formatter.new( stack, filter ) if options[ :FORMATTING ]
       v << ActionCollapser.new( stack, filter ) if options[ :FOLD_TASKS ]
       v << IconStamper.new( stack, filter, options[ :HIGHLIGHT_ACTIVE_TASKS ] ) if options[ :ADD_ICONS ]
-      v << Edger.new( stack, filter, options[ :WEIGHTED_STATUSES ] ) if options[ :WEIGHT_EDGES ]
+      v << Edger.new( stack, filter, options[ :WEIGHTED_STATUSES ], options[ :APPEND_WEIGHTS ] ) if options[ :WEIGHT_EDGES ]
       v << AttributeStamper.new( stack ) if options[ :ADD_ATTRIBUTES ]
       v << PositionStamper.new( stack )
     end  
@@ -126,13 +125,13 @@ class SimpleMap
   def create
     push = lambda{ | x, item | visit( item ) }
     pop = lambda{ | x, item | @stack.pop }
-    @focus.travel do | event, item |
-      case event
-        when :start then visit( item ) unless @nodes_to_exclude.include? item.name
-        when :end then @stack.pop unless @nodes_to_exclude.include? item.name
-      end
-    end
-#    @focus.traverse( nil, push, pop) { | n | !@nodes_to_exclude.include? n.name }
+#    @focus.travel do | event, item |
+#      case event
+#        when :start then visit( item ) unless @nodes_to_exclude.include? item.name
+#        when :end then @stack.pop unless @nodes_to_exclude.include? item.name
+#      end
+#    end
+    @focus.traverse( nil, push, pop) { | n | !@nodes_to_exclude.include? n.name }
     @stack.first
   end
   
@@ -343,17 +342,18 @@ end
 class Edger
   include ElementMixin
   
-  def initialize( stack, filter, statuses_to_weight )
+  def initialize( stack, filter, statuses_to_weight, append_weights )
     super( stack )
     @weight_calculator = WeightCalculator.new( filter, statuses_to_weight )
     @fader = ColourFader.new_with_zero( '#cccccc', '#00ff33', '#ffff00', '#ff0000' )
     @max = 20
+    @append_weights = append_weights
   end
   
   def accept item
     weight = @weight_calculator.weigh item
     add_child "edge", :COLOR => to_colour( weight ), :WIDTH => weight <= @max ? 1 : 2
-    element['TEXT'] = "#{element['TEXT']}" + " %2.2f" % @weight_calculator.percent_weight( item ) if MindMapFactory::APPEND_WEIGHTS
+    element['TEXT'] = "#{element['TEXT']}" + " %2.2f" % @weight_calculator.percent_weight( item ) if @append_weights
   end
     
   def to_colour( weight )
