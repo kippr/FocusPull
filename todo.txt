@@ -20,5 +20,6 @@
 - refactor to a model of some kind, make my requests more RESTful
 - refactor create to something else
 - check if focus is in session, send to login page?
+- in completed map, personal things are showing up, tho parent folder isnt
 
 - refactor filtering to be a generic focus delegate (wrapper on traverse, search methods)
