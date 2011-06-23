@@ -22,6 +22,12 @@ class MapsController < ApplicationController
     send_map Focus::MindMapFactory.create_meta_map( focus, options )
   end
   
+  def custom_delta
+    from = parse_date( "map", "from" )
+    to = parse_date( "map", "to" )
+    send_map Focus::MindMapFactory.create_delta_map( focus, from.to_s, to.to_s, :new_projects, options )
+  end
+  
   private
     def options
       options = { :EXCLUDE_NODES => [ 'Personal' ] }
@@ -38,5 +44,10 @@ class MapsController < ApplicationController
     def to
       Date.today.to_s
     end
-  
+    
+    def parse_date( obj_name, field_name )
+      Date.civil( params[ obj_name ][ "#{field_name}(1i)"].to_i,
+                  params[ obj_name ][ "#{field_name}(2i)"].to_i,
+                  params[ obj_name ][ "#{field_name}(3i)"].to_i)
+    end
 end

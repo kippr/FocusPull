@@ -5,5 +5,13 @@
 	<li><%= link_to "New projects", :controller => "maps", :action => "send_new_project_map" %>
 	<li><%= link_to "Metamap", :controller => "maps", :action => "send_meta_map" %>
 	<li><%= link_to "Word cloud", :controller => "clouds", :action => "create" %>
-	
 </ul>
+<hr/>
+<p>Specify custom range:
+	<%= form_tag( 'focus/customDelta.mm' ) do %>
+	From: <%= date_select( 'map', 'from' , :default => 7.days.ago ) %><br/>
+	To:  <%= date_select( 'map', 'to' ) %><br/>
+	And choose <%= submit_tag( 'Completed' ) %> or 
+	<%= submit_tag( 'New projects' ) %>
+			<% end %>
+</p>

@@ -18,7 +18,10 @@ FocusPull::Application.routes.draw do
   match 'focus/Metamap.mm' => 'maps#send_meta_map'
   match 'focus/wordcloud.pdf' => 'clouds#create'
 
+  match 'focus/customDelta.mm' => 'maps#custom_delta'
+
   match 'focus' => 'maps#list'
+  
   
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase

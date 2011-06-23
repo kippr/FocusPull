@@ -17,7 +17,7 @@
 ? is there a way I can filter for 'recently put on hold' items? Dont think so unless I assume using modified_date?
 
 
-- add date_select("post", "written_on", :default => 6.days.ago)
+- refactor to a model of some kind, make my requests more RESTful
 - refactor create to something else
 - check if focus is in session, send to login page?
 
