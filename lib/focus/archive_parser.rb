@@ -54,25 +54,35 @@ module Focus
     
     def create_node( node, type )
       name = xpath_content( node, './xmlns:name' )
+      # for very weird bugs, this is useful
+      #name = "#{name}-#{node[ 'id' ]}"
       item = type.new( name )
       item.created_date = xpath_content( node, './xmlns:added', nil )
       item.updated_date = xpath_content( node, './xmlns:modified', nil )
-      track_links( item, node )
+      if node[ 'op' ] == "delete"
+        remove_links( node )
+      else
+        track_links( item, node )
+      end
       item        
     end
         
     def track_links( item, item_node )
-      if item.name
-        # parent id is held as idref
-        parent_id = xpath_content( item_node, './/@idref', nil )
-        @log.debug( "Found parent link to '#{parent_id}'" )
-        # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
-        id = item_node[ 'id' ] || item_node.parent[ 'id' ]
-        @ref_to_node[  id ]  = item 
-        @parent_ref_of[ id ] = parent_id
-      end
+      # parent id is held as idref
+      parent_id = xpath_content( item_node, './/@idref', nil )
+      @log.debug( "Found parent link to '#{parent_id}'" )
+      # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
+      id = item_node[ 'id' ] || item_node.parent[ 'id' ]
+      @ref_to_node[  id ]  = item
+      @parent_ref_of[ id ] = parent_id
     end
     
+    def remove_links( deleted_node )
+      id = deleted_node[ 'id' ]
+      @ref_to_node.delete( id )
+      @parent_ref_of.delete( id )
+    end
+
     def resolve_links
       @log.debug( "Resolving links for #{@ref_to_node}")
       @ref_to_node.each_pair do | ref, node |
@@ -83,7 +93,7 @@ module Focus
     
     def for_sorted( node_type )
       nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
-      nodes.sort_by{ | n | xpath_content( n, './xmlns:rank' ).to_i }
+      nodes.sort_by{ | n | -1 * xpath_content( n, './xmlns:rank' ).to_i }
     end
     
     def xpath_content( node, xpath, default = "" )
@@ -103,7 +113,7 @@ module Focus
         full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
         Dir.foreach( full_path ) do | file |
           if( /\.zip$/ =~ file )
-            @log.info("Found zip file #{file}")
+            @log.debug("Found zip file #{file}")
             Zip::ZipFile.open( "#{full_path}/#{file}" ) do |zipfile|
               yield zipfile.file.read( "contents.xml" )
             end

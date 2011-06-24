@@ -54,6 +54,7 @@ describe Focus::FocusParser, "#parse" do
   end
   
   it "should order folders and projects as per their rank" do
+    pending "Ordering was reliant on hash insertion, which wont work!"
     pers_order =  rank_of_folder 'Personal'
     proj_order = rank_of_folder 'Secretive Project'
     adm_order = rank_of_folder 'Admin'
@@ -64,6 +65,10 @@ describe Focus::FocusParser, "#parse" do
   
   it "should recognize single-action projects" do
     @focus.project("Miscellaneous").single_actions?.should be_true
+  end
+  
+  it "should not include tasks that were later deleted" do
+    @focus.action( "A task that was later removed" ).should be_nil
   end
   
   def rank_of_folder name

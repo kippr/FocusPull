@@ -155,6 +155,14 @@
     <context idref="pf4w70-AZjc"/>
     <order>parallel</order>
   </task>
+  <task id="should-be-deleted">
+    <task idref="oHdUDVwYhFG"/>
+    <added>2010-12-09T13:54:47.888Z</added>
+    <name>A task that was later removed</name>
+    <rank>0</rank>
+    <context idref="pf4w70-AZjc"/>
+    <order>parallel</order>
+  </task>
   <task id="iCNXEbk-WAk">
     <task idref="oHdUDVwYhFG"/>
     <added>2010-11-25T09:59:09.242Z</added>
@@ -167,6 +175,7 @@
     <order>parallel</order>
     <repeat>@1d</repeat>
   </task>
+  <task id="should-be-deleted" op="delete"/>
   <task id="b8QH2bRC8x0">
     <project>
       <folder idref="lTvKvwDOXV1"/>

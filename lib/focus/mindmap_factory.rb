@@ -377,7 +377,6 @@ class WeightCalculator
     @filter = filter
     @statuses_to_weight = StatusFilter.new( statuses_to_weight )
     @nodes_to_exclude = nodes_to_exclude
-    puts nodes_to_exclude
   end
   
   #todo: dupe of percent but better than running 2x?
