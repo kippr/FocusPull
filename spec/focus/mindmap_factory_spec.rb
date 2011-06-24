@@ -302,12 +302,12 @@ describe Focus::MindMapFactory, "create_meta_map" do
 
 
     it "should have add active projects without a next step defined" do
-      actionless = node_for( "Actionless projects (1)" )
+      actionless = node_for( "Stalled projects (1)" )
       actionless.children.collect{ | n | n['TEXT'] }.should include( 'Setup 2011 vacsheet' )
     end
 
     it "should not include done or inactive projects" do
-      actionless = node_for( "Actionless projects (1)" )
+      actionless = node_for( "Stalled projects (1)" )
       actionless.children.collect{ | n | n['TEXT'] }.should_not include( 'iPad has open zone access' )
     end
   end
