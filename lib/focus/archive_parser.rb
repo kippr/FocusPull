@@ -69,7 +69,7 @@ module Focus
         # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
         id = item_node[ 'id' ] || item_node.parent[ 'id' ]
         @ref_to_node[  id ]  = item 
-        @parent_ref_of[ item ] = parent_id
+        @parent_ref_of[ id ] = parent_id
       end
     end
     
@@ -77,7 +77,7 @@ module Focus
       @log.debug( "Resolving links for #{@ref_to_node}")
       @ref_to_node.each_pair do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
-        node.link_parent( @ref_to_node[ @parent_ref_of[ node ] ] )
+        node.link_parent( @ref_to_node[ @parent_ref_of[ ref ] ] )
       end
     end
     
@@ -103,7 +103,7 @@ module Focus
         full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
         Dir.foreach( full_path ) do | file |
           if( /\.zip$/ =~ file )
-            @log.debug("Found zip file #{file}")
+            @log.info("Found zip file #{file}")
             Zip::ZipFile.open( "#{full_path}/#{file}" ) do |zipfile|
               yield zipfile.file.read( "contents.xml" )
             end
@@ -112,7 +112,7 @@ module Focus
         return "Ok"
       ensure
         @log.debug("Cleaning up afterwards")
-        FileUtils.rm_r("#{@directory}/#{@username}")
+        FileUtils.rm_rf("#{@directory}/#{@username}")
       end
     end
   end
