@@ -107,7 +107,7 @@ describe Focus::Focus do
     Focus::Folder.new( "" ).visit( visitor ).should == "Visited a Folder"
     Focus::Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
-  
+    
   describe "filtered copy" do
     
     before do
@@ -134,6 +134,15 @@ describe Focus::Focus do
     end
     
   end
+  
+  describe "stalled projects" do
+    
+    it "should mark as stalled any projects without children" do
+      @focus.stalled_projects.should include{ | p | p.name == "iPad has open zone access" }
+    end
+    
+  end
+  
   
 end
 

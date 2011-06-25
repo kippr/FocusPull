@@ -113,6 +113,10 @@ class Focus < Item
     select_for Project  
   end
 
+  def stalled_projects
+    projects.select{ | p | p.children.empty? }
+  end
+    
   def folders
     select_for Folder
   end
