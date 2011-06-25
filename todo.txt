@@ -18,6 +18,7 @@
 
 - item.completed should take dates, not strings?
 - sorting by rank is broken!! add/ fix test for this, and reimpl in parser
+- chained filter methods on @focus? e.g. @focus.all.active.single_actions
 
 - refactor to a model of some kind, make my requests more RESTful
 - refactor create to something else

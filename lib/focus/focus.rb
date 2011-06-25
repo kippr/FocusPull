@@ -114,7 +114,8 @@ class Focus < Item
   end
 
   def stalled_projects
-    projects.select{ | p | p.active? && p.children.none?(&:remaining?) }
+    #todo: move ! single_actions? to top level?
+    projects.select{ |p| !p.single_actions?  }.select{ | p | p.active? && p.children.none?(&:remaining?) }
   end
     
   def folders
