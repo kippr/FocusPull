@@ -241,19 +241,54 @@ class Project < Action
   
 end
 
-class List
-  include Enumerable
+  class List
+    include Enumerable
   
-  def initialize node
-    @node = node
+    def initialize source, filter = lambda{ |n| true }
+      @source = source
+      @filter = filter
+    end
+  
+    def projects
+      List.new( self, lambda{ | n | n.class == Project } )
+    end
+    
+    def active
+      with_status :active
+    end
+
+    def remaining
+      with_status [ :active, :inactive ]
+    end
+
+    def stalled_projects
+      #todo: should children also move?
+      active.not_single_action.projects.with{ | n | n.children.none?(&:remaining?) }
+    end
+    
+    def not_single_action
+      List.new( self, lambda{ | n | !( n.respond_to?( :single_actions? ) && n.single_actions? ) } )
+    end
+    
+    def with_status( status )
+      List.new( self, lambda{ | n | [*status].include?( n.status ) } )
+    end
+    
+    def with( &block )
+      proc = block
+      List.new( self, proc )
+    end
+
+    def each( &block )
+      #todo: is there a nicer way to ref block?
+      proc = block
+      @source.select{ | n | @filter.call( n ) }.each( &proc )
+    end
+    
+    def to_s
+      to_a.to_s
+    end
+
   end
   
-  def each( &block )
-    yield @node
-    proc = block
-    @node.children.each { | child | child.each( &proc ) }
-  end
-
-end
-
 end
