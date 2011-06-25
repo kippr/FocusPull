@@ -140,6 +140,11 @@ describe Focus::Focus do
     it "should mark as stalled any projects without children" do
       @focus.stalled_projects.should include{ | p | p.name == "iPad has open zone access" }
     end
+
+    it "should mark as stalled any projects without active children" do
+      @mailAction.completed( Date.now )
+      @focus.stalled_projects.should include{ | p | p.name == "iPad has open zone access" }
+    end
     
   end
   
