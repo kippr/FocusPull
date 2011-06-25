@@ -141,6 +141,11 @@ describe Focus::Focus do
       @focus.stalled_projects.should include( @openZoneProject )
     end
 
+    it "should not mark as stalled any inactive projects" do
+      @openZoneProject.status = :inactive
+      @focus.stalled_projects.should_not include( @openZoneProject )
+    end
+
     it "should mark as stalled any projects without active children" do
       @mailAction.completed( Date.today.to_s )
       @focus.stalled_projects.should include( @mailProject )
