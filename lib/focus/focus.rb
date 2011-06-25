@@ -30,6 +30,10 @@ class Item
     @name = name
     @children = []
   end
+  
+  def list
+    List.new( self )
+  end
 
   def each( &block )
     yield self
@@ -235,6 +239,21 @@ class Project < Action
     visitor.visit_project( self )
   end
   
+end
+
+class List
+  include Enumerable
+  
+  def initialize node
+    @node = node
+  end
+  
+  def each( &block )
+    yield @node
+    proc = block
+    @node.children.each { | child | child.each( &proc ) }
+  end
+
 end
 
 end

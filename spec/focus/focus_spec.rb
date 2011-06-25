@@ -130,6 +130,14 @@ describe Focus::Focus do
     end
     
   end
+  
+  describe Focus::List do
+    
+    it "should offer simple traversal over focus items" do
+      @focus.list.should include( @mailAction )
+    end
+    
+  end
     
 end
 
