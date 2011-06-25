@@ -16,7 +16,7 @@
 ? consider 'aged tasks' node for metamap?
 ? is there a way I can filter for 'recently put on hold' items? Dont think so unless I assume using modified_date?
 
-
+- item.completed should take dates, not strings?
 - sorting by rank is broken!! add/ fix test for this, and reimpl in parser
 
 - refactor to a model of some kind, make my requests more RESTful

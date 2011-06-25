@@ -114,7 +114,7 @@ class Focus < Item
   end
 
   def stalled_projects
-    projects.select{ | p | p.children.empty? }
+    projects.select{ | p | p.children.none?(&:remaining?) }
   end
     
   def folders
