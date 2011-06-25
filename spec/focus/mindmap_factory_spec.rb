@@ -294,7 +294,7 @@ describe Focus::MindMapFactory, "create_meta_map" do
     actions.node.first.node.size == 2 # Two sub-nodes of active, one for each active action
   end
   
-  context "when adding actionless projects node" do
+  context "when adding stalled projects node" do
 
     it "should ignore single action projects" do
       node_for( "Miscellaneous" ).should be_nil

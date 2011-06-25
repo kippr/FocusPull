@@ -94,6 +94,10 @@ class Item
     :active
   end
   
+  def remaining?
+    [:active, :inactive].include? status
+  end
+  
   def to_s
     "#{self.class}: #{@name}"
   end

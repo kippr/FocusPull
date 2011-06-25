@@ -163,6 +163,18 @@
     <context idref="pf4w70-AZjc"/>
     <order>parallel</order>
   </task>
+  <task id="bMAutUo5sdffs">
+    <task idref="bMAutUo5Hy2"/>
+    <added>2010-11-25T09:59:09.242Z</added>
+    <modified>2010-12-13T21:09:01.532Z</modified>
+    <name>Confirm names for 2011</name>
+    <rank>3</rank>
+    <context idref="pf4w70-AZjc"/>
+    <start>2010-11-25T08:00:00.000Z</start>
+    <completed>2010-11-26T21:09:01.512Z</completed>
+    <order>parallel</order>
+    <repeat>@1d</repeat>
+  </task>
   <task id="iCNXEbk-WAk">
     <task idref="oHdUDVwYhFG"/>
     <added>2010-11-25T09:59:09.242Z</added>

@@ -19,7 +19,7 @@ File.open("output/delta-done.mm", "w") { |f| f.write( delta_done ) }
 File.open("output/meta.mm", "w") { |f| f.write( meta ) }
 
 #Also handy to have
-parser = Focus::FocusParser.new( "test", "omnisync-sample.tar", "tester" )
+parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
 focus = parser.parse
 
 xml = Focus::MindMapFactory.create_simple_map focus

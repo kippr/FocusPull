@@ -165,10 +165,10 @@ class MetaMap
         add_by_status :actions, :active, :done
       end
       
-      stalled_active_projects = @focus.projects.select{ |p| p.active? && p.children.empty? }
-      add_child( "node", :TEXT => "Stalled projects (#{stalled_active_projects.size})", 
+      stalled_projects = @focus.projects.select{ | p | p.active? && p.children.none?(&:remaining?) }
+      add_child( "node", :TEXT => "Stalled projects (#{stalled_projects.size})", 
         :POSITION => "left", :FOLDED => 'true' ) do
-        stalled_active_projects.each{ |p| add_item_node p }
+        stalled_projects.each{ |p| add_item_node p }
       end
 
       add_aged :projects
