@@ -54,13 +54,11 @@ describe Focus::FocusParser, "#parse" do
   end
   
   it "should order folders and projects as per their rank" do
-    pending "Ordering was reliant on hash insertion, which wont work!"
     pers_order =  rank_of_folder 'Personal'
     proj_order = rank_of_folder 'Secretive Project'
     adm_order = rank_of_folder 'Admin'
-    #todo: is there a comparator expectation thingy?
-    (adm_order < pers_order).should be_true
-    (proj_order < adm_order).should be_true
+    adm_order.should be < pers_order
+    proj_order.should be < adm_order
   end
   
   it "should recognize single-action projects" do

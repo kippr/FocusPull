@@ -17,6 +17,7 @@ module Focus
     @ref_to_node = Hash.new
     @ref_to_node[ nil ] = root
     @parent_ref_of = Hash.new
+    @ranking = Hash.new( 0 )
     
     foreach_archive_xml do | content |
       @xml = Nokogiri::XML( content )
@@ -31,7 +32,7 @@ module Focus
   private
   
     def parse_actions
-      for_sorted( "task" ).each do | action_node |
+      for_each( "task" ).each do | action_node |
         @log.debug( "Processing action: #{action_node}")
         project_node = action_node.at_xpath( './xmlns:project' )
         if project_node
@@ -46,7 +47,7 @@ module Focus
     end
         
     def parse_folders
-      for_sorted( 'folder' ).each do | folder_node |
+      for_each( 'folder' ).each do | folder_node |
         @log.debug( "Processing folder: #{folder_node}" )
         create_node( folder_node, Folder )
       end
@@ -85,15 +86,16 @@ module Focus
 
     def resolve_links
       @log.debug( "Resolving links for #{@ref_to_node}")
-      @ref_to_node.each_pair do | ref, node |
+      @ref_to_node.sort_by{ | ref, node | @ranking[ ref ] }.each do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
         node.link_parent( @ref_to_node[ @parent_ref_of[ ref ] ] )
       end
     end
     
-    def for_sorted( node_type )
+    def for_each( node_type )
       nodes = @xml.xpath( "/xmlns:omnifocus/xmlns:#{node_type}" )
-      nodes.sort_by{ | n | -1 * xpath_content( n, './xmlns:rank' ).to_i }
+      nodes.each{ | n | @ranking[ n[ 'id' ] ] = xpath_content( n, './xmlns:rank' ).to_i }
+      nodes
     end
     
     def xpath_content( node, xpath, default = "" )
