@@ -56,7 +56,7 @@ module Focus
     def create_node( node, type )
       name = xpath_content( node, './xmlns:name' )
       # for very weird bugs, this is useful
-      #name = "#{name}-#{node[ 'id' ]}"
+      name = "#{name}-#{node[ 'id' ]}"
       item = type.new( name )
       item.created_date = xpath_content( node, './xmlns:added', nil )
       item.updated_date = xpath_content( node, './xmlns:modified', nil )
