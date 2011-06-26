@@ -56,7 +56,7 @@ module Focus
     def create_node( node, type )
       name = xpath_content( node, './xmlns:name' )
       # for very weird bugs, this is useful
-      name = "#{name}-#{node[ 'id' ]}"
+      # name = "#{name}-#{node[ 'id' ]}"
       item = type.new( name )
       item.created_date = xpath_content( node, './xmlns:added', nil )
       item.updated_date = xpath_content( node, './xmlns:modified', nil )
@@ -85,7 +85,7 @@ module Focus
     end
 
     def resolve_links
-      @log.info( "Resolving links for #{@ref_to_node}")
+      @log.debug( "Resolving links for #{@ref_to_node}")
       @ref_to_node.sort_by{ | ref, node | @ranking[ ref ] }.each do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
         node.link_parent( @ref_to_node[ @parent_ref_of[ ref ] ] )
@@ -113,7 +113,7 @@ module Focus
         
         @log.debug( "unzipping entries in archive: #{@directory}/#{@username}/OmniFocus.ofocus/" )
         full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
-        Dir.foreach( full_path ) do | file |
+        Dir.foreach( full_path ).sort.each do | file |
           if( /\.zip$/ =~ file )
             @log.info("Found zip file #{file}")
             Zip::ZipFile.open( "#{full_path}/#{file}" ) do |zipfile|
