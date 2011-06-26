@@ -115,7 +115,7 @@ module Focus
         full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
         Dir.foreach( full_path ).sort.each do | file |
           if( /\.zip$/ =~ file )
-            @log.info("Found zip file #{file}")
+            @log.debug("Found zip file #{file}")
             Zip::ZipFile.open( "#{full_path}/#{file}" ) do |zipfile|
               yield zipfile.file.read( "contents.xml" )
             end
