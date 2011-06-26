@@ -269,7 +269,7 @@ end
 
     def stalled
       #todo: should children also move?
-      active.not.single_action.projects.with{ | n | n.children.none?(&:remaining?) }
+      active.not.single_action.with{ | n | n.children.none?(&:remaining?) }
     end
     
     def single_action
