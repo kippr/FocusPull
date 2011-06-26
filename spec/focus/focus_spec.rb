@@ -112,25 +112,25 @@ describe Focus::Focus do
     
     it "should mark as stalled any projects without children" do
       @focus.stalled_projects.should include( @openZoneProject )
-      @focus.list.stalled_projects.should include( @openZoneProject )
+      @focus.list.stalled.projects.should include( @openZoneProject )
     end
 
     it "should not mark as stalled any single actions projects" do
       @openZoneProject.set_single_actions
       @focus.stalled_projects.should_not include( @openZoneProject )
-      @focus.list.stalled_projects.should_not include( @openZoneProject )
+      @focus.list.stalled.projects.should_not include( @openZoneProject )
     end
     
     it "should not mark as stalled any inactive projects" do
       @openZoneProject.status = :inactive
       @focus.stalled_projects.should_not include( @openZoneProject )
-      @focus.list.stalled_projects.should_not include( @openZoneProject )
+      @focus.list.stalled.projects.should_not include( @openZoneProject )
     end
 
     it "should mark as stalled any projects without active children" do
       @mailAction.completed( Date.today.to_s )
       @focus.stalled_projects.should include( @mailProject )
-      @focus.list.stalled_projects.should include( @mailProject )
+      @focus.list.stalled.projects.should include( @mailProject )
     end
     
   end
@@ -154,9 +154,10 @@ describe Focus::Focus do
       @focus.list.remaining.projects.should include( @mailProject )
     end
     
-    it "should offer to exclude single action projects" do
+    it "should offer to filter on single action projects" do
       @mailProject.set_single_actions
-      @focus.list.not_single_action.projects.should_not include( @mailProject )
+      @focus.list.not.single_action.projects.should_not include( @mailProject )
+      @focus.list.single_action.projects.should include( @mailProject )
     end
     
   end

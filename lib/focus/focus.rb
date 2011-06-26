@@ -96,6 +96,7 @@ class Focus < Item
     select_for Project  
   end
 
+  #todo: remove, rely on list impl instead
   def stalled_projects
     #todo: move ! single_actions? to top level?
     projects.select{ |p| !p.single_actions?  }.select{ | p | p.active? && p.children.none?(&:remaining?) }
@@ -247,10 +248,11 @@ end
     def initialize source, filter = lambda{ |n| true }
       @source = source
       @filter = filter
+      @negate_next = false
     end
   
     def projects
-      List.new( self, lambda{ | n | n.class == Project } )
+      chain lambda{ | n | n.class == Project }
     end
     
     def active
@@ -261,22 +263,26 @@ end
       with_status [ :active, :inactive ]
     end
 
-    def stalled_projects
+    def with_status one_or_many_status
+      chain lambda{ | n | [*one_or_many_status].include?( n.status ) }
+    end
+
+    def stalled
       #todo: should children also move?
-      active.not_single_action.projects.with{ | n | n.children.none?(&:remaining?) }
+      active.not.single_action.projects.with{ | n | n.children.none?(&:remaining?) }
     end
     
-    def not_single_action
-      List.new( self, lambda{ | n | !( n.respond_to?( :single_actions? ) && n.single_actions? ) } )
+    def single_action
+      chain lambda{ | n | n.respond_to?( :single_actions? ) && n.single_actions? }
     end
     
-    def with_status( status )
-      List.new( self, lambda{ | n | [*status].include?( n.status ) } )
+    def with &block 
+      chain block
     end
     
-    def with( &block )
-      proc = block
-      List.new( self, proc )
+    def not
+      @negate_next = true
+      self
     end
 
     def each( &block )
@@ -288,6 +294,19 @@ end
     def to_s
       to_a.to_s
     end
+
+    private 
+      def chain lambda
+        if @negate_next
+          lambda = negate( lambda )
+          @negate_next = false
+        end
+        List.new( self, lambda )
+      end
+      
+      def negate original_lambda
+        lambda{ |n| ! original_lambda.call( n ) }
+      end
 
   end
   
