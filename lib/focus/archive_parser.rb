@@ -85,7 +85,7 @@ module Focus
     end
 
     def resolve_links
-      @log.debug( "Resolving links for #{@ref_to_node}")
+      @log.info( "Resolving links for #{@ref_to_node}")
       @ref_to_node.sort_by{ | ref, node | @ranking[ ref ] }.each do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
         node.link_parent( @ref_to_node[ @parent_ref_of[ ref ] ] )
@@ -115,7 +115,7 @@ module Focus
         full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
         Dir.foreach( full_path ) do | file |
           if( /\.zip$/ =~ file )
-            @log.debug("Found zip file #{file}")
+            @log.info("Found zip file #{file}")
             Zip::ZipFile.open( "#{full_path}/#{file}" ) do |zipfile|
               yield zipfile.file.read( "contents.xml" )
             end
