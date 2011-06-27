@@ -445,7 +445,7 @@ class AttributeStamper
   def add_dates_for item
     add_child( "attribute", :NAME => 'created', :VALUE => item.created_date.to_s )
     add_child( "attribute", :NAME => 'updated', :VALUE => item.updated_date.to_s ) if item.updated_date
-    add_child( "attribute", :NAME => 'completed', :VALUE => item.completed_date.to_s ) if item.done?
+    add_child( "attribute", :NAME => 'completed', :VALUE => item.completed_date.to_date.to_s ) if item.done?
   end
     
 end
@@ -505,10 +505,10 @@ class TemporalFilter < MapFilter
   
   @@filter_options = 
   {
-    :both_new_and_done => Proc.new{ | item | [ item.created_date, item.completed_date ] },
+    :both_new_and_done => Proc.new{ | item | [ item.created_date, item.completed_date && item.completed_date.to_date ] },
     :all_new => Proc.new{ | item | item.done? ? [] : [ item.created_date ] },
     :new_projects => Proc.new{ | item | item.done? ? [] : [ item.created_date ] },
-    :all_done => Proc.new{ | item | [ item.completed_date ] }
+    :all_done => Proc.new{ | item | [ item.completed_date && item.completed_date.to_date ] }
   }
   
   def initialize start_date, end_date, filter_option

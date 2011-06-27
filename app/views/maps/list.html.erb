@@ -25,3 +25,10 @@
 	<% end %>
 	</ul>
 </p>
+<p>Recently completed actions
+	<ul>
+	<% session[ :focus ].list.completed.actions.select{ | a | a.completed_date >= Date.today - 3 }.sort_by( &:completed_date ).reverse.each do | a | %>
+		<li><%= "#{a.name} (#{a.parent.name})" %>
+	<% end %>
+	</ul>
+</p>

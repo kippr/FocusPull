@@ -12,6 +12,11 @@ describe Focus::Focus do
     @personalFolder.link_parent( @focus )
     @openZoneProject = Focus::Project.new( "iPad has open zone access" )
     @openZoneProject.link_parent( @personalFolder )
+    
+    @mailProject.created_date = (Date.today-3).to_s
+    @mailAction.created_date = (Date.today-3).to_s
+    @personalFolder.created_date = (Date.today-3).to_s
+    @openZoneProject.created_date = (Date.today-3).to_s
   end
 
   it "should not confuse folders with projects" do
@@ -61,7 +66,7 @@ describe Focus::Focus do
   it "should accept actions as being marked complete" do
     @mailAction.completed( "2010-12-07T08:50:19.935Z" )
     @mailAction.status.should == :done
-    @mailAction.completed_date.should == Date.parse( "2010-12-07" )
+    @mailAction.completed_date.to_date.should == Date.parse( "2010-12-07" )
   end
   
   it "should use modified date as completed date when status is dropped" do
@@ -158,6 +163,20 @@ describe Focus::Focus do
       @mailProject.set_single_actions
       @focus.list.not.single_action.projects.should_not include( @mailProject )
       @focus.list.single_action.projects.should include( @mailProject )
+    end
+    
+    it "should offer views on actions" do
+      @focus.list.actions.should include(@mailAction)
+    end
+    
+    it "should offer views on completed items, sorted by completion time" do
+      @openZoneProject.completed( ( Date.today - 1 ).to_s )
+      @mailAction.completed( Date.today.to_s )
+      completed_items = @focus.list.completed.sort_by(&:completed_date)
+      completed_items.should include(@mailAction)
+      completed_items.should include(@openZoneProject)
+      completed_items.should_not include(@mailProject)
+      completed_items.find_index(@openZoneProject).should < completed_items.find_index(@mailAction)
     end
     
   end

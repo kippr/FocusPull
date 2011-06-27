@@ -183,7 +183,7 @@ class Action < Item
   def completed( date )
     if date
       @status = :done
-      @completed_date = Date.parse( date )
+      @completed_date = DateTime.parse( date )
     end
   end
       
@@ -252,11 +252,19 @@ end
     end
   
     def projects
-      chain lambda{ | n | n.class == Project }
+      with_type Project
     end
-    
+
+    def actions
+      with_type Action
+    end
+
     def active
       with_status :active
+    end
+
+    def completed
+      with_status :done
     end
 
     def remaining
@@ -306,6 +314,10 @@ end
       
       def negate original_lambda
         lambda{ |n| ! original_lambda.call( n ) }
+      end
+      
+      def with_type type         
+        chain lambda{ | n | n.class == type }
       end
 
   end
