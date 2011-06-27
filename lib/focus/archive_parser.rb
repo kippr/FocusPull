@@ -88,7 +88,12 @@ module Focus
       @log.debug( "Resolving links for #{@ref_to_node}")
       @ref_to_node.sort_by{ | ref, node | @ranking[ ref ] }.each do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
-        node.link_parent( @ref_to_node[ @parent_ref_of[ ref ] ] )
+        parent = @ref_to_node[ @parent_ref_of[ ref ] ]
+        if parent
+          node.link_parent( parent )
+        else
+          @log.warn( "Found orphan node, not linking: #{node}" )
+        end
       end
     end
     
