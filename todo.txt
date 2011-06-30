@@ -1,10 +1,4 @@
 - check todos
-- move aged items under an 'Aged' node, which will help with failing test?
-- make 'weight' relative to total tree
-- weight for (esp done) delta tree should include completed items!
-- what do deleted tasks show up like?
-- make focusParser.parse a class method rather than instance
-- add child takes block, so it can call stack pop automatically?
 - 'histogram' output for:
   - open project age
   - open task age
@@ -13,12 +7,9 @@
   - on hold projects?
   - dropped projects?
 ? consider splitting mindmap_factory file up?
-? consider 'aged tasks' node for metamap?
 ? is there a way I can filter for 'recently put on hold' items? Dont think so unless I assume using modified_date?
 
 - refactor to a model of some kind, make my requests more RESTful
-- refactor create to something else
 - check if focus is in session, send to login page?
-- in completed map, personal things are showing up, tho parent folder isnt
 
 - refactor filtering to be a generic focus delegate (wrapper on traverse, search methods)
