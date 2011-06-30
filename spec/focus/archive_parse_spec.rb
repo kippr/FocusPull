@@ -28,7 +28,7 @@ describe Focus::FocusParser, "#parse" do
   
   it "should read folders" do
     @focus.folder("Personal").should_not be_nil
-    @focus.folders.detect("Admin").should_not be_nil
+    @focus.list.folders.detect("Admin").should_not be_nil
   end
   
   it "should build the folder tree structure" do
@@ -70,7 +70,7 @@ describe Focus::FocusParser, "#parse" do
   end
   
   def rank_of_folder name
-    folder, order = @focus.folders.zip(1..100).detect{ | f, o | f.name == name }
+    folder, order = @focus.list.folders.zip(1..100).detect{ | f, o | f.name == name }
     folder.should_not be_nil
     order  
   end

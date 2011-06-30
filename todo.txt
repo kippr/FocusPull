@@ -10,6 +10,8 @@
 ? is there a way I can filter for 'recently put on hold' items? Dont think so unless I assume using modified_date?
 - consider losing aged projects node? stalled more useful?
 
+- finish removing actions & projects methods on focus
+
 - refactor to a model of some kind, make my requests more RESTful
 - check if focus is in session, send to login page?
 

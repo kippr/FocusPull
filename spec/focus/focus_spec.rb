@@ -24,7 +24,7 @@ describe Focus::Focus do
     @focus.folder("Spend less time in email").should be_nil
     @focus.project("Personal").should be_nil
     @focus.folder("Personal").should == @personalFolder
-    @focus.projects.should_not == @focus.folders
+    @focus.list.projects.should_not == @focus.list.folders
   end
   
   it "should offer pre-order traversal" do

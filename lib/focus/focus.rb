@@ -19,7 +19,6 @@ module VisitorMixin
 end
 
 class Item
-  #include Enumerable # Wow, I love Ruby!
 
   attr_reader :name
   attr_reader :parent
@@ -88,10 +87,6 @@ class Focus < Item
         
   def projects
     select_for Project  
-  end
-
-  def folders
-    select_for Folder
   end
 
   def actions
@@ -245,6 +240,10 @@ end
       yield @source
       proc = block
       @source.children.each { | child | child.list.each( &proc ) }
+    end
+    
+    def folders
+      with_type Folder
     end
     
     def projects
