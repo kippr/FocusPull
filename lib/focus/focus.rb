@@ -96,12 +96,6 @@ class Focus < Item
     select_for Project  
   end
 
-  #todo: remove, rely on list impl instead
-  def stalled_projects
-    #todo: move ! single_actions? to top level?
-    projects.select{ |p| !p.single_actions?  }.select{ | p | p.active? && p.children.none?(&:remaining?) }
-  end
-    
   def folders
     select_for Folder
   end
