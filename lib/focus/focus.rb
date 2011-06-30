@@ -181,9 +181,10 @@ class Action < Item
   end
   
   def completed( date )
+    date = DateTime.parse( date ) if date.is_a? String
     if date
       @status = :done
-      @completed_date = DateTime.parse( date )
+      @completed_date = date
     end
   end
       
@@ -241,6 +242,8 @@ class Project < Action
   end
   
 end
+
+
 
   class List
     include Enumerable

@@ -133,7 +133,7 @@ describe Focus::Focus do
     end
 
     it "should mark as stalled any projects without active children" do
-      @mailAction.completed( Date.today.to_s )
+      @mailAction.completed( Date.today )
       @focus.stalled_projects.should include( @mailProject )
       @focus.list.stalled.projects.should include( @mailProject )
     end
@@ -170,8 +170,8 @@ describe Focus::Focus do
     end
     
     it "should offer views on completed items, sorted by completion time" do
-      @openZoneProject.completed( ( Date.today - 1 ).to_s )
-      @mailAction.completed( Date.today.to_s )
+      @openZoneProject.completed( Date.today - 1 ) 
+      @mailAction.completed Date.today
       completed_items = @focus.list.completed.sort_by(&:completed_date)
       completed_items.should include(@mailAction)
       completed_items.should include(@openZoneProject)
