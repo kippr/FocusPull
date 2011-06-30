@@ -7,7 +7,7 @@ class Graphable
   end
 
   def self.trend focus
-    earliest = focus.min { | a,b | a.created_date <=> b.created_date }
+    earliest = focus.list.min { | a,b | a.created_date <=> b.created_date }
     visitor = TrendVisitor.new( earliest.created_date )
     Graphable.new( focus, visitor ).results
   end
@@ -18,7 +18,7 @@ class Graphable
   end
   
   def results
-    @focus.each{ | item | @visitor.accept item }
+    @focus.list.each{ | item | @visitor.accept item }
     @visitor
   end
     

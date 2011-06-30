@@ -33,6 +33,7 @@ class MapsController < ApplicationController
   private
     def options
       options = { :EXCLUDE_NODES => [ 'Personal' ] }
+      #options = { :EXCLUDE_NODES => [  ] }
     end
     
     def send_map( map_contents )

@@ -147,7 +147,7 @@ class MetaMap
 
   def initialize( stack, focus, visitors )
     super( stack )
-    @focus = SingleActionProjectHider.new( focus )
+    @focus = focus
     @visitors = visitors
   end
 
@@ -177,8 +177,8 @@ class MetaMap
     def add_by_status item_type, *statuses
       add_child( "node", :TEXT => item_type.capitalize  ) do
         statuses.each do | status |
-          items = @focus.send( item_type ).select{ |n| n.status == status }
-          add_child( "node", :TEXT => "#{status.capitalize}: #{items.size}", :FOLDED => "true" ) do
+          items = @focus.list.send( item_type ).not.single_action.with_status( status )
+          add_child( "node", :TEXT => "#{status.capitalize}: #{items.count}", :FOLDED => "true" ) do
             items.each do | item |
               add_item_node item
             end
@@ -253,7 +253,7 @@ class Formatter
   
   def visit_folder this_folder
     element['STYLE'] = 'bubble'
-    kids = this_folder.select{ | kid | kid != this_folder && @filter.include?( kid ) }
+    kids = this_folder.list.select{ | kid | kid != this_folder && @filter.include?( kid ) }
     childless = kids.all?( &:is_folder? )
     element['COLOR'] = childless ? '#bfd8e5' : '#006699' 
   end
@@ -286,7 +286,7 @@ class ActionCollapser
   end
   
   def visit_project project
-    element['FOLDED'] = 'true' if project.any?{ | kid | kid != project && @filter.include?( kid ) }
+    element['FOLDED'] = 'true' if project.list.any?{ | kid | kid != project && @filter.include?( kid ) }
   end
   
 end
@@ -394,7 +394,7 @@ class WeightCalculator
   end
   
   def weigh_subtree item
-    item.inject( 0 ) do | weight, child |
+    item.list.inject( 0 ) do | weight, child |
       weight + accept( child )
     end
   end
@@ -472,7 +472,7 @@ class MapFilter
   include VisitorMixin
   
   def include? item
-    item.any?{ | c | self.accept( c ) }
+    item.list.any?{ | c | self.accept( c ) }
   end
   
   def visit_default item

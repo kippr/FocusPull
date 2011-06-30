@@ -19,7 +19,7 @@ module VisitorMixin
 end
 
 class Item
-  include Enumerable # Wow, I love Ruby!
+  #include Enumerable # Wow, I love Ruby!
 
   attr_reader :name
   attr_reader :parent
@@ -33,12 +33,6 @@ class Item
   
   def list
     List.new( self )
-  end
-
-  def each( &block )
-    yield self
-    proc = block
-    self.children.each { | child | child.each( &proc ) }
   end
   
   def traverse( value, push, pop = nil, &filter_block )
@@ -134,11 +128,11 @@ class Focus < Item
   
   private
     def select_for( type )
-      self.select{ | n | n.class == type }
+      self.list.select{ | n | n.class == type }
     end
     
     def detect_for( type, name )
-      self.detect{ | n | n.class == type && n.name == name }
+      self.list.detect{ | n | n.class == type && n.name == name }
     end
 
 end
@@ -238,16 +232,21 @@ class Project < Action
 end
 
 
-
   class List
     include Enumerable
-  
+    
     def initialize source, filter = lambda{ |n| true }
       @source = source
       @filter = filter
       @negate_next = false
     end
-  
+    
+    def each( &block )
+      yield @source
+      proc = block
+      @source.children.each { | child | child.list.each( &proc ) }
+    end
+    
     def projects
       with_type Project
     end
@@ -294,12 +293,6 @@ end
       self
     end
 
-    def each( &block )
-      #todo: is there a nicer way to ref block?
-      proc = block
-      @source.select{ | n | @filter.call( n ) }.each( &proc )
-    end
-    
     def to_s
       to_a.to_s
     end
@@ -310,7 +303,7 @@ end
           lambda = negate( lambda )
           @negate_next = false
         end
-        List.new( self, lambda )
+        FilteredList.new( self, lambda )
       end
       
       def negate original_lambda
@@ -321,6 +314,16 @@ end
         chain lambda{ | n | n.class == type }
       end
 
+  end
+  
+  class FilteredList < List
+    
+    def each( &block )
+      #todo: is there a nicer way to ref block?
+      proc = block
+      @source.select{ | n | @filter.call( n ) }.each( &proc )
+    end
+    
   end
   
 end

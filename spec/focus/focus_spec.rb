@@ -28,7 +28,7 @@ describe Focus::Focus do
   end
   
   it "should offer pre-order traversal" do
-    @focus.to_a.should == [ @focus, @mailProject, @mailAction, @personalFolder, @openZoneProject ]
+    @focus.list.to_a.should == [ @focus, @mailProject, @mailAction, @personalFolder, @openZoneProject ]
   end
   
   it "should offer pre-order traversal with callbacks" do
