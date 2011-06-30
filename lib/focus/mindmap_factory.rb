@@ -189,8 +189,8 @@ class MetaMap
     
     def add_aged item_type
       old_age = MindMapFactory.const_get "AGED_#{item_type.upcase}"
-      aged = @focus.send( item_type ).select{  |i| i.age >= old_age && !i.done?}
-      add_child( "node", :TEXT => "Aged #{item_type} (#{aged.size})", :POSITION => "left", :FOLDED => 'true' ) do
+      aged = @focus.list.send( item_type ).remaining.not.single_action.older_than( old_age )
+      add_child( "node", :TEXT => "Aged #{item_type} (#{aged.count})", :POSITION => "left", :FOLDED => 'true' ) do
         aged.each do | item |
           add_item_node item
         end

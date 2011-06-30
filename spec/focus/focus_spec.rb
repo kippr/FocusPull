@@ -164,6 +164,13 @@ describe Focus::Focus do
     it "should offer views on actions" do
       @focus.list.actions.should include(@mailAction)
     end
+
+    it "should offer age based filters" do
+      @mailProject.created_date = ( Date.today - 4 ).to_s
+      @mailAction.created_date = ( Date.today - 2 ).to_s
+      @focus.list.older_than( 3 ).should include( @mailProject )
+      @focus.list.older_than( 3 ).should_not include( @mailAction )
+    end
     
     it "should offer views on completed items, sorted by completion time" do
       @openZoneProject.completed( Date.today - 1 ) 
