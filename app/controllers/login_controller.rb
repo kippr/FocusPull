@@ -1,5 +1,3 @@
-require 'focus'
-
 class LoginController < ApplicationController
     
   def form

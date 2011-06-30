@@ -1,5 +1,3 @@
-require 'focus'
-
 class MapsController < ApplicationController
   
   def send_simple_map
