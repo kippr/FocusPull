@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.7'
+gem 'rails', '3.0.9'
+gem "rake", "0.8.7"
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -38,6 +39,9 @@ gem 'hoe', '2.8.0'
 group :development, :test do
 #   gem 'webrat'
 	gem 'sqlite3-ruby', :require => 'sqlite3'
+	
+	gem 'rspec-rails'
+	gem 'timecop'
 
   # To use debugger
   gem 'ruby-debug19'
