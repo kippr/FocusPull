@@ -20,14 +20,22 @@ class MapsController < ApplicationController
     send_map Focus::MindMapFactory.create_meta_map( focus, options )
   end
   
-  def custom_delta
+  def custom_map
     from = parse_date( "map", "from" )
     to = parse_date( "map", "to" )
-    type = params[ "commit" ] == "Completed" ? :all_done : :new_projects 
+    type = case params[ "commit" ] 
+      when "Completed", :all_done
+      when "New projects", :new_projects 
+      else :all
+      end 
     show_weights = params[ "show weights" ]
     exclude = params[ "exclude" ].split( "," ).collect(&:strip)
     options = options().merge({ :EXCLUDE_NODES => exclude, :APPEND_WEIGHTS => show_weights })
-    send_map Focus::MindMapFactory.create_delta_map( focus, from.to_s, to.to_s, type, options )
+    if type == :all
+      send_map Focus::MindMapFactory.create_simple_map( focus, options )
+    else
+      send_map Focus::MindMapFactory.create_delta_map( focus, from.to_s, to.to_s, type, options )
+    end
   end
   
   private
