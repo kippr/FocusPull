@@ -8,8 +8,9 @@
 </ul>
 <hr/>
 <%= session[ :focus ].list.active.projects.count %> active projects,
-<%= session[ :focus ].list.active.actions.count %> available actions,
-<%= session[ :focus ].list.completed.with{ | p | p.completed_date >= Date.today - 7 }.count %> completed items in last week
+<%= session[ :focus ].list.active.actions.count %> available actions, with
+<%= session[ :focus ].list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count %>  projects, 
+<%= session[ :focus ].list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count %> actions completed in last week
 <hr/>
 <p>Create custom map
 	<%= form_tag( '/focus/custom.mm' ) do %>
