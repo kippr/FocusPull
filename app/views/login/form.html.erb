@@ -1,9 +1,35 @@
+<script>
+$(document).ready(function(){
+  $('#retrieval_form')
+    .bind("ajax:success", function(evt, data, status, xhr){
+      $('#status').append(xhr.responseText);
+    })
+	.bind('ajax:error', function( evt, xhr, textStatus, errorThrown ) {
+      $('#status').append("<li class='error'>Problem: " + errorThrown + "</li>");		
+	} )
+    .bind('ajax:complete', function( evt, xhr, status ) {
+	  $.ajax( "/login/download_archive" )
+		.success( function( data, textStatus, xhr ) {
+	      $('#status').append(xhr.responseText);		
+	  	} )
+		.error( function( xhr, textStatus, errorThrown ) {
+	      $('#status').append("<li class='error'>Problem: " + errorThrown + "</li>");		
+		} )
+		.complete( function( data, textStatus, xhr ) {
+			document.location = "/login/parse_archive"
+	  	} )
+    });
+
+});
+</script
 <h1>OmniSync Login</h1>
 <p>
-	<%= form_tag( 'login/retrieve_archive' ) do |l| %>
+	<%= form_tag( 'login/prepare_for_retrieve', :remote => true, :'data-type' => 'html', :id => 'retrieval_form' ) do |l| %>
 		Login <%=  text_field( :login, :name, :size => 10 ) %>
 		Password <%= password_field( :login, :password )%>
-		<%= submit_tag('Retrieve focus data')%>
+		<%= submit_tag( 'Retrieve focus data' )%>
 	<% end %>
-	
+	<div id="validation-error"/>
+	<ul id="status">
+	</ul>
 </p>

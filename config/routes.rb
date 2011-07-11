@@ -11,6 +11,11 @@ FocusPull::Application.routes.draw do
   match 'login' => 'login#form'
   match 'login/retrieve_archive' => 'login#retrieve_archive'
   
+  match 'login/prepare_for_retrieve' => 'login#prepare_for_retrieve'
+  match 'login/download_archive' => 'login#download_archive'
+  match 'login/parse_archive' => 'login#parse_archive'
+  
+  
   match 'focus/Portfolio.mm' => 'maps#send_simple_map'
   match 'focus/Changes-this-week.mm' => 'maps#send_delta_map'
   match 'focus/Completed-this-week.mm' => 'maps#send_done_map'

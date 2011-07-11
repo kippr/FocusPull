@@ -8,24 +8,10 @@ class LoginController < ApplicationController
     end
   end
   
-  def retrieve_archive
-    if !params[ :login ]
-      
-      reset_session
-      info "Released archive, please login again"
-      redirect_to :controller => 'login', :action => 'form'
-      
-    else
-      
-      prepare_for_retrieve
-      
-      download_archive
-
-      parse_archive
-    
-      redirect_to :controller => "maps", :action => "list"
-      
-    end
+  def release_archive
+    reset_session
+    info "Released archive, please login again"
+    redirect_to :controller => 'login', :action => 'form'
   end
   
   def prepare_for_retrieve
@@ -35,6 +21,8 @@ class LoginController < ApplicationController
     self.directory = "archives/#{Time.now.strftime("%Y.%m.%d")}"
     FileUtils.rm_rf( directory )
     FileUtils.mkpath( directory )
+    
+    render :xml => "<li>Logged in; Starting download...</li>"
   end
   
   def download_archive
@@ -42,14 +30,18 @@ class LoginController < ApplicationController
 
     archive.save("#{directory}/#{filename}")
     logger.debug "Saved #{filename}"
+    render :xml => "<li>Download complete; Parsing...</li>"
   end
   
   def parse_archive
+    logger.debug "Starting parsing"    
     parser = Focus::FocusParser.new( directory, filename, login.name)
     store_focus( parser.parse )
     session[ :focus_user ]= login.name
 
     info "Archive retrieved and processed successfully"    
+    
+    redirect_to :controller => "maps", :action => "list"    
   end
   
     def login=( login )
