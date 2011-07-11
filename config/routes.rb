@@ -9,7 +9,7 @@ FocusPull::Application.routes.draw do
   # Keep in mind you can assign values other than :controller and :action
   
   match 'login' => 'login#form'
-  match 'login/retrieve_archive' => 'login#retrieve_archive'
+  match 'login/retrieve_archive' => 'login#release_archive'
   
   match 'login/prepare_for_retrieve' => 'login#prepare_for_retrieve'
   match 'login/download_archive' => 'login#download_archive'
