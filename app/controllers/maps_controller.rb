@@ -24,8 +24,10 @@ class MapsController < ApplicationController
     from = parse_date( "map", "from" )
     to = parse_date( "map", "to" )
     type = case params[ "commit" ] 
-      when "Completed", :all_done
-      when "New projects", :new_projects 
+      when "Completed"
+        :all_done
+      when "New projects"
+        :new_projects 
       else :all
       end 
     show_weights = params[ "show weights" ]
