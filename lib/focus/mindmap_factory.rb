@@ -231,10 +231,10 @@ class Namer
       @stack << add_child( "html" ) unless MindMapFactory.failing_test_hack
       add_child( "body" ) do
         add_child( "p", :style => "text-align: center" ) do
-          add_child( "font", :SIZE => 4 ).content = "Portfolio" 
+          add_child( "font", :SIZE => 4 ).content = @filter.label( focus ) 
         end
         add_child( "p", :style => "text-align: center" ) do
-          add_child( "font", :SIZE => 2 ).content = @filter.label( focus )     
+          add_child( "font", :SIZE => 2 ).content = @filter.sublabel( focus )     
         end
       end
       @stack.pop unless MindMapFactory.failing_test_hack
@@ -480,6 +480,15 @@ class MapFilter
   end
     
   def label item
+    label_prefix = case @filter_option
+      when :new_projects then "New projects"
+      when :all_new then "Created"
+      when :all_done then "Completed"
+      else "Portfolio"
+    end
+  end
+
+  def sublabel item
     Date.today
   end
   
@@ -533,15 +542,9 @@ class TemporalFilter < MapFilter
   def in_range date
     date && @start <= date && date <= @end
   end
-  
-  def label item
-    label_prefix = case @filter_option
-      when :new_projects then "New projects "
-      when :all_new then "Created "
-      when :all_done then "Completed "
-      else ""
-    end
-    "#{label_prefix}#{@start}..#{@end}"
+    
+  def sublabel item
+    "#{@start}..#{@end}"
   end
   
 end

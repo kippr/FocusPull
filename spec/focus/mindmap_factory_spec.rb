@@ -225,8 +225,8 @@ describe Focus::MindMapFactory, "create_delta_map for new projects" do
   end
   
   it "should specify new projects only in description 'portfolio' node name" do
-    @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
-    @root.node.richcontent.body.p[1].font.content.should == 'New projects 2010-12-08..2010-12-13'
+    @root.node.richcontent.body.p[0].font.content.should == 'New projects'
+    @root.node.richcontent.body.p[1].font.content.should == '2010-12-08..2010-12-13'
   end  
   
 end  
@@ -246,8 +246,8 @@ describe Focus::MindMapFactory, "create_delta_map for completed items" do
 
   it "should include filtering dates in 'portfolio' node name" do
     @root.node.richcontent['TYPE'].should == 'NODE'
-    @root.node.richcontent.body.p[0].font.content.should == 'Portfolio'
-    @root.node.richcontent.body.p[1].font.content.should == 'Completed 2010-12-08..2010-12-13'
+    @root.node.richcontent.body.p[0].font.content.should == 'Completed'
+    @root.node.richcontent.body.p[1].font.content.should == '2010-12-08..2010-12-13'
   end
 
   it "should include projects that have been dropped in the specified period" do
