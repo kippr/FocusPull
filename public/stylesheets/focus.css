@@ -18,11 +18,9 @@ body {
 #gutter { float: left; text-align: bottom ; }
 
 ul {
-	font:normal 76%/100% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
-	list-style: none;
+	font:normal 87%/100% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
 	margin-left: 0;
 	padding-left: 1.5em;
-	text-indent: -0.5em;
 }
 
 /*
