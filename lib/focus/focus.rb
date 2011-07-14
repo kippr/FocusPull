@@ -164,7 +164,7 @@ class Action < Item
   end
   
   def completed( date )
-    date = Date.parse( date ) if date.is_a? String
+    date = DateTime.parse( date ) if date.is_a? String
     if date
       @status = :done
       @completed_date = date

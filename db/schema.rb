@@ -10,21 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110712222513) do
-
-  create_table "focus", :force => true do |t|
-    t.string   "username"
-    t.text     "focus_data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "focus_stores", :force => true do |t|
-    t.string   "username"
-    t.text     "focus"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 20110525222714) do
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false

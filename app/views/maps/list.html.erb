@@ -7,10 +7,10 @@
 	<li><%= link_to "Word cloud", :controller => "clouds", :action => "create" %>
 </ul>
 <hr/>
-<%= focus.list.active.projects.count %> active projects,
-<%= focus.list.active.actions.count %> available actions, with
-<!--%= focus.list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count %-->  projects, 
-<!--%= focus.list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count %--> actions completed in last week
+<%= session[ :focus ].list.active.projects.count %> active projects,
+<%= session[ :focus ].list.active.actions.count %> available actions, with
+<%= session[ :focus ].list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count %>  projects, 
+<%= session[ :focus ].list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count %> actions completed in last week
 <hr/>
 <p>Create custom map
 	<%= form_tag( '/focus/custom.mm' ) do %>
@@ -25,15 +25,15 @@
 <hr/>
 <p>Stalled projects
 	<ul>
-	<% focus.list.stalled.projects.each do | p | %>
+	<% session[ :focus ].list.stalled.projects.each do | p | %>
 		<li><%= p.name %>
 	<% end %>
 	</ul>
 </p>
 <p>Recently completed actions
 	<ul>
-	<!--% focus.list.completed.actions.select{ | a | a.completed_date >= Date.today - 3 }.sort_by( &:completed_date ).reverse.each do | a | %>
-		<li><!--%= "#{a.name} (#{a.parent.name})" %-->
-	<% end %-->
+	<% session[ :focus ].list.completed.actions.select{ | a | a.completed_date >= Date.today - 3 }.sort_by( &:completed_date ).reverse.each do | a | %>
+		<li><%= "#{a.name} (#{a.parent.name})" %>
+	<% end %>
 	</ul>
 </p>

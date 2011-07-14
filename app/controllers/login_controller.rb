@@ -36,14 +36,22 @@ class LoginController < ApplicationController
   def parse_archive
     logger.debug "Starting parsing"    
     parser = Focus::FocusParser.new( directory, filename, login.name)
-    session[ :focus_user ]= login.name
     store_focus( parser.parse )
+    session[ :focus_user ]= login.name
 
     info "Archive retrieved and processed successfully"    
     
     redirect_to :controller => "maps", :action => "list"    
   end
-      
+  
+    def login=( login )
+      session[ :login ] = login
+    end
+    
+    def login
+      session[ :login ] || raise( "Missing login" )
+    end
+    
     def directory=( dir )
       session[ :directory ] = dir
     end
