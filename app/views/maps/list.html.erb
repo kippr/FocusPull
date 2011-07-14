@@ -1,3 +1,4 @@
+<div id="content">
 <ul>
 	<li><%= link_to "Portfolio", :controller => "maps", :action => "send_simple_map" %>
 	<li><%= link_to "Portfolio changes", :controller => "maps", :action => "send_delta_map" %>
@@ -6,11 +7,6 @@
 	<li><%= link_to "Metamap", :controller => "maps", :action => "send_meta_map" %>
 	<li><%= link_to "Word cloud", :controller => "clouds", :action => "create" %>
 </ul>
-<hr/>
-<%= focus.list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count %>  projects, 
-<%= focus.list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count %> actions completed in last week, of
-<%= focus.list.remaining.projects.count %> projects (<%= focus.list.active.projects.count %> active),
-<%= focus.list.remaining.actions.count %> actions (<%= focus.list.active.actions.count %> available)
 <hr/>
 <p>Create custom map
 	<%= form_tag( '/focus/custom.mm' ) do %>
@@ -37,3 +33,11 @@
 	<% end %>
 	</ul>
 </p>
+</div>
+
+<div id="sidebar">
+	<%= focus.list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count %>  projects, 
+	<%= focus.list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count %> actions completed in last week, of
+	<%= focus.list.remaining.projects.count %> projects (<%= focus.list.active.projects.count %> active),
+	<%= focus.list.remaining.actions.count %> actions (<%= focus.list.active.actions.count %> available)
+</div>

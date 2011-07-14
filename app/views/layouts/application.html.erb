@@ -8,13 +8,15 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
-
+<div id="main">
 <%= render 'shared/notices' %>
 	
 <%= yield %>
 
 
+<div id="gutter">
 <%= render 'shared/archive_info' %>
-
+</div>
+</div>
 </body>
 </html>
