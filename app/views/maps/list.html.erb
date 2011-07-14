@@ -36,8 +36,5 @@
 </div>
 
 <div id="sidebar">
-	<%= focus.list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count %>  projects, 
-	<%= focus.list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count %> actions completed in last week, of
-	<%= focus.list.remaining.projects.count %> projects (<%= focus.list.active.projects.count %> active),
-	<%= focus.list.remaining.actions.count %> actions (<%= focus.list.active.actions.count %> available)
+	<%= render 'shared/status_table' %>
 </div>

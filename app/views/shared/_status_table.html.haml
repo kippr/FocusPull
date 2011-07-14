@@ -1,0 +1,17 @@
+%table
+	%tr
+		%th
+		%th	Projects
+		%th Actions
+	%tr
+		%th Done this week
+		%td= focus.list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count 
+		%td= focus.list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count
+	%tr{:class => "odd"}
+		%th Active
+		%td= focus.list.active.projects.count
+		%td= focus.list.active.actions.count
+	%tr
+		%th Remaining
+		%td= focus.list.remaining.projects.count 
+		%td= focus.list.remaining.actions.count

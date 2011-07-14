@@ -58,6 +58,7 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    haml (3.1.2)
     hoe (2.8.0)
       rake (>= 0.8.7)
     hpricot (0.8.3)
@@ -145,6 +146,7 @@ PLATFORMS
 DEPENDENCIES
   RubyInline
   cloud!
+  haml
   hoe (= 2.8.0)
   hpricot (= 0.8.3)
   mechanize
