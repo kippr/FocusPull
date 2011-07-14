@@ -1,4 +1,7 @@
-%ul 
-	Stalled Projects
+%table
+	%thead
+		%tr
+			%th #{focus.list.stalled.projects.count} Stalled Projects
 	- focus.list.stalled.projects.each do |p|
-		%li= p.name
+		%tr{ :class => cycle('even', 'odd') }
+			%td= p.name
