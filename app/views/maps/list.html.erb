@@ -19,13 +19,6 @@
 			<% end %>
 </p>
 <hr/>
-<p>Stalled projects
-	<ul>
-	<% focus.list.stalled.projects.each do | p | %>
-		<li><%= p.name %>
-	<% end %>
-	</ul>
-</p>
 <p>Actions completed in last 3 days
 	<ul>
 	<% focus.list.completed.actions.select{ | a | a.completed_date >= Date.today - 3 }.sort_by( &:completed_date ).reverse.each do | a | %>
@@ -37,4 +30,5 @@
 
 <div id="sidebar">
 	<%= render 'shared/status_table' %>
+	<%= render 'shared/stalled_projects'%>
 </div>
