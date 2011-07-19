@@ -21,7 +21,7 @@
 	%p
 		Actions completed in last 3 days
 		%ul
-			- focus.list.completed.actions.select{ | a | a.completed_date >= Date.today - 3 }.sort_by( &:completed_date ).reverse.each do |a|
+			- focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse.each do |a|
 				%li #{a.name} (#{a.parent.name})
 
 %div#sidebar

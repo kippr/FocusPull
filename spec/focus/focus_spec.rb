@@ -172,6 +172,15 @@ describe Focus::Focus do
       @focus.list.older_than( 3.days ).should include( @mailProject )
       @focus.list.older_than( 3.days ).should_not include( @mailAction )
     end
+
+    it "should offer completion time based filters" do
+      @mailProject.completed( Date.today - 4 )
+      @mailAction.completed( Date.today - 2 )
+      @focus.list.completed_in_last( 3.days ).should_not include( @mailProject )
+      @focus.list.completed_in_last( 3.days ).should include( @mailAction )
+      @mailAction.completed( Date.today - 3 )
+      @focus.list.completed_in_last( 3.days ).should include( @mailAction )
+    end
     
     it "should offer views on completed items, sorted by completion time" do
       @openZoneProject.completed( Date.today - 1 ) 

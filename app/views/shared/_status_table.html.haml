@@ -5,8 +5,8 @@
 		%th Actions
 	%tr{:class => "odd"}
 		%th Done this week
-		%td= focus.list.completed.projects.with{ | p | p.completed_date >= Date.today - 7 }.count 
-		%td= focus.list.completed.actions.with{ | p | p.completed_date >= Date.today - 7 }.count
+		%td= focus.list.projects.completed_in_last( 7.days ).count 
+		%td= focus.list.actions.completed_in_last( 7.days ).count 
 	%tr
 		%th Active
 		%td= focus.list.active.projects.count

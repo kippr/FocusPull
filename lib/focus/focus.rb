@@ -279,6 +279,13 @@ end
       chain lambda{ | n | n.respond_to?( :age ) && n.age.days > seconds_ago }
     end
     
+    def completed_in_last seconds
+      chain lambda { | n | 
+        n.respond_to?( :completed_date ) && n.completed_date && \
+        (Date.today - n.completed_date) * 24*60*60 <= seconds
+      }
+    end
+    
     def single_action
       chain lambda{ | n | n.respond_to?( :single_actions? ) && n.single_actions? }
     end
