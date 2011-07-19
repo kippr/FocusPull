@@ -19,7 +19,7 @@
 			%br
 			And choose #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
 	%p
-		Actions completed in last 3 days
+		#{focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
 		%ul
 			- focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse.each do |a|
 				%li #{a.name} (#{a.parent.name})
