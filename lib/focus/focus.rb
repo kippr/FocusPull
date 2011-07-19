@@ -275,8 +275,8 @@ end
       active.not.single_action.with{ | n | n.children.none?(&:remaining?) }
     end
     
-    def older_than date
-      chain lambda{ | n | n.respond_to?( :age ) && n.age > date }
+    def older_than seconds_ago
+      chain lambda{ | n | n.respond_to?( :age ) && n.age.days > seconds_ago }
     end
     
     def single_action
