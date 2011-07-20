@@ -26,8 +26,8 @@ gem 'minitar'
 gem 'mechanize'
 gem 'zip'
 
-#gem 'sparklines'
-#gem 'rmagick'
+gem 'sparklines'
+gem 'rmagick'
 
 gem "cloud", :git => "git://github.com/kippr/cloud.git"
 #gem 'ninajansen-cloud'
