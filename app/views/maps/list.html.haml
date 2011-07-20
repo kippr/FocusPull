@@ -1,3 +1,8 @@
+:javascript
+	$(document).ready(function() {
+		$('#trendline').sparkline( 'html', {type: 'discrete', lineColor: 'green', thresholdColor: 'red', thresholdValue: 0 } );
+		$('#trendline2').sparkline( 'html', {type: 'bar', barColor: 'green' } );
+	});
 %div#content
 	%ul
 		%li= link_to "Portfolio", :controller => "maps", :action => "send_simple_map"
@@ -18,8 +23,9 @@
 			Show weights:  #{check_box_tag( 'show weights' )}
 			%br
 			And choose #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
-	-#%p
-		-#= sparkline_tag [1,2,3,4,5,6]
+	%p
+		%span#trendline 1,2,3,-4,5,-2,3,1
+		%span#trendline2 1,2,3,-4,5,-2,3,1
 	%p
 		#{focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
 		%ul
