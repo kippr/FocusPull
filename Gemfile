@@ -26,6 +26,9 @@ gem 'minitar'
 gem 'mechanize'
 gem 'zip'
 
+#gem 'sparklines'
+#gem 'rmagick'
+
 gem "cloud", :git => "git://github.com/kippr/cloud.git"
 #gem 'ninajansen-cloud'
 gem 'pdf-writer', :git => "git://github.com/metaskills/pdf-writer.git"
