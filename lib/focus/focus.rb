@@ -58,11 +58,11 @@ class Item
   end
   
   def created_date=( date )
-    @created_date = Date.parse( date ) if date
+    @created_date = date.respond_to?( :to_date ) ? date.to_date : Date.parse( date ) if date
   end
 
   def updated_date=( date )
-    @updated_date = Date.parse( date ) if date
+    @updated_date = date.respond_to?( :to_date ) ? date.to_date : Date.parse( date ) if date
   end
     
   #todo: this is evil
@@ -282,8 +282,12 @@ end
     def completed_in_last seconds
       chain lambda { | n | 
         n.respond_to?( :completed_date ) && n.completed_date && \
-        (Date.today - n.completed_date) * 24*60*60 <= seconds
+        ( Date.today - n.completed_date ) * 24*60*60 <= seconds
       }
+    end
+
+    def created_in_last seconds
+      chain lambda { | n | ( Date.today - n.created_date ) * 24*60*60 <= seconds }
     end
     
     def single_action
