@@ -1,6 +1,5 @@
 :javascript
 	$(document).ready(function() {
-		$('#trendline').sparkline( 'html', {type: 'discrete', lineColor: 'green', thresholdColor: 'red', thresholdValue: 0 } );
 		$('#trendline2').sparkline( 'html', {type: 'bar', barColor: 'green' } );
 	});
 %div#content
@@ -24,8 +23,6 @@
 			%br
 			And choose #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
 	%p
-		%span#trendline 1,2,3,-4,5,-2,3,1
-		%span#trendline2 1,2,3,-4,5,-2,3,1
 	%p
 		#{focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
 		%ul
@@ -33,5 +30,6 @@
 				%li #{a.name} (#{a.parent.name})
 
 %div#sidebar
+	%span#trendline2= Focus::Graphable.sparkline_data( focus ).to_a.slice( -45..-1 ).join( ',' )
 	= render 'shared/status_table'
 	= render 'shared/stalled_projects'
