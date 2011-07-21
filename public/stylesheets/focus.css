@@ -3,6 +3,8 @@
 body {
 	font:normal 100% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
 }
+.small{ font:normal 72%/150% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+}
 .notice { background-color: #A4E7A0; border: 1px solid #26722D; }
 .error { background-color: #F0A8A8; border: 1px solid #900; }
 .notice, error { width: 90%; margin: 0 auto 10px auto; padding: 5px; margin-bottom: 3px;}

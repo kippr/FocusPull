@@ -15,6 +15,11 @@ class Graphable
     visitor = SparklineVisitor.new( earliest focus_items )
     Graphable.new( focus_items, visitor ).results
   end
+
+  def self.sparkline_data_done focus_items
+    visitor = DoneSparklineVisitor.new( earliest focus_items )
+    Graphable.new( focus_items, visitor ).results
+  end
   
   def initialize focus_items, visitor
     @focus_items = focus_items
@@ -109,7 +114,18 @@ class SparklineVisitor < TrendVisitor
   
   def each
     (0...size).each do | i |
-      yield added_actions[i].size + added_projects[i].size * 3 - completed_actions[i].size - completed_projects[i].size * 3
+      yield  completed_actions[i].size + completed_projects[i].size * 3 - added_actions[i].size - added_projects[i].size * 3
+    end
+  end
+    
+end
+
+# find a prettier way
+class DoneSparklineVisitor < TrendVisitor
+  
+  def each
+    (0...size).each do | i |
+      yield completed_actions[i].size + completed_projects[i].size * 3
     end
   end
     
