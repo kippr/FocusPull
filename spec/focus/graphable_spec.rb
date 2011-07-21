@@ -5,7 +5,7 @@ describe Focus::Graphable, "histogram" do
 
   before(:all) do
     @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
-    Timecop.travel(2011, 1, 9) { @histo = Focus::Graphable.histo( @parser.parse ) }
+    Timecop.travel(2011, 1, 9) { @histo = Focus::Graphable.histo( @parser.parse.list ) }
   end
   
   it "should plot done projects by age in days" do
@@ -25,7 +25,7 @@ describe Focus::Graphable, "trend" do
   
   before(:all) do
     @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
-    @trend = Focus::Graphable.trend( @parser.parse )
+    @trend = Focus::Graphable.trend( @parser.parse.list )
   end
 
   it "should be enumerable, to spit out all results in csv format" do
@@ -39,7 +39,7 @@ describe Focus::Graphable, "sparkline_data" do
 
   before(:all) do
     @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
-    @trend = Focus::Graphable.sparkline_data( @parser.parse )
+    @trend = Focus::Graphable.sparkline_data( @parser.parse.list )
   end
   
   it "should return a simple array of net created/ completed each day" do

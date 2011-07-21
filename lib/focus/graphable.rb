@@ -2,33 +2,33 @@ module Focus
 # todo: this class in need of serious TLC
 class Graphable
   
-  def self.histo focus
-    Graphable.new( focus, HistoVisitor.new ).results
+  def self.histo focus_items
+    Graphable.new( focus_items, HistoVisitor.new ).results
   end
 
-  def self.trend focus
-    visitor = TrendVisitor.new( earliest focus )
-    Graphable.new( focus, visitor ).results
+  def self.trend focus_items
+    visitor = TrendVisitor.new( earliest focus_items )
+    Graphable.new( focus_items, visitor ).results
   end
   
-  def self.sparkline_data focus
-    visitor = SparklineVisitor.new( earliest focus )
-    Graphable.new( focus, visitor ).results
+  def self.sparkline_data focus_items
+    visitor = SparklineVisitor.new( earliest focus_items )
+    Graphable.new( focus_items, visitor ).results
   end
   
-  def initialize focus, visitor
-    @focus = focus
+  def initialize focus_items, visitor
+    @focus_items = focus_items
     @visitor = visitor
   end
   
   def results
-    @focus.list.each{ | item | @visitor.accept item }
+    @focus_items.each{ | item | @visitor.accept item }
     @visitor
   end
   
   private
-    def self.earliest focus
-      focus.list.min { | a,b | a.created_date <=> b.created_date }.created_date
+    def self.earliest focus_items
+      focus_items.min { | a,b | a.created_date <=> b.created_date }.created_date
     end
     
 end

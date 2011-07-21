@@ -1,6 +1,6 @@
 :javascript
 	$(document).ready(function() {
-		$('#trendline2').sparkline( 'html', {type: 'bar', barColor: 'green' } );
+		$('.sparkline_bar').sparkline( 'html', {type: 'bar', barColor: 'green' } );
 	});
 %div#content
 	%ul
@@ -29,7 +29,7 @@
 			- focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse.each do |a|
 				%li #{a.name} (#{a.parent.name})
 
-%div#sidebar
-	%span#trendline2= Focus::Graphable.sparkline_data( focus ).to_a.slice( -45..-1 ).join( ',' )
+%div.sidebar
+	%span.sparkline_bar= Focus::Graphable.sparkline_data( focus.list ).to_a.slice( -45..-1 ).join( ',' )
 	= render 'shared/status_table'
 	= render 'shared/stalled_projects'
