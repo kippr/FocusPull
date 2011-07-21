@@ -7,8 +7,12 @@ class Graphable
   end
 
   def self.trend focus
-    earliest = focus.list.min { | a,b | a.created_date <=> b.created_date }
-    visitor = TrendVisitor.new( earliest.created_date )
+    visitor = TrendVisitor.new( earliest focus )
+    Graphable.new( focus, visitor ).results
+  end
+  
+  def self.sparkline_data focus
+    visitor = SparklineVisitor.new( earliest focus )
     Graphable.new( focus, visitor ).results
   end
   
@@ -21,6 +25,11 @@ class Graphable
     @focus.list.each{ | item | @visitor.accept item }
     @visitor
   end
+  
+  private
+    def self.earliest focus
+      focus.list.min { | a,b | a.created_date <=> b.created_date }.created_date
+    end
     
 end
 
@@ -94,6 +103,16 @@ class TrendVisitor
     end
   end 
   
+end
+
+class SparklineVisitor < TrendVisitor
+  
+  def each
+    (0...size).each do | i |
+      yield added_actions[i].size + added_projects[i].size * 3 - completed_actions[i].size - completed_projects[i].size * 3
+    end
+  end
+    
 end
 
 # bit dodgy extending array, but we'll see how we go

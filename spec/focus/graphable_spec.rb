@@ -34,3 +34,16 @@ describe Focus::Graphable, "trend" do
   end
   
 end
+
+describe Focus::Graphable, "sparkline_data" do
+
+  before(:all) do
+    @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
+    @trend = Focus::Graphable.sparkline_data( @parser.parse )
+  end
+  
+  it "should return a simple array of net created/ completed each day" do
+    @trend.to_a[70..75].should == ( [9, 1, 0, 0, 0, -1] )
+  end
+  
+end
