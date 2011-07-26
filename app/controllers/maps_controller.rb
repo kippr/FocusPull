@@ -39,7 +39,7 @@ class MapsController < ApplicationController
       send_map Focus::MindMapFactory.create_delta_map( focus, from.to_s, to.to_s, type, options )
     end
   end
-  
+    
   private
     def options
       options = { :EXCLUDE_NODES => [ 'Personal' ] }

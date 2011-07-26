@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'focus'
 require 'active_support/core_ext/numeric/time'
 

@@ -26,6 +26,8 @@ FocusPull::Application.routes.draw do
   match 'focus/custom.mm' => 'maps#custom_map'
 
   match 'focus' => 'maps#list'
+
+  match 'time_spent' => 'history#time_spent'
   
   
   # Sample of named route:
