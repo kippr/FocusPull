@@ -329,13 +329,6 @@ def attribute_for item_name, attribute_name
   attribute && attribute['VALUE']
 end
 
-def parse_test_archive
-  parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
-  focus = parser.parse
-  Focus::MindMapFactory.failing_test_hack = true
-  focus
-end
-
 def reset_factory
   Focus::MindMapFactory.failing_test_hack = false
 end

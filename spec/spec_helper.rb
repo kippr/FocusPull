@@ -25,3 +25,11 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 end
+
+#todo: find other places this is done, remove dupe
+def parse_test_archive
+  parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
+  focus = parser.parse
+  Focus::MindMapFactory.failing_test_hack = true
+  focus
+end
