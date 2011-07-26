@@ -4,11 +4,14 @@ require 'timecop'
 describe HistoryController, "time_spent" do
   
   before(:all) do
-    @focus = parse_test_archive
+    @history = HistoryController.new
+    def @history.focus
+      @focus ||= parse_test_archive
+    end
   end
   
   it "should do something" do
-    pending
+    @history.time_spent.should include(2)
   end
   
 end

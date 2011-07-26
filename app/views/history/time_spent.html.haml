@@ -1,2 +1,5 @@
-%p
-	%span.sparkline_line= @done.values.join( ',' ) 		
+%ul
+	- @top_level.each do |name, value|
+		%ul
+			%span.sparkline_line= @done.values.join( ',' ) 
+			=name
