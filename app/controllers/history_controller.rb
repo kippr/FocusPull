@@ -6,7 +6,9 @@ class HistoryController < ApplicationController
       grouped_by_week.default = []
       counts = []
       one_quarter_ago.step( Date.today, 7) do | week |
-        counts << grouped_by_week[ week.cwyear_and_week ].inject( 0 ){ | t, i | t + i.weight }
+        count = grouped_by_week[ week.cwyear_and_week ].inject( 0 ){ | t, i | t + i.weight }
+        @max = [ @max || 0, count ].max
+        counts << count
       end
       t[ i.name ] = counts
       t

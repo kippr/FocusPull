@@ -1,5 +1,6 @@
 %ul
 	- @top_level.each do |area, values|
 		%ul
-			%span.sparkline_completed{ sparkNormalRangeMax: 8, sparkChartRangeMax: 20 }= values.join( ',' ) 
+			- avg = values.inject{ |x, y| x + y } / values.count
+			%span.sparkline_completed{ sparkNormalRangeMax: avg, sparkChartRangeMax: @max }= values.join( ',' ) 
 			=area
