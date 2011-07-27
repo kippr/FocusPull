@@ -365,7 +365,6 @@ end
 # N.B. not all nodes contribute: projects are heavier than actions, folders are not weighed
 # Additionally, only items accepted by @filter contribute weight
 class WeightCalculator
-  include VisitorMixin
   
   def initialize( filter, nodes_to_exclude, statuses_to_weight )
     @filter = filter
@@ -408,19 +407,7 @@ class WeightCalculator
       ancestor = ancestor.parent
     end
     return 0 if @nodes_to_exclude.any?{ |ex| ancestor_names.include?( ex ) }
-    @filter.accept( item ) && @statuses_to_weight.accept( item ) ? item.visit( self ) : 0
-  end
-  
-  def visit_project project
-    project.single_actions? ? 0 : 3
-  end
-
-  def visit_action action
-    1
-  end
-  
-  def visit_default item
-    0
+    @filter.accept( item ) && @statuses_to_weight.accept( item ) ? item.weight : 0
   end
   
 end
