@@ -49,6 +49,7 @@ class Item
      parent.children << self unless self.is_root?
   end
   
+  #todo: lose 'is_' on these
   def is_root?
     false
   end
