@@ -78,6 +78,12 @@ class Item
   def to_s
     "#{self.class}: #{@name}"
   end
+  
+  # todo: this doesn't feel like it belongs here, but how to share this else?
+  def weight
+    0
+  end
+  
 end
 
 class Focus < Item
@@ -195,6 +201,10 @@ class Action < Item
   def to_s
     super + " [#{self.age}]" 
   end  
+  
+  def weight
+    1
+  end
 
 end
 
@@ -223,6 +233,11 @@ class Project < Action
   
   def visit( visitor )
     visitor.visit_project( self )
+  end
+  
+  def weight
+    # single_actions are more like folders than projects...
+    single_actions? ? 0 : 3
   end
   
 end

@@ -22,9 +22,8 @@ describe HistoryController, "time_spent" do
 
   it "group done projects, weighted more heavily than tasks, into one bucket per week" do
     # 2010-12-16
-    pending
     Timecop.travel(2011, 1, 1) do
-      @history.time_spent['Personal'].should == [ 0, 0, 0, 3, 0, 0 ]
+      @history.time_spent['Personal'][-6..-1].should == [ 0, 0, 0, 3, 0, 0 ]
     end
   end
   
