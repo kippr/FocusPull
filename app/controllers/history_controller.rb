@@ -1,7 +1,6 @@
 class HistoryController < ApplicationController
   
   def time_spent
-    
     @top_level = focus.children.select( &:is_folder? ).inject( Hash.new ) do | t, i |
       grouped_by_week = i.list.completed.group_by{ | i | i.completed_date.cwyear_and_week }
       grouped_by_week.default = []
@@ -12,7 +11,6 @@ class HistoryController < ApplicationController
       t[ i.name ] = counts
       t
     end
-    
   end
   
   private
