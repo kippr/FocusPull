@@ -6,10 +6,11 @@ $(document).ready(function() {
 	$('.sparkline_completed').sparkline( 'html', {
 		type: 'line', 
 		width: 60,
-		height: 18,
+		height: 21,
 		enableTagOptions: true, 
 		chartRangeMin: 0, 
 		normalRangeMin: 0, 
+		normalRangeColor: '#4f4',
 		fillColor: false 
 		}); 
 });

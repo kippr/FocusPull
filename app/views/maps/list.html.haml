@@ -1,5 +1,6 @@
 %div#content
 	%ul
+		%li= link_to "Time spent", :controller => "history", :action => "time_spent"
 		%li= link_to "Portfolio", :controller => "maps", :action => "send_simple_map"
 		%li= link_to "Portfolio changes", :controller => "maps", :action => "send_delta_map"
 		%li= link_to "Recently completed", :controller => "maps", :action => "send_done_map"

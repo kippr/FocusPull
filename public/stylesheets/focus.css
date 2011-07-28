@@ -22,8 +22,10 @@ body {
 ul {
 	font:normal 87%/100% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
 	margin-left: 0;
+	vertical-align: bottom ;
 	padding-left: 1.5em;
 }
+
 
 /*
 Coffee with milk
