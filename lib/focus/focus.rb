@@ -75,6 +75,10 @@ class Item
     [:active, :inactive].include? status
   end
   
+  def depth
+    parent.depth + 1
+  end
+  
   def to_s
     "#{self.class}: #{@name}"
   end
@@ -118,6 +122,10 @@ class Focus < Item
 
   def is_root?
     true
+  end
+  
+  def depth
+    1
   end
   
   def created_date

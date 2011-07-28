@@ -5,13 +5,14 @@ class HistoryController < ApplicationController
   def time_spent
     @top_level = Hash.new()
     folders = focus.children.select( &:is_folder? )
-    folders.each{ | f | @top_level[ f.name ] = count_by_week( f.list ) }
+    folders.each{ | f | @top_level[ f.name ] = completed_count_by_week( f.list ) }
+    @all_folders = focus.list.folders.collect{ | f | [ f, completed_count_by_week( f.list ) ] }
     @top_level
   end
   
   private
     
-    def count_by_week nodes
+    def completed_count_by_week nodes
       completed_by_week = nodes.completed.group_by{ | i | i.completed_date.cwyear_and_week }
       completed_by_week.default = []
       counts = []

@@ -3,3 +3,5 @@
 		- avg = values.inject{ |x, y| x + y } / values.count
 		%span.sparkline_completed{ sparkNormalRangeMax: avg, sparkChartRangeMax: @max }= values.join( ',' ) 
 		=area
+%hr
+	- folder_sparks_tag @all_folders, @max
