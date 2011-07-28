@@ -27,4 +27,11 @@ describe HistoryController, "time_spent" do
     end
   end
   
+  it "should calc global max as it goes" do
+    Timecop.travel(2011, 1, 1) do
+      @history.time_spent
+      @history.max.should == 3
+    end
+  end
+  
 end

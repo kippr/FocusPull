@@ -1,5 +1,7 @@
 class HistoryController < ApplicationController
   
+  attr_reader :max
+  
   def time_spent
     @top_level = Hash.new()
     folders = focus.children.select( &:is_folder? )
@@ -15,9 +17,9 @@ class HistoryController < ApplicationController
       counts = []
       one_quarter_ago.step( Date.today, 7) do | week |
         count = completed_by_week[ week.cwyear_and_week ].inject( 0 ){ | t, i | t + i.weight }
-        @max = count if ( @max || 0 ) < count
         counts << count
       end
+      @max = counts.max if counts.max > ( @max || 0 )
       counts
     end
   
