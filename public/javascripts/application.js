@@ -6,7 +6,7 @@ $(document).ready(function() {
 	$('.sparkline_completed').sparkline( 'html', {
 		type: 'line', 
 		width: 60,
-		height: 21,
+		height: 28,
 		enableTagOptions: true, 
 		chartRangeMin: 0, 
 		normalRangeMin: 0, 
