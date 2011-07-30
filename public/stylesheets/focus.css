@@ -14,10 +14,14 @@ body {
 .error a { border: 1px solid #900; color: #900; }
 .notice a:hover, .error a:hover { color: #333; border: 1px solid #333; }
 #messages { float: left; margin: 0 auto; width: 550px; }
-#main { margin: 0 auto; min-height: 450px; width: 800px; }
+#main { margin: 0 auto; min-height: 450px; width: 800px; clear: both; }
 #content { float: left; margin: 0 auto; width: 550px; }
+#top { float: left; margin: 0 auto; width: 225px; }
+#detail{ float:left; width: width: 120px; }
+
 #sidebar { float: right; margin-bottom: 60px;  width: 250px; }
-#gutter { float: left; text-align: bottom ; }
+#gutter { float: left; text-align: bottom ; clear: both; }
+
 
 ul {
 	font:normal 87%/100% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
