@@ -2,30 +2,19 @@ module TimeSpentHelper
   
   def folder_sparks_tag( folders, max )
     return "" if folders.nil?
-    folders.each do |node, counts|
-      indent( node.depth ) do
-        haml_tag :span, { :class => "detail #{node.parent.name}" } do
-          attributes = {}
-          avg = counts.inject{ | a, b | a + b } / counts.count
-          attrs = { :class=> "sparkline_completed", :sparkNormalRangeMax => avg, :sparkChartRangeMax => max }
-          haml_tag :span, attrs do
-            haml_concat counts.join( ',' )
-          end
-          haml_concat node.name
+    group = ""
+    folders.each do |folder, counts|
+      group = folder.parent.name.gsub(/[^a-zA-Z0-9]/, '') if folder.depth <= 3
+      haml_tag :span, { :class => "detail #{group}" } do
+        attributes = {}
+        avg = counts.inject{ | a, b | a + b } / counts.count
+        attrs = { :class=> "sparkline_completed", :sparkNormalRangeMax => avg, :sparkChartRangeMax => max }
+        haml_tag :span, attrs do
+          haml_concat counts.join( ',' )
         end
+        haml_concat "&nbsp;" * (folder.depth * 3 - 6)
+        haml_concat folder.name
       end
     end
   end
-  
-  private
-    def indent( level, &block )
-      if level > 1 && true == false
-        haml_tag :p do
-          indent( level - 1, &block )
-        end
-      else
-        yield
-      end
-    end
-  
 end
