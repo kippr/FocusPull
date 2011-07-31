@@ -4,7 +4,7 @@ module TimeSpentHelper
     return "" if folders.nil?
     folders.each do |node, counts|
       indent( node.depth ) do
-        haml_tag :li do
+        haml_tag :span, { :class => "detail #{node.parent.name}" } do
           attributes = {}
           avg = counts.inject{ | a, b | a + b } / counts.count
           attrs = { :class=> "sparkline_completed", :sparkNormalRangeMax => avg, :sparkChartRangeMax => max }
@@ -19,8 +19,8 @@ module TimeSpentHelper
   
   private
     def indent( level, &block )
-      if level > 1
-        haml_tag :ul do
+      if level > 1 && true == false
+        haml_tag :p do
           indent( level - 1, &block )
         end
       else

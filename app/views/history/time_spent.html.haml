@@ -4,6 +4,28 @@
 			- avg = values.inject{ |x, y| x + y } / values.count
 			%span.sparkline_completed{ sparkNormalRangeMax: avg, sparkChartRangeMax: @max }= values.join( ',' ) 
 			=area
-%div#detail
-	%hr
+%div
+	%p
 		- folder_sparks_tag @all_folders, @max
+	
+:javascript
+	$("p.time").hover(
+		function() {
+			$(this).css('color', 'red');
+			$("span."+"Liquidity").css('display', 'block');
+			$.sparkline_display_visible();
+		},
+		function() {
+			$(this).css('color', 'black');
+			$("span."+"Liquidity").css('display', 'none')
+		}
+	);
+	$("span.detail").hover(
+		function() {
+			$(this).css('display', 'block');
+			$.sparkline_display_visible();
+		},
+		function() {
+			$(this).css('display', 'none')
+		}
+	);
