@@ -1,6 +1,6 @@
-%div#top
+%div#top-level-folders
 	- @top_level.each do |area, values|
-		%p.time
+		%p.time-spent-top-level
 			- avg = values.inject{ |x, y| x + y } / values.count
 			%span.sparkline_completed{ sparkNormalRangeMax: avg, sparkChartRangeMax: @max }= values.join( ',' ) 
 			=area
@@ -9,7 +9,7 @@
 		- folder_sparks_tag @all_folders, @max
 	
 :javascript
-	$("p.time").hover(
+	$("p.time-spent-top-level").hover(
 		function() {
 			$(this).css('color', 'red');
 			$( "span."+ $(this).text().trim().replace(/[^a-zA-Z0-9]/g, '') ).css('display', 'block');
@@ -20,7 +20,7 @@
 			$("span." + $(this).text().trim().replace(/[^a-zA-Z0-9]/g, '') ).css('display', 'none')
 		}
 	);
-	$("span.detail").hover(
+	$("span.time-spent-detail").hover(
 		function() {
 			$(this).css('display', 'block');
 			$.sparkline_display_visible();

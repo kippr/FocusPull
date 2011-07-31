@@ -5,8 +5,7 @@ module TimeSpentHelper
     group = ""
     folders.each do |folder, counts|
       group = folder.parent.name.gsub(/[^a-zA-Z0-9]/, '') if folder.depth <= 3
-      haml_tag :span, { :class => "detail #{group}" } do
-        attributes = {}
+      haml_tag :span, { :class => "time-spent-detail #{group}" } do
         avg = counts.inject{ | a, b | a + b } / counts.count
         attrs = { :class=> "sparkline_completed", :sparkNormalRangeMax => avg, :sparkChartRangeMax => max }
         haml_tag :span, attrs do

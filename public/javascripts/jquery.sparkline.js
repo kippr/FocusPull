@@ -1105,7 +1105,7 @@
                 target=target[0];
             }
             target.VCanvas = this;
-            $(this.canvas).css({ display:'inline-block', width:width, height:height, verticalAlign:'top' });
+            $(this.canvas).css({ display:'inline-block', width:width, height:height, verticalAlign:'baseline' });
             this._insert(this.canvas, target);
             this.pixel_height = $(this.canvas).height();
             this.pixel_width = $(this.canvas).width();
@@ -1188,7 +1188,7 @@
             }
             target.VCanvas = this;
             this.canvas = document.createElement('span');
-            $(this.canvas).css({ display:'inline-block', position: 'relative', overflow:'hidden', width:width, height:height, margin:'0px', padding:'0px', verticalAlign: 'top'});
+            $(this.canvas).css({ display:'inline-block', position: 'relative', overflow:'hidden', width:width, height:height, margin:'0px', padding:'0px', verticalAlign: 'baseline'});
             this._insert(this.canvas, target);
             this.pixel_height = $(this.canvas).height();
             this.pixel_width = $(this.canvas).width();
