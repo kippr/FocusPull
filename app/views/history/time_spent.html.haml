@@ -9,23 +9,18 @@
 		- folder_sparks_tag @all_folders, @max
 	
 :javascript
-	$("p.time-spent-top-level").hover(
-		function() {
-			$(this).css('color', 'red');
-			$( "span."+ $(this).text().trim().replace(/[^a-zA-Z0-9]/g, '') ).css('display', 'block');
-			$.sparkline_display_visible();
-		},
-		function() {
-			$(this).css('color', 'black');
-			$("span." + $(this).text().trim().replace(/[^a-zA-Z0-9]/g, '') ).css('display', 'none')
-		}
-	);
-	$("span.time-spent-detail").hover(
-		function() {
-			$(this).css('display', 'block');
-			$.sparkline_display_visible();
-		},
-		function() {
-			$(this).css('display', 'none')
-		}
-	);
+	function show_detail(node) {
+		$("span.time-spent-detail").css('display', 'none');
+		$( "span."+ $(node).text().trim().replace(/[^a-zA-Z0-9]/g, '') ).css('display', 'block');
+		$.sparkline_display_visible();
+	}
+	$("p.time-spent-top-level")
+		.hover(
+			function() {
+				$(this).css('color', 'red');
+				show_detail(this);
+			},
+			function() {
+				$(this).css('color', 'black');
+			}
+		).click(function() {show_detail(this)})
