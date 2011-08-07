@@ -3,7 +3,7 @@
 		%p.time-spent-top-level
 			- avg = values.inject{ |x, y| x + y } / values.count
 			%span.sparkline_completed{ sparkNormalRangeMax: avg, sparkChartRangeMax: @max }= values.join( ',' ) 
-			= #{area.name ('%2.2f' % @weight_calculator.percent_weight( folder ) %)}
+			%span #{area.name} (#{'%2.2f' % @weight_calculator.percent_weight( folder )} %)
 %div
 	%p
 		- folder_sparks_tag @all_folders, @max
