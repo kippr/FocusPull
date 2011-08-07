@@ -12,7 +12,7 @@ module TimeSpentHelper
           haml_concat counts.join( ',' )
         end
         haml_concat "&nbsp;" * (folder.depth * 3 - 6)
-        haml_concat "#{folder.name} (#{'%2.2f' % @weight_calculator.percent_weight( folder )} %)"
+        haml_concat "#{folder.name} (#{'%2.2f' % @weight_calculator.percent_weight( folder )}%)"
       end
     end
   end
