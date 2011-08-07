@@ -3,7 +3,7 @@
 		%p.time-spent-top-level
 			- avg = values.inject{ |x, y| x + y } / values.count
 			%span.sparkline_completed{ sparkNormalRangeMax: avg, sparkChartRangeMax: @max }= values.join( ',' ) 
-			%span.area area.name
+			%span.area= area.name
 			%span #{'%2.2f' % @weight_calculator.percent_weight( area )} %
 %div
 	%p
