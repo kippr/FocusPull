@@ -20,9 +20,7 @@ describe HistoryController, "time_spent" do
 
   it "group done projects, weighted more heavily than tasks, into one bucket per week" do
     # 2010-12-16
-    Timecop.travel(2011, 1, 1) do
-      find( 'Personal' )[-6..-1].should == [ 0, 0, 0, 3, 0, 0 ]
-    end
+    find( 'Personal' )[-6..-1].should == [ 0, 0, 0, 3, 0, 0 ]
   end
   
   it "should calc global max as it goes" do
