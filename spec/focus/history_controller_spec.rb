@@ -15,9 +15,7 @@ describe HistoryController, "time_spent" do
   
   it "group done tasks into one bucket per week" do
     # 2010-11-26, 2010-12-13
-    Timecop.travel(2011, 1, 1) do
-      find( 'Admin' )[-6..-1].should == [ 1, 0, 0, 1, 0, 0 ]
-    end
+    find( 'Admin' )[-6..-1].should == [ 1, 0, 0, 1, 0, 0 ]
   end
 
   it "group done projects, weighted more heavily than tasks, into one bucket per week" do
@@ -36,7 +34,9 @@ describe HistoryController, "time_spent" do
   
   private
     def find node_with_name
-      @history.time_spent.detect{ |k,v| k.name == node_with_name }.last
+      Timecop.travel(2011, 1, 1) do
+        return @history.time_spent.detect{ |k,v| k.name == node_with_name }.last
+      end
      end
   
 end
