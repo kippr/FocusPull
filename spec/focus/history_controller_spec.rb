@@ -5,6 +5,9 @@ describe HistoryController, "time_spent" do
   
   before(:all) do
     @history = HistoryController.new
+    @history.params = { }
+       
+
     def @history.focus
       Timecop.travel(2011, 1, 1) do
         @focus ||= parse_test_archive
@@ -30,10 +33,18 @@ describe HistoryController, "time_spent" do
     end
   end
 
-  it "should tell what period the percentages are for" do
+  it "should tell what period the percentages are for, defaulting to last 7 days" do
     Timecop.travel(2010, 12, 20) do
       @history.time_spent
       @history.label.should include( "2010-12-13..2010-12-20" )
+    end
+  end
+
+  it "should allow percentage period to be changed" do
+    Timecop.travel(2010, 12, 20) do
+      @history.params = { :perc_from  => '2010-12-01' }
+      @history.time_spent
+      @history.label.should include( "2010-12-01..2010-12-20" )
     end
   end
 
