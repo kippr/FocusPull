@@ -530,7 +530,7 @@ class TemporalFilter < MapFilter
     date && @start <= date && date <= @end
   end
     
-  def sublabel item
+  def sublabel item=nil
     "#{@start}..#{@end}"
   end
   

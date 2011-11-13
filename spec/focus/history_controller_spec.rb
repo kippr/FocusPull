@@ -29,6 +29,14 @@ describe HistoryController, "time_spent" do
       @history.max.should == 3
     end
   end
+
+  it "should tell what period the percentages are for" do
+    Timecop.travel(2010, 12, 20) do
+      @history.time_spent
+      @history.label.should include( "2010-12-13..2010-12-20" )
+    end
+  end
+
   
   private
     def find node_with_name
