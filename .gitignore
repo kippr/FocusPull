@@ -6,3 +6,5 @@ tmp/**/*
 archives/
 output/
 test/omnisync-sample.tar
+*.swp
+*~
