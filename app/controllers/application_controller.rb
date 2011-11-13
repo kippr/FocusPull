@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   end
   
   def focus
-    FocusStore.where( :username => login.name ).first.focus
+    time("Getting focus for #{login.name}") { @focus ||= FocusStore.where( :username => login.name ).first.focus }
   end
   
 
@@ -28,6 +28,15 @@ class ApplicationController < ActionController::Base
     notice = Notice.new( msg )
     flash[:notice] ||= []
     flash[:notice] << notice
+  end
+  
+  def time msg
+      start_time = Time.now
+      puts " --> Starting '#{msg}'"
+      res = yield
+      end_time = Time.now
+      puts " <-- Done '#{msg}', took #{end_time - start_time} secs"
+      res
   end
   
 end

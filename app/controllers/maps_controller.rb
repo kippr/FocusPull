@@ -1,4 +1,8 @@
 class MapsController < ApplicationController
+
+  def list
+    @focus = focus
+  end
   
   def send_simple_map
     send_map Focus::MindMapFactory.create_simple_map( focus, options )

@@ -16,7 +16,7 @@ body {
 #messages { float: left; margin: 0 auto; width: 550px; }
 #main { margin: 0 auto; min-height: 450px; width: 800px; clear: both; }
 
-#top-level-folders { float: left; margin: 0 auto; margin-right: -20px; width: 225px; }
+#top-level-folders { float: left; margin: 0 auto; margin-right: -20px; width: 305px; }
 .time-spent-detail{ width: width: 120px; display: none; margin-left: -20px ;}
 
 #content { float: left; margin: 0 auto; width: 550px; }

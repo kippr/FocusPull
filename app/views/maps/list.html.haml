@@ -20,17 +20,17 @@
 			%br
 			And choose #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
 	%p
-		#{focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
+		#{@focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
 		%ul
-			- focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse.each do |a|
-				%li #{a.name} (#{a.parent.name})
+			- @focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse.each do |a|
+				%li #{a.name} (#{a.parent && a.parent.name})
 
 %div.sidebar
 	%p.small
-		#{focus.list.actions.completed_in_last( 45.days ).count} items completed in last 45 days 
-		%span.sparkline_bar= Focus::Graphable.sparkline_data_done( focus.list ).to_a.slice( -45..-1).join( ',' )
+		#{@focus.list.actions.completed_in_last( 45.days ).count} items completed in last 45 days 
+		%span.sparkline_bar= Focus::Graphable.sparkline_data_done( @focus.list ).to_a.slice( -45..-1).join( ',' )
 	%p.small
-		Net complete is #{Focus::Graphable.sparkline_data( focus.list ).to_a.slice( -45..-1 ).inject(0){ |a,b| a+b } } in last 45 days 
-		%span.sparkline_bar= Focus::Graphable.sparkline_data( focus.list ).to_a.slice( -45..-1 ).join( ',' )
+		Net complete is #{Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).inject(0){ |a,b| a+b } } in last 45 days 
+		%span.sparkline_bar= Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).join( ',' )
 	= render 'shared/status_table'
 	= render 'shared/stalled_projects'

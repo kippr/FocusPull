@@ -12,13 +12,6 @@
 
 ActiveRecord::Schema.define(:version => 20110712222513) do
 
-  create_table "focus", :force => true do |t|
-    t.string   "username"
-    t.text     "focus_data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "focus_stores", :force => true do |t|
     t.string   "username"
     t.text     "focus"

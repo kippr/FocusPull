@@ -1,3 +1,3 @@
 class FocusStore < ActiveRecord::Base
-  serialize :focus
+  serialize :focus, Focus::Focus
 end

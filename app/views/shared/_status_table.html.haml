@@ -5,17 +5,18 @@
 		%th Actions
 	%tr{:class => "odd"}
 		%th New this week
-		%td= focus.list.projects.created_in_last( 7.days ).count 
-		%td= focus.list.actions.created_in_last( 7.days ).count 
+		%td= @focus.list.not.single_action.projects.created_in_last( 7.days ).count 
+		%td= @focus.list.actions.created_in_last( 7.days ).count 
 	%tr
 		%th Done this week
-		%td= focus.list.projects.completed_in_last( 7.days ).count 
-		%td= focus.list.actions.completed_in_last( 7.days ).count 
+		%td= @focus.list.not.single_action.projects.completed_in_last( 7.days ).count 
+		%td= @focus.list.actions.completed_in_last( 7.days ).count 
 	%tr{:class => "odd"}
 		%th Active
-		%td= focus.list.active.projects.count
-		%td= focus.list.active.actions.count
+		%td= @focus.list.active.not.single_action.projects.count
+		%td= @focus.list.active.actions.count
 	%tr
 		%th Remaining
-		%td= focus.list.remaining.projects.count 
-		%td= focus.list.remaining.actions.count
+		%td= @focus.list.remaining.not.single_action.projects.count 
+		%td= @focus.list.remaining.actions.count
+
