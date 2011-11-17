@@ -8,7 +8,6 @@
 		%li= link_to "Metamap", :controller => "maps", :action => "send_meta_map"
 		%li= link_to "Word cloud", :controller => "clouds", :action => "create"
 	%p 
-		Create custom map
 		= form_tag( '/focus/custom.mm' ) do
 			From: #{date_select( 'map', 'from' , :default => 7.days.ago )}
 			%br
@@ -18,7 +17,9 @@
 			%br
 			Show weights:  #{check_box_tag( 'show weights' )}
 			%br
-			And choose #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
+			And create a map for #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
+			%br
+			Or see #{submit_tag( 'Time spent' )} for above options
 	%p
 		#{@focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
 		%ul

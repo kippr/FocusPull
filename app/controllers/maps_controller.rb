@@ -28,6 +28,9 @@ class MapsController < ApplicationController
     from = parse_date( "map", "from" )
     to = parse_date( "map", "to" )
     type = case params[ "commit" ] 
+      when "Time spent"
+        return redirect_to :controller => :history, :action => :time_spent, 
+          :from => from, :to => to, :exclude => params[ "exclude" ]
       when "Completed"
         :all_done
       when "New projects"

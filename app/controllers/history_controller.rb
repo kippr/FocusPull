@@ -7,9 +7,10 @@ class HistoryController < ApplicationController
     folders = focus.children.select( &:is_folder? )
     folders.each{ | f | @top_level[ f ] = completed_count_by_week( f.list ) }
 
-    perc_period_start = ( params[ :perc_from ] || 7.days.ago ).to_date
+    perc_period_start = ( params[ :from ] || 7.days.ago ).to_date
+    perc_period_end = ( params[ :to ] || Date.today ).to_date
     
-    perc_period_filter = Focus::TemporalFilter.new( perc_period_start.to_s, Date.today.to_s, :all_done )
+    perc_period_filter = Focus::TemporalFilter.new( perc_period_start.to_s, perc_period_end.to_s, :all_done )
     @weight_calculator = Focus::WeightCalculator.new( perc_period_filter, [], [ :done ] )
     @weight_calculator.weigh( focus ) # todo: hack to deal with first run...
     @label = "Percentages for period #{perc_period_filter.sublabel}; Graph shows period since #{one_quarter_ago} ; Green shows average spend for graphed period"
