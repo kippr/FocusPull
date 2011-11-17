@@ -42,9 +42,10 @@ describe HistoryController, "time_spent" do
 
   it "should allow percentage period to be changed" do
     Timecop.travel(2010, 12, 20) do
-      @history.params = { :perc_from  => '2010-12-01' }
+      @history.params = { :from  => '2010-12-01', 
+        :to  => '2010-12-11' }
       @history.time_spent
-      @history.label.should include( "2010-12-01..2010-12-20" )
+      @history.label.should include( "2010-12-01..2010-12-11" )
     end
   end
 
