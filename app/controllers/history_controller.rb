@@ -3,7 +3,7 @@ class HistoryController < ApplicationController
   attr_reader :max, :label
   
   def time_spent
-    excluded_nodes = params[ "exclude" ].split( "," ).collect(&:strip)
+    excluded_nodes = ( params[ "exclude" ] || "" ).split( "," ).collect(&:strip)
     @top_level = Hash.new()
     folders = focus.children.select( &:is_folder? ).reject{ | n | excluded_nodes.include? n.name }
     folders.each{ | f | @top_level[ f ] = completed_count_by_week( f.list ) }
