@@ -14,7 +14,7 @@ class HistoryController < ApplicationController
     perc_period_filter = Focus::TemporalFilter.new( perc_period_start.to_s, perc_period_end.to_s, :all_done )
     @weight_calculator = Focus::WeightCalculator.new( perc_period_filter, excluded_nodes, [ :done ] )
     @weight_calculator.weigh( focus ) # todo: hack to deal with first run...
-    @label = "Percentages for period #{perc_period_filter.sublabel}; Graph shows period since #{one_quarter_ago} ; Green shows average spend for graphed period"
+    @label = "Percentages for period since last report (#{perc_period_filter.sublabel}); Graph plots last 13 weeks (#{one_quarter_ago}) ; Green shows average for graphed period"
 
     @all_folders = focus.list.folders.reject{ | n | excluded_nodes.include? n.name }.collect{ | f | [ f, completed_count_by_week( f.list ) ] }
     @top_level
