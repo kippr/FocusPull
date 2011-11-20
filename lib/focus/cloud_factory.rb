@@ -28,7 +28,7 @@ class CloudFactory
     @input_file = "#{@output_path}/focus_words.txt"
     for_weight = Weight.new
     File.open(@input_file , "w") do |f| 
-      @focus.each do |node| 
+      @focus.list.each do |node| 
         for_weight.of node  do 
           node.name.split(/[^a-zA-Z0-9]/).each do |s| 
             f.puts( s.downcase ) if s.length > 2 || /[A-Z][A-Z]/.match( s )
