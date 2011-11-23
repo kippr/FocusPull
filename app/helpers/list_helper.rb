@@ -1,5 +1,24 @@
 module ListHelper
+
   def recently_completed_actions 
-    @focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse
+    completed_actions_for 3.days
   end
+
+  def completed_actions_for period
+    @focus.list.actions.completed_in_last( period ).sort_by( &:completed_date ).reverse
+  end
+
+  def done_by_day_for period
+    Focus::Graphable.sparkline_data_done( @focus.list ).to_a.slice( range_for( period ) )
+  end
+
+  def net_by_day_for period
+    Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( range_for( period ) )
+  end
+
+  # should go onto fixnum?
+  def range_for period 
+    (period / ( 60 * 60 * 24 ) * -1)..-1
+  end
+
 end

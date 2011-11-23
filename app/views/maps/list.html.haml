@@ -28,10 +28,10 @@
 
 %div.sidebar
   %p.small
-    #{@focus.list.actions.completed_in_last( 45.days ).count} items completed in last 45 days 
-    %span.sparkline_bar= Focus::Graphable.sparkline_data_done( @focus.list ).to_a.slice( -45..-1).join( ',' )
+    #{ done_by_day_for( 50.days ).reduce( :+ ) } points completed in last 50 days 
+    %span.sparkline_bar= done_by_day_for( 50.days ).join( ',' ) 
   %p.small
-    Net complete is #{Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).inject(0){ |a,b| a+b } } in last 45 days 
-    %span.sparkline_bar= Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).join( ',' )
+    Net complete is #{net_by_day_for( 50.days ).reduce( :+ ) } points in last 50 days 
+    %span.sparkline_bar= net_by_day_for( 50.days ).join( ',' )
   = render 'shared/status_table'
   = render 'shared/stalled_projects'
