@@ -1,37 +1,37 @@
 %div#content
-	%ul
-		%li= link_to "Time spent", :controller => "history", :action => "time_spent"
-		%li= link_to "Portfolio", :controller => "maps", :action => "send_simple_map"
-		%li= link_to "Portfolio changes", :controller => "maps", :action => "send_delta_map"
-		%li= link_to "Recently completed", :controller => "maps", :action => "send_done_map"
-		%li= link_to "New projects", :controller => "maps", :action => "send_new_project_map"
-		%li= link_to "Metamap", :controller => "maps", :action => "send_meta_map"
-		%li= link_to "Word cloud", :controller => "clouds", :action => "create"
-	%p 
-		= form_tag( '/focus/custom.mm' ) do
-			From: #{date_select( 'map', 'from' , :default => 7.days.ago )}
-			%br
-			To:  #{date_select( 'map', 'to' )}
-			%br
-			Exclude: #{text_field_tag( 'exclude', value = "Personal" )}
-			%br
-			Show weights:  #{check_box_tag( 'show weights' )}
-			%br
-			And create a map for #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
-			%br
-			Or see #{submit_tag( 'Time spent' )} for above options
-	%p
-		#{@focus.list.actions.completed_in_last( 3.days ).count} Actions completed in last 3 days
-		%ul
-			- @focus.list.actions.completed_in_last( 3.days ).sort_by( &:completed_date ).reverse.each do |a|
-				%li #{a.name} (#{a.parent && a.parent.name})
+  %ul
+    %li= link_to "Time spent", :controller => "history", :action => "time_spent"
+    %li= link_to "Portfolio", :controller => "maps", :action => "send_simple_map"
+    %li= link_to "Portfolio changes", :controller => "maps", :action => "send_delta_map"
+    %li= link_to "Recently completed", :controller => "maps", :action => "send_done_map"
+    %li= link_to "New projects", :controller => "maps", :action => "send_new_project_map"
+    %li= link_to "Metamap", :controller => "maps", :action => "send_meta_map"
+    %li= link_to "Word cloud", :controller => "clouds", :action => "create"
+  %p 
+    = form_tag( '/focus/custom.mm' ) do
+      From: #{date_select( 'map', 'from' , :default => 7.days.ago )}
+      %br
+      To:  #{date_select( 'map', 'to' )}
+      %br
+      Exclude: #{text_field_tag( 'exclude', value = "Personal" )}
+      %br
+      Show weights:  #{check_box_tag( 'show weights' )}
+      %br
+      And create a map for #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
+      %br
+      Or see #{submit_tag( 'Time spent' )} for above options
+  %p
+    #{ recently_completed_actions.count } Actions completed in last 3 days
+    %ul
+      - recently_completed_actions.each do |a|
+        %li #{a.name} (#{a.parent && a.parent.name})
 
 %div.sidebar
-	%p.small
-		#{@focus.list.actions.completed_in_last( 45.days ).count} items completed in last 45 days 
-		%span.sparkline_bar= Focus::Graphable.sparkline_data_done( @focus.list ).to_a.slice( -45..-1).join( ',' )
-	%p.small
-		Net complete is #{Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).inject(0){ |a,b| a+b } } in last 45 days 
-		%span.sparkline_bar= Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).join( ',' )
-	= render 'shared/status_table'
-	= render 'shared/stalled_projects'
+  %p.small
+    #{@focus.list.actions.completed_in_last( 45.days ).count} items completed in last 45 days 
+    %span.sparkline_bar= Focus::Graphable.sparkline_data_done( @focus.list ).to_a.slice( -45..-1).join( ',' )
+  %p.small
+    Net complete is #{Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).inject(0){ |a,b| a+b } } in last 45 days 
+    %span.sparkline_bar= Focus::Graphable.sparkline_data( @focus.list ).to_a.slice( -45..-1 ).join( ',' )
+  = render 'shared/status_table'
+  = render 'shared/stalled_projects'
