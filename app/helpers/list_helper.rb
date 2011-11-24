@@ -8,6 +8,10 @@ module ListHelper
     @focus.list.actions.completed_in_last( period ).sort_by( &:completed_date ).reverse
   end
 
+  def age_histo_for status
+    @focus.list.with_status( status ).not.root.not.folders.group_by( &:age ).map{ |age, items| [age.to_i, items.size] }.sort_by{ |i| i[0]}.map{ |age, count| count } 
+  end
+
   def done_by_day_for period
     Focus::Graphable.sparkline_data_done( @focus.list ).to_a.slice( range_for( period ) )
   end

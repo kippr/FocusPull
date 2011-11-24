@@ -20,6 +20,18 @@
       And create a map for #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}
       %br
       Or see #{submit_tag( 'Time spent' )} for above options
+  %p.small
+    Completed age histogram:
+    %br
+    %span.sparkline_tallbar= age_histo_for( :done ).join( ',' )
+  %p.small
+    Active age histogram:
+    %br
+    %span.sparkline_tallbar= age_histo_for( :active ).join( ',' )
+  %p.small
+    On hold age histogram:
+    %br
+    %span.sparkline_tallbar= age_histo_for( :inactive ).join( ',' )
   %p
     #{ recently_completed_actions.count } Actions completed in last 3 days
     %ul
@@ -31,7 +43,7 @@
     #{ done_by_day_for( 50.days ).reduce( :+ ) } points completed in last 50 days 
     %span.sparkline_bar= done_by_day_for( 50.days ).join( ',' ) 
   %p.small
-    Net complete is #{net_by_day_for( 50.days ).reduce( :+ ) } points in last 50 days 
+    Net: #{net_by_day_for( 50.days ).reduce( :+ ) } points in last 50 days 
     %span.sparkline_bar= net_by_day_for( 50.days ).join( ',' )
   = render 'shared/status_table'
   = render 'shared/stalled_projects'

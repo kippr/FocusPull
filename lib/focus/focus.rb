@@ -277,6 +277,10 @@ end
     def actions
       with_type Action
     end
+    
+    def root 
+      with_type Focus
+    end
 
     def active
       with_status :active
@@ -344,7 +348,7 @@ end
         lambda{ |n| ! original_lambda.call( n ) }
       end
       
-      def with_type type         
+      def with_type type
         chain lambda{ | n | n.class == type }
       end
 
