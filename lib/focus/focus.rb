@@ -70,6 +70,18 @@ class Item
   def status
     :active
   end
+
+  #todo: and this is evil too
+  def single_actions?
+    false
+  end
+
+  #todo: and this is evil too
+  def orphan?
+    false
+  end
+    
+    
   
   def remaining?
     [:active, :inactive].include? status
@@ -161,7 +173,7 @@ class Folder < Item
   def active?
     true
   end
-    
+
 end
 
 class Action < Item
@@ -203,6 +215,10 @@ class Action < Item
 
   def done?
     status == :done
+  end
+
+  def orphan?
+    parent.is_root?
   end
   
   def visit( visitor )
