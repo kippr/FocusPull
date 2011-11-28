@@ -1,0 +1,9 @@
+=javascript_include_tag "jit.js"
+=javascript_include_tag "treemap.js"
+
+%div#infovis
+
+
+:javascript
+   var json = #{@treemap}
+   init();

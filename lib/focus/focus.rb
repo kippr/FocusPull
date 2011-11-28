@@ -158,6 +158,9 @@ class Folder < Item
   end
 
   # todo: define status method
+  def active?
+    true
+  end
     
 end
 

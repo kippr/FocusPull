@@ -29,6 +29,7 @@ FocusPull::Application.routes.draw do
 
   match 'time_spent' => 'history#time_spent'
   
+  match 'view_tree_map' => 'tree_map#view'
   
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
