@@ -218,7 +218,7 @@ class Action < Item
   end
 
   def orphan?
-    parent.is_root?
+    parent.nil? || parent.is_root?
   end
   
   def visit( visitor )

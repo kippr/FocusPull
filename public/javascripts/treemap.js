@@ -90,7 +90,7 @@ function init(){
   tm.refresh();
   //end
   //add events to radio buttons
-  var sq = $jit.id('r-sq'),
+  /*var sq = $jit.id('r-sq'),
       st = $jit.id('r-st'),
       sd = $jit.id('r-sd');
   var util = $jit.util;
@@ -110,7 +110,7 @@ function init(){
     util.extend(tm, new $jit.Layouts.TM.SliceAndDice);
     tm.layout.orientation = "v";
     tm.refresh();
-  });
+  });*/
   //add event to the back button
   var back = $jit.id('back');
   $jit.util.addEvent(back, 'click', function() {
