@@ -49,7 +49,7 @@ function init(){
       }
     },
     duration: 1000,
-    /*//Enable tips
+    //Enable tips
     Tips: {
       enable: true,
       //add positioning offsets
@@ -62,15 +62,23 @@ function init(){
         var html = "<div class=\"tip-title\">" + node.name 
           + "</div><div class=\"tip-text\">";
         var data = node.data;
-        if(data.playcount) {
-          html += "play count: " + data.playcount;
+        if(data.type) {
+          html += " (" + data.type + ") ";
         }
-        if(data.image) {
-          html += "<img src=\""+ data.image +"\" class=\"album\" />";
+        html += "<br/>";
+        if(data.age) {
+          html += "Age: " + data.age + " days<br/>";
         }
+
+
+        html += "Average age: " + data.avg_age + "<br/>"
+        html += "Area: " + data.$area + "<br/>"
+        html += "Weight: " + data.weight + "<br/>";
+        html += "Colour: " + data.$color + "<br/>";
+
         tip.innerHTML =  html; 
       }  
-    },*/
+    },
     //Add the name of the node in the correponding label
     //This method is called once, on label creation.
     onCreateLabel: function(domElement, node){

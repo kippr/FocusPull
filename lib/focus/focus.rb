@@ -80,6 +80,12 @@ class Item
   def orphan?
     false
   end
+  
+  #todo: and this is evil too
+  def age
+    0
+  end
+    
     
     
   
