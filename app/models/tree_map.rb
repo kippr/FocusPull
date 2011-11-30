@@ -4,7 +4,7 @@ class TreeMap
     @focus = focus
     @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], [ :active, :inactive ] ) 
     @fader = fader || ColourFader.new_with_zero( '#cccccc', '#00bb33', '#bbbb00', '#BB0000' ) 
-    @max = 200 
+    @max = 365 
   end
 
   def children
@@ -21,11 +21,13 @@ class TreeMap
       :children => children,
       :data => {
         :type => @focus.class.name,
+        :status => @focus.status,
         :age => age,
         :avg_age => avg_age,
-        :weight => weight,
+        :created => @focus.created_date,
         "$color" => colour,
         "$area" => filter( @focus.list ).count
+        
       }, 
       :id => path,
       :name => @focus.name
@@ -58,8 +60,8 @@ class TreeMap
   def avg_age
     #todo
     items = filter( @focus.list )
-    total = items.collect( &:age ).reduce( &:+ )
-    ( total / items.reject{ |i| i.age == 0}.count ).to_i
+    total = items.collect( &:age ).reduce( &:+ ) || 0
+    ( total / ( items.reject{ |i| i.age == 0}.count + 0.01 ) ).to_i
   end
 
   # todo - copy/ paste from Edger! Move where?

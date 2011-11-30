@@ -62,19 +62,10 @@ function init(){
         var html = "<div class=\"tip-title\">" + node.name 
           + "</div><div class=\"tip-text\">";
         var data = node.data;
-        if(data.type) {
-          html += " (" + data.type + ") ";
-        }
-        html += "<br/>";
-        if(data.age) {
-          html += "Age: " + data.age + " days<br/>";
-        }
-
-
+        html += " (" + data.type + ") <br/>";
+        html += "Status: " + data.status + "<br/>";
+        html += "Age: " + data.age + " days (" + data.created+ ")<br/>";
         html += "Average age: " + data.avg_age + "<br/>"
-        html += "Area: " + data.$area + "<br/>"
-        html += "Weight: " + data.weight + "<br/>";
-        html += "Colour: " + data.$color + "<br/>";
 
         tip.innerHTML =  html; 
       }  
