@@ -70,6 +70,11 @@ class Item
   def status
     :active
   end
+  
+  #todo: this is evil
+  def active?
+    status == :active
+  end
 
   #todo: and this is evil too
   def single_actions?
@@ -85,10 +90,8 @@ class Item
   def age
     0
   end
-    
-    
-    
   
+  #todo: erhmm
   def remaining?
     [:active, :inactive].include? status
   end
@@ -215,10 +218,6 @@ class Action < Item
     end
   end
       
-  def active?
-    status == :active
-  end
-
   def done?
     status == :done
   end

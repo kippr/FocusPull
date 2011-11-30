@@ -3,8 +3,8 @@ class TreeMap
   def initialize focus, weighter = nil,  fader = nil
     @focus = focus
     @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], [ :active, :inactive ] ) 
-    @fader = fader || ColourFader.new_with_zero( '#cccccc', '#00bb33', '#bbbb00', '#BB0000' ) 
-    @max = 365 
+    @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
+    @max = 150 
   end
 
   def children
@@ -59,7 +59,7 @@ class TreeMap
 
   def avg_age
     #todo
-    items = filter( @focus.list )
+    items = filter( @focus.list ).select( &:active? )
     total = items.collect( &:age ).reduce( &:+ ) || 0
     ( total / ( items.reject{ |i| i.age == 0}.count + 0.01 ) ).to_i
   end
