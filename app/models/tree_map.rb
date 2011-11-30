@@ -12,7 +12,7 @@ class TreeMap
   end
 
   def path node=@focus,current=@focus.name
-    current = "#{path( node.parent, node.parent.name )}/#{current}" unless node.is_root?
+    current = "#{path( node.parent, node.parent.name )}/#{current}" unless node.parent.nil? || node.is_root?
     current
   end
 
