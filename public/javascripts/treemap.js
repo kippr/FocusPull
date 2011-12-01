@@ -64,9 +64,14 @@ function init(){
         var data = node.data;
         html += " (" + data.type + ") <br/>";
         html += "Status: " + data.status + "<br/>";
-        html += "Age: " + data.age + " days (" + data.created+ ")<br/>";
-        html += "Average age: " + data.avg_age + "<br/>"
-
+        if ( data.age != 0 ) {
+          html += "Age: " + data.age + " days (" + data.created+ ")<br/>";
+        } else {
+          html += "Created: " + data.created+ "<br/>";
+        }
+        if (data.avg_age) {
+          html += "Average age: " + data.avg_age + "<br/>";
+        }
         tip.innerHTML =  html; 
       }  
     },

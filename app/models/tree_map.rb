@@ -27,7 +27,6 @@ class TreeMap
         :created => @focus.created_date,
         "$color" => colour,
         "$area" => filter( @focus.list ).count
-        
       }, 
       :id => path,
       :name => @focus.name
