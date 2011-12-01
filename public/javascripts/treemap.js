@@ -78,7 +78,7 @@ function init(){
     //Add the name of the node in the correponding label
     //This method is called once, on label creation.
     onCreateLabel: function(domElement, node){
-        domElement.innerHTML = node.name;
+        domElement.innerHTML = node.data.short_name;
         var style = domElement.style;
         var borderStyle = '0.5px ' +  (tm.leaf( node ) ? 'solid transparent' : ' dotted #ffffab');
         style.display = '';
