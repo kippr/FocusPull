@@ -1,14 +1,14 @@
 class TreeMap
 
-  def initialize focus, weighter = nil,  fader = nil
+  def initialize focus, weighter = nil,  fader = nil, max = nil
     @focus = focus
     @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], [ :active, :inactive ] ) 
     @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
-    @max = 150 
+    @max = max || [ 150, filter( @focus.list ).collect( &:age ).max ].max
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @weighter, @fader ) }
+    filter( @focus.children ).map{ |c| TreeMap.new( c, @weighter, @fader, @max ) }
   end
 
   def path node=@focus,current=@focus.name
