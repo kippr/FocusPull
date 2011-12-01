@@ -262,7 +262,6 @@ class Project < Action
     @single_actions = true
   end
   
-  
   def visit( visitor )
     visitor.visit_project( self )
   end
@@ -270,6 +269,11 @@ class Project < Action
   def weight
     # single_actions are more like folders than projects...
     single_actions? ? 0 : 3
+  end
+
+  # todo: single actions should be a different class
+  def age
+    single_actions? ? 0 : super
   end
   
 end
