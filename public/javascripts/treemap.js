@@ -80,13 +80,14 @@ function init(){
     onCreateLabel: function(domElement, node){
         domElement.innerHTML = node.name;
         var style = domElement.style;
+        var borderStyle = '0.5px ' +  (tm.leaf( node ) ? 'solid transparent' : ' dotted #ffffab');
         style.display = '';
-        style.border = '1px solid transparent';
+        style.border = borderStyle;
         domElement.onmouseover = function() {
-          style.border = '1px solid #9FD4FF';
+        style.border = '1px solid #9FD4FF';
         };
         domElement.onmouseout = function() {
-          style.border = '1px solid transparent';
+          style.border = borderStyle;
         };
     }
   });
