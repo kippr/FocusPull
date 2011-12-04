@@ -8,8 +8,9 @@ describe Focus::Focus do
     @focus = Focus::Focus.new
     @mailProject = Focus::Project.new( "Spend less time in email")
     @mailProject.link_parent( @focus )
+    @mailContext = Focus::Context.new( "Outlook" )
     @mailAction = Focus::Action.new( "Collect useless mails in sd")
-    @mailAction.link_parent( @mailProject )
+    @mailAction.link_parent( @mailProject, @mailContext )
     @personalFolder = Focus::Folder.new( "Personal" )
     @personalFolder.link_parent( @focus )
     @openZoneProject = Focus::Project.new( "iPad has open zone access" )
@@ -86,6 +87,12 @@ describe Focus::Focus do
   it "should override the status for actions in inactive projects to be inactive" do
     @mailAction.status.should == :active
     @mailProject.status = 'inactive'
+    @mailAction.status.should == :inactive
+  end
+
+  it "should override the status for actions in inactive contexts to be inactive" do
+    @mailAction.status.should == :active
+    @mailContext.status = 'inactive'
     @mailAction.status.should == :inactive
   end
 

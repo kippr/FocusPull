@@ -205,8 +205,16 @@ class Action < Item
     super( name )
   end
   
+  # todo: make this prettier
   def status
-    parent && [ :inactive, :dropped ].include?( parent.status ) ? parent.status : @status 
+    if parent && [ :inactive, :dropped ].include?( parent.status ) 
+      parent.status 
+      # todo: weird YAML Syck parser bug workaround!!
+    elsif context.class == Context && (:inactive == context.status)
+      context.status
+    else
+      @status
+    end
   end
   
   def completed( date )
