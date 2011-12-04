@@ -23,11 +23,13 @@ class Item
   attr_reader :name
   attr_reader :parent
   attr_reader :children
+  attr_reader :context
   attr_reader :created_date, :updated_date
   
   def initialize( name )
     @name = name
     @children = []
+    @status = :active
   end
   
   def list
@@ -43,10 +45,14 @@ class Item
     value
   end
   
-  def link_parent( parent )
+  #todo: rename
+  def link_parent( parent, context = nil )
     @parent = parent
+    @context = context
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
+     # todo: add link from contexts to children?
+     #context.children << self unless context.nil?
   end
   
   #todo: lose 'is_' on these
@@ -66,17 +72,23 @@ class Item
     @updated_date = date.respond_to?( :to_date ) ? date.to_date : Date.parse( date ) if date
   end
     
-  #todo: this is evil
   def status
-    :active
+    @status
+  end
+
+  def status=( status_string )
+    @status = status_string.intern if status_string
   end
   
-  #todo: this is evil
   def active?
     status == :active
   end
 
-  #todo: and this is evil too
+  def remaining?
+    [:active, :inactive].include? status
+  end
+  
+  #todo: this is evil
   def single_actions?
     false
   end
@@ -89,11 +101,6 @@ class Item
   #todo: and this is evil too
   def age
     0
-  end
-  
-  #todo: erhmm
-  def remaining?
-    [:active, :inactive].include? status
   end
   
   def depth
@@ -136,6 +143,11 @@ class Focus < Item
   def action( name )
     detect_for( Action, name )
   end
+
+  def context( name )
+    detect_for( Context, name )
+  end
+  
   
   def parent
     nil
@@ -191,15 +203,10 @@ class Action < Item
   
   def initialize( name )
     super( name )
-    @status = :active
   end
   
   def status
     parent && [ :inactive, :dropped ].include?( parent.status ) ? parent.status : @status 
-  end
-  
-  def status=( status_string )
-    @status = status_string.intern if status_string
   end
   
   def completed( date )
@@ -277,6 +284,14 @@ class Project < Action
   end
   
 end
+
+  class Context < Item
+
+    def visit( visitor, *args )
+      visitor.visit_context( self )
+    end
+
+  end
 
 
   class List

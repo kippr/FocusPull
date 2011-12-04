@@ -112,6 +112,7 @@ describe Focus::Focus do
     Focus::Project.new( "" ).visit( visitor ).should == "Visited a Project"
     Focus::Action.new( "" ).visit( visitor ).should == "Visited an Action"
     Focus::Folder.new( "" ).visit( visitor ).should == "Visited a Folder"
+    Focus::Context.new( "" ).visit( visitor ).should == "Visited a Context"
     Focus::Focus.new.visit( visitor ).should == "Visited Portfolio Root"
   end
   
@@ -213,6 +214,9 @@ class Visitor
   end
   def visit_action action
     "Visited an Action"
+  end
+  def visit_context context
+    "Visited a Context"
   end
   def visit_focus portfolio
     "Visited Portfolio Root"

@@ -76,4 +76,20 @@ describe Focus::FocusParser, "#parse" do
     order  
   end
 
+  describe 'context' do
+
+    it 'should parse the context of each action' do
+       @focus.action( "Collect useless mails in sd" ).context.name.should == "Outlook > 3m"
+    end
+
+    it 'should see which contexts are "on hold"' do
+      @focus.context( "Outlook > 3m" ).status.should == :active
+      @focus.context( "Outlook > 3m" ).active?.should == true
+      @focus.context( "Waiting" ).status.should == :inactive
+      @focus.context( "Waiting" ).active?.should == false
+    end
+
+  end
+
+
 end

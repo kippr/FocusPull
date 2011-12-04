@@ -4,7 +4,7 @@ class TreeMap
     @focus = focus
     @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], [ :active, :inactive ] ) 
     @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
-    @max = max || [ 150, filter( @focus.list ).collect( &:age ).max ].max
+    @max = max || [ 150, filter( @focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children

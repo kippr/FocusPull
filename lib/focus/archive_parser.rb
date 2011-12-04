@@ -13,20 +13,21 @@ module Focus
   end
 
   def parse
-    root = Focus.new
+    @root = Focus.new
     @ref_to_node = Hash.new
-    @ref_to_node[ nil ] = root
     @parent_ref_of = Hash.new
+    @context_ref_of = Hash.new
     @ranking = Hash.new( 0 )
     
     foreach_archive_xml do | content |
       @xml = Nokogiri::XML( content )
       parse_actions
       parse_folders
+      parse_contexts
     end
     
     resolve_links
-    root
+    @root
   end
 
   private
@@ -52,6 +53,17 @@ module Focus
         create_node( folder_node, Folder )
       end
     end
+
+    def parse_contexts
+      for_each( "context" ).each do | context_node |
+        @log.debug( "Processing context: #{context_node}" )
+        item = create_node( context_node, Context )
+        if context_node.at_xpath './xmlns:prohibits-next-action'
+          item.status = :inactive
+        end
+      end
+    end
+
     
     def create_node( node, type )
       name = xpath_content( node, './xmlns:name' )
@@ -74,23 +86,29 @@ module Focus
       @log.debug( "Found parent link to '#{parent_id}'" )
       # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
       id = item_node[ 'id' ] || item_node.parent[ 'id' ]
+      # todo: consider 'blank context' nullobj?
+      context_id = xpath_content( item_node, './xmlns:context/@idref', nil )
       @ref_to_node[  id ]  = item
       @parent_ref_of[ id ] = parent_id
+      @context_ref_of[ id ] = context_id
     end
     
     def remove_links( deleted_node )
       id = deleted_node[ 'id' ]
       @ref_to_node.delete( id )
       @parent_ref_of.delete( id )
+      @context_ref_of.delete( id )
     end
 
     def resolve_links
       @log.debug( "Resolving links for #{@ref_to_node}")
       @ref_to_node.sort_by{ | ref, node | @ranking[ ref ] }.each do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
-        parent = @ref_to_node[ @parent_ref_of[ ref ] ]
-        if parent
-          node.link_parent( parent )
+        parent = @ref_to_node[ @parent_ref_of[ ref ] ] || @root
+        #@log.error "#{node} has context ref: #{@context_ref_of[ ref ]}"
+        context = @ref_to_node[ @context_ref_of[ ref ] ]
+        if parent 
+          node.link_parent( parent, context )
         else
           @log.warn( "Found orphan node, not linking: #{node}" )
         end
