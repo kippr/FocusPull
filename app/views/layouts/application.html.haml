@@ -14,8 +14,8 @@
     =javascript_include_tag 'treemap.js' unless @treemap.nil?
     =csrf_meta_tag
   %body
+    = render 'shared/notices'
     %div#main
-      = render 'shared/notices'
       = yield
     %div#gutter
       = render 'shared/archive_info'
