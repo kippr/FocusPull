@@ -4,7 +4,8 @@
 <a id="back" href="#" class="theme button white">Go to Parent</a>
 
 :javascript
-   var json = #{@treemap}
-   init();
-
+  var json = #{@treemap};
+  $(document).ready(function () {
+    init();
+  });
 
