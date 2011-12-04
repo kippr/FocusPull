@@ -94,31 +94,14 @@ function init(){
   tm.loadJSON(json);
   tm.refresh();
   //end
-  //add events to radio buttons
-  /*var sq = $jit.id('r-sq'),
-      st = $jit.id('r-st'),
-      sd = $jit.id('r-sd');
-  var util = $jit.util;
-  util.addEvent(sq, 'change', function() {
-    if(!sq.checked) return;
-    util.extend(tm, new $jit.Layouts.TM.Squarified);
-    tm.refresh();
-  });
-  util.addEvent(st, 'change', function() {
-    if(!st.checked) return;
-    util.extend(tm, new $jit.Layouts.TM.Strip);
-    tm.layout.orientation = "v";
-    tm.refresh();
-  });
-  util.addEvent(sd, 'change', function() {
-    if(!sd.checked) return;
-    util.extend(tm, new $jit.Layouts.TM.SliceAndDice);
-    tm.layout.orientation = "v";
-    tm.refresh();
-  });*/
   //add event to the back button
   var back = $jit.id('back');
   $jit.util.addEvent(back, 'click', function() {
     tm.out();
   });
-}
+// add refresh event to button
+  var refresh = $jit.id( 'refresh' );
+  $jit.util.addEvent(refresh, 'click', function() {
+    tm.refresh();
+  });
+ }
