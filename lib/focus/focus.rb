@@ -23,7 +23,7 @@ class Item
   attr_reader :name
   attr_reader :parent
   attr_reader :children
-  attr_reader :context
+  attr_reader :at_context
   attr_reader :created_date, :updated_date
   
   def initialize( name )
@@ -46,13 +46,13 @@ class Item
   end
   
   #todo: rename
-  def link_parent( parent, context = nil )
+  def link_parent( parent, at_context = nil )
     @parent = parent
-    @context = context
+    @at_context = at_context
     # then add a backlink, registering self with parent, except for root!
      parent.children << self unless self.is_root?
      # todo: add link from contexts to children?
-     #context.children << self unless context.nil?
+     #at.children << self unless at.nil?
   end
   
   #todo: lose 'is_' on these
@@ -210,8 +210,8 @@ class Action < Item
     if parent && [ :inactive, :dropped ].include?( parent.status ) 
       parent.status 
       # todo: weird YAML Syck parser bug workaround!!
-    elsif context.class == Context && (:inactive == context.status)
-      context.status
+    elsif at_context.class == Context && (:inactive == at_context.status)
+      at_context.status
     else
       @status
     end

@@ -22,6 +22,7 @@ class TreeMap
       :data => {
         :short_name => @focus.name.truncate( 30 ),
         :type => @focus.class.name.demodulize,
+        :context => context_name,
         :status => @focus.status,
         :age => age,
         :avg_age => avg_age,
@@ -70,6 +71,10 @@ class TreeMap
     weight = [ weight, col_max ].min.to_f
     ratio = weight / col_max
     @fader.at ratio
+  end
+
+  def context_name
+    @focus.at_context.class == Focus::Context && @focus.at_context.name
   end
 
 

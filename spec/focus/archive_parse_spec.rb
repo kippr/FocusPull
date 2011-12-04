@@ -79,7 +79,7 @@ describe Focus::FocusParser, "#parse" do
   describe 'context' do
 
     it 'should parse the context of each action' do
-       @focus.action( "Collect useless mails in sd" ).context.name.should == "Outlook > 3m"
+       @focus.action( "Collect useless mails in sd" ).at_context.name.should == "Outlook > 3m"
     end
 
     it 'should see which contexts are "on hold"' do

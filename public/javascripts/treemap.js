@@ -62,6 +62,9 @@ function init(){
         var html = "<div class=\"tip-title\">" + node.name 
           + "</div><div class=\"tip-text\">";
         var data = node.data;
+        if (data.context ) {
+          html += "@ " + data.context + "<br/>";
+        }
         html += " (" + data.type + ") <br/>";
         html += "Status: " + data.status + "<br/>";
         if ( data.age != 0 ) {
