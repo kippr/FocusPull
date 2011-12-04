@@ -1,7 +1,9 @@
 
-%div#infovis
+%div#content
+  %div#infovis
 
-<a id="back" href="#" class="theme button white">Go to Parent</a>
+%div#sidebar
+  %a#back{ :href=>"#", :class=>"theme button white"} Go to Parent
 
 :javascript
   var json = #{@treemap};
