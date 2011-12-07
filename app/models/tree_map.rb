@@ -1,14 +1,15 @@
 class TreeMap
 
-  def initialize focus, weighter = nil,  fader = nil, max = nil
+  def initialize focus, type = :active?, weighter = nil,  fader = nil, max = nil
     @focus = focus
+    @type = type
     @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], [ :active, :inactive ] ) 
     @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
     @max = max || [ 150, filter( @focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @weighter, @fader, @max ) }
+    filter( @focus.children ).map{ |c| TreeMap.new( c, @type, @weighter, @fader, @max ) }
   end
 
   def path node=@focus,current=@focus.name
@@ -36,7 +37,7 @@ class TreeMap
   end
 
   def filter list
-    list = list.select( &:remaining? )
+    list = list.select( &@type )
     # todo: make site wide
     list = list.reject{ |a| a.name == 'Personal' }
     list = list.reject( &:orphan? )
@@ -60,7 +61,7 @@ class TreeMap
 
   def avg_age
     #todo
-    items = filter( @focus.list ).select( &:active? )
+    items = filter( @focus.list ).select( &@type )
     total = items.collect( &:age ).reduce( &:+ ) || 0
     ( total / ( items.reject{ |i| i.age == 0}.count + 0.01 ) ).to_i
   end

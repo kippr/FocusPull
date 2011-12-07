@@ -5,9 +5,13 @@
 %div#sidebar
   %a#back{ :href=>"#", :class=>"theme button white"} Go to Parent
   %a#refresh{ :href=>"#", :class=>"theme button white"} Refresh
+  %a#switch{ :href=>"#", :class=>"theme button white"} Switch
 
 :javascript
-  var json = #{@treemap};
+  var active = #{@active_treemap};
+  var remaining = #{@remaining_treemap};
+  var cur = active;
+  var nex = remaining;
   $(document).ready(function () {
     init();
   });

@@ -94,7 +94,7 @@ function init(){
         };
     }
   });
-  tm.loadJSON(json);
+  tm.loadJSON(cur);
   tm.refresh();
   //end
   //add event to the back button
@@ -106,5 +106,15 @@ function init(){
   var refresh = $jit.id( 'refresh' );
   $jit.util.addEvent(refresh, 'click', function() {
     tm.refresh();
+  });
+// add switch event to button
+  var refresh = $jit.id( 'switch' );
+  $jit.util.addEvent(refresh, 'click', function() {
+    var tmp = cur;
+    cur = nex;
+    nex = tmp;
+    tm.op.morph(cur, 
+      { type: 'replot'
+        });
   });
  }
