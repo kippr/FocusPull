@@ -22,7 +22,7 @@ class TreeMap
       :children => children,
       :data => {
         :short_name => @focus.name.truncate( 30 ),
-        :status => @focus.class.name.demodulize,
+        :type => @focus.class.name.demodulize,
         :context => context_name,
         :status => @focus.status,
         :age => age,
