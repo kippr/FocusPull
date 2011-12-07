@@ -4,8 +4,11 @@
 
 %div#sidebar
   %a#back{ :href=>"#", :class=>"theme button white"} Go to Parent
+  %br
   %a#refresh{ :href=>"#", :class=>"theme button white"} Refresh
-  %a#switch{ :href=>"#", :class=>"theme button white"} Switch
+  %br
+  %a#switch{ :href=>"#", :class=>"theme button white"} Switch active/ remaining
+  %br
 
 :javascript
   var active = #{@active_treemap};

@@ -108,8 +108,8 @@ function init(){
     tm.refresh();
   });
 // add switch event to button
-  var refresh = $jit.id( 'switch' );
-  $jit.util.addEvent(refresh, 'click', function() {
+  var mapType = $jit.id( 'switch' );
+  $jit.util.addEvent(mapType, 'click', function() {
     var tmp = cur;
     cur = nex;
     nex = tmp;

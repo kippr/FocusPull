@@ -1,15 +1,15 @@
 class TreeMap
 
-  def initialize focus, type = :active?, weighter = nil,  fader = nil, max = nil
+  def initialize focus, status = :active?, weighter = nil,  fader = nil, max = nil
     @focus = focus
-    @type = type
-    @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], [ :active, :inactive ] ) 
+    @status = status
+    @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], status_types ) 
     @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
     @max = max || [ 150, filter( @focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @type, @weighter, @fader, @max ) }
+    filter( @focus.children ).map{ |c| TreeMap.new( c, @status, @weighter, @fader, @max ) }
   end
 
   def path node=@focus,current=@focus.name
@@ -22,7 +22,7 @@ class TreeMap
       :children => children,
       :data => {
         :short_name => @focus.name.truncate( 30 ),
-        :type => @focus.class.name.demodulize,
+        :status => @focus.class.name.demodulize,
         :context => context_name,
         :status => @focus.status,
         :age => age,
@@ -37,12 +37,12 @@ class TreeMap
   end
 
   def filter list
-    list = list.select( &@type )
+    list = list.select( &@status )
     # todo: make site wide
     list = list.reject{ |a| a.name == 'Personal' }
     list = list.reject( &:orphan? )
 #    list = list.reject( &:single_actions? )
-    list = list.select{ |a| a.list.remaining.actions.count > 0 }
+    list = list.select{ |a| a.list.actions.select( &@status ).count > 0 }
     list
   end
 
@@ -61,7 +61,7 @@ class TreeMap
 
   def avg_age
     #todo
-    items = filter( @focus.list ).select( &@type )
+    items = filter( @focus.list ).select( &@status )
     total = items.collect( &:age ).reduce( &:+ ) || 0
     ( total / ( items.reject{ |i| i.age == 0}.count + 0.01 ) ).to_i
   end
@@ -76,6 +76,11 @@ class TreeMap
 
   def context_name
     @focus.at_context.class == Focus::Context && @focus.at_context.name
+  end
+
+  # todo: yuck, hack
+  def status_types
+    @status == :active? ? [ :active ] : [ :active, :inactive ]
   end
 
 
