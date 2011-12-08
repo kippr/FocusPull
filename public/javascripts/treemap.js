@@ -75,6 +75,7 @@ function init(){
         if (data.avg_age) {
           html += "Average age: " + data.avg_age + "<br/>";
         }
+        html += "W: " + data.$area + "<br/>";
         tip.innerHTML =  html; 
       }  
     },

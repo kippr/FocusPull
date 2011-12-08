@@ -29,7 +29,7 @@ class TreeMap
         :avg_age => avg_age,
         :created => @focus.created_date,
         "$color" => colour,
-        "$area" => filter( @focus.list ).count
+        "$area" => weight,
       }, 
       :id => path,
       :name => @focus.name
@@ -41,7 +41,6 @@ class TreeMap
     # todo: make site wide
     list = list.reject{ |a| a.name == 'Personal' }
     list = list.reject( &:orphan? )
-#    list = list.reject( &:single_actions? )
     list = list.select{ |a| a.list.actions.select( &@status ).count > 0 }
     list
   end
@@ -52,7 +51,7 @@ class TreeMap
   end
 
   def weight
-    @weighter.weigh( @focus ).to_i
+    [ @weighter.weigh( @focus ).to_i, 1 ].max
   end
 
   def age
