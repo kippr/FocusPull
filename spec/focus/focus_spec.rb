@@ -78,10 +78,16 @@ describe Focus::Focus do
     @openZoneProject.completed_date.should == Date.parse( "2010-11-30" )
   end
   
-  it "should leave the status for actions in completed projects as active" do
+  it "should replace the completion times for active actions in completed projects  to that of project" do
     @mailAction.status.should == :active
     @mailProject.completed( "2010-12-07T08:50:19.935Z" )
+    @mailAction.completed_date.should == "2010-12-07".to_date
+  end
+
+   it "should override the status for actions in completed projects to be completed" do
     @mailAction.status.should == :active
+    @mailProject.status = 'done'
+    @mailAction.status.should == :done
   end
   
   it "should override the status for actions in inactive projects to be inactive" do
@@ -101,7 +107,8 @@ describe Focus::Focus do
     @mailProject.status = 'dropped'
     @mailAction.status.should == :dropped
   end
-  
+
+ 
   it "should use days from started to completed as age for done projects" do
     @mailAction.created_date = "2010-11-10"
     @mailAction.completed( "2010-11-20" ) 

@@ -199,15 +199,13 @@ end
 
 class Action < Item
 
-  attr_reader :completed_date
-  
   def initialize( name )
     super( name )
   end
   
   # todo: make this prettier
   def status
-    if parent && [ :inactive, :dropped ].include?( parent.status ) 
+    if parent && [ :inactive, :dropped, :done ].include?( parent.status ) 
       parent.status 
       # todo: weird YAML Syck parser bug workaround!!
     elsif at_context.class == Context && (:inactive == at_context.status)
@@ -224,10 +222,14 @@ class Action < Item
       @completed_date = date
     end
   end
-      
+
+  def completed_date
+    @completed_date || parent.completed_date
+  end
+
   def age
     if done?
-      @completed_date - @created_date
+      completed_date - @created_date
     else
       Date.today - ( @created_date || 0 )
     end
