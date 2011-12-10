@@ -2,14 +2,14 @@ class TreeMap
 
   def initialize focus, status = :active?, weighter = nil,  fader = nil, max = nil
     @focus = focus
-    @status = status
+    @with_status = status
     @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], status_types ) 
     @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
     @max = max || [ 150, filter( @focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @status, @weighter, @fader, @max ) }
+    filter( @focus.children ).map{ |c| TreeMap.new( c, @with_status, @weighter, @fader, @max ) }
   end
 
   def path node=@focus,current=@focus.name
@@ -21,30 +21,50 @@ class TreeMap
     {
       :children => children,
       :data => {
-        :short_name => @focus.name.truncate( 30 ),
-        :type => @focus.class.name.demodulize,
+        :short_name => short_name,
+        :type => type,
         :context => context_name,
-        :status => @focus.status,
+        :status => status,
         :age => age,
         :avg_age => avg_age,
-        :created => @focus.created_date,
+        :created => created,
+        :num_kids => num_kids,
         "$color" => colour,
         "$area" => weight,
       }, 
       :id => path,
-      :name => @focus.name
+      :name => name 
     }
   end
 
   def filter list
-    list = list.select( &@status )
+    list = list.select( &@with_status )
     # todo: make site wide
     list = list.reject{ |a| a.name == 'Personal' }
     list = list.reject( &:orphan? )
-    list = list.select{ |a| a.list.actions.select( &@status ).count > 0 }
+    list = list.select{ |a| a.list.actions.select( &@with_status ).count > 0 }
     list
   end
 
+  def name
+    @focus.name
+  end
+
+  def short_name
+    name.truncate( 30 )
+  end
+
+  def type
+    @focus.class.name.demodulize
+  end
+
+  def status
+    @focus.status
+  end
+
+  def created
+    @focus.created_date
+  end
 
   def colour
     to_colour( avg_age || 0 )
@@ -55,14 +75,24 @@ class TreeMap
   end
 
   def age
-    @focus.age if @focus.respond_to? :age 
+    @focus.age
   end
 
   def avg_age
     #todo
-    items = filter( @focus.list ).select( &@status )
+    items = filter( @focus.list ).select( &@with_status )
+    items = items.reject{ |i| i.age == 0}
     total = items.collect( &:age ).reduce( &:+ ) || 0
-    ( total / ( items.reject{ |i| i.age == 0}.count + 0.01 ) ).to_i
+    p "#{name} - #{items} - #{total}" if name == "CATS"
+    if items.count == 0
+      0
+    else
+      ( total / ( items.count ) ).to_i 
+    end
+  end
+
+  def num_kids
+    children.count
   end
 
   # todo - copy/ paste from Edger! Move where?
@@ -79,7 +109,7 @@ class TreeMap
 
   # todo: yuck, hack
   def status_types
-    @status == :active? ? [ :active ] : [ :active, :inactive ]
+    @with_status == :active? ? [ :active ] : [ :active, :inactive ]
   end
 
 

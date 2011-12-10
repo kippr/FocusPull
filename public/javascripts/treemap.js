@@ -76,6 +76,7 @@ function init(){
           html += "Average age: " + data.avg_age + "<br/>";
         }
         html += "W: " + data.$area + "<br/>";
+        html += data.num_kids + " kids " + "<br/>";
         tip.innerHTML =  html; 
       }  
     },
