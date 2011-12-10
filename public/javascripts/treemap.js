@@ -99,23 +99,26 @@ function init(){
   tm.refresh();
   //end
   //add event to the back button
-  var back = $jit.id('back');
-  $jit.util.addEvent(back, 'click', function() {
+  $('#back').click(function() {
     tm.out();
   });
 // add refresh event to button
-  var refresh = $jit.id( 'refresh' );
-  $jit.util.addEvent(refresh, 'click', function() {
+  $('#refresh').click(function() {
     tm.refresh();
   });
-// add switch event to button
-  var mapType = $jit.id( 'switch' );
-  $jit.util.addEvent(mapType, 'click', function() {
-    var tmp = cur;
-    cur = nex;
-    nex = tmp;
-    tm.op.morph(cur, 
-      { type: 'replot'
-        });
-  });
+  function switchMap( json, toDisable, toEnable )
+  {
+        tm.op.morph(json, { type: 'replot' } );
+        toDisable.attr( "disabled", true );
+        toEnable.attr( "disabled", false );
+  };
+  // add events to active/ remaining buttons
+  $('#active').attr( "disabled", true ).click(function()
+    {
+      switchMap( active, $(this) , $('#remaining') );
+    });
+  $('#remaining').attr( "disabled", false ).click(function()
+    {
+      switchMap( remaining, $(this), $('#active') );
+    });
  }

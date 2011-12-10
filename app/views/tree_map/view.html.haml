@@ -3,14 +3,15 @@
   %div#infovis
 
 %div#sidebar
-  %a#back{ :href=>"#", :class=>"theme button white"} Go to Parent
+  %p
+    %button#back Go to Parent
+  %p
+    %button#refresh Refresh
   %br
-  %a#switch{ :href=>"#", :class=>"theme button white"} Switch active/ remaining
-  %br
-  %br
-  %br
-  %a#refresh{ :href=>"#", :class=>"theme button white"} Refresh
-  %br
+  %p
+    %button#active Active
+  %p
+    %button#remaining Remaining
 
 :javascript
   var active = #{@active_treemap};
