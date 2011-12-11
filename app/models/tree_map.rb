@@ -14,10 +14,8 @@ class TreeMap
   end
 
   def self.new_tree focus, filter, *status_types
-    #todo: stop using weight calc here
-    weighter = Focus::WeightCalculator.new( NoFilter.new, [], status_types )
     fader = ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' )
-    tree = self.new( focus, filter, weighter, fader, status_types )
+    tree = self.new( focus, filter, fader, status_types )
   end
 
   def self.recently_completed item
@@ -30,17 +28,16 @@ class TreeMap
   end
 
 
-  def initialize focus, status, weighter, fader, status_types, max = nil
+  def initialize focus, status, fader, status_types, max = nil
     @focus = focus
     @with_status = status
     @status_types = status_types
-    @weighter = weighter
     @fader = fader
     @max = max || [ 150, filter( focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @with_status, @weighter, @fader, @status_types, @max ) }
+    filter( @focus.children ).map{ |c| TreeMap.new( c, @with_status, @fader, @status_types, @max ) }
   end
 
   def path node=@focus,current=@focus.name
@@ -81,7 +78,7 @@ class TreeMap
   end
 
   def short_name
-    name.truncate( 30 )
+    name.truncate 30
   end
 
   def type
@@ -97,11 +94,11 @@ class TreeMap
   end
 
   def colour
-    to_colour( avg_age || 0 )
+    to_colour avg_age
   end
 
   def weight
-    [ filter( @focus.list ).select{ |i| @status_types.include? i.status }.collect( &:weight ).reduce( &:+ ) || 0, 1 ].max
+    [ filter( @focus.list ).select{ |i| @status_types.include? i.status }.collect( &:weight ).reduce( 0, &:+ ), 1 ].max
   end
 
   def age
