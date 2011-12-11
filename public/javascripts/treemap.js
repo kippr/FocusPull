@@ -96,7 +96,7 @@ function init(){
         };
     }
   });
-  tm.loadJSON(cur);
+  tm.loadJSON( active );
   tm.refresh();
   //end
   //add event to the back button
@@ -107,19 +107,24 @@ function init(){
   $('#refresh').click(function() {
     tm.refresh();
   });
-  function switchMap( json, toDisable, toEnable )
+  function switchMap( json, toDisable, toEnable, toEnable2 )
   {
         tm.op.morph(json, { type: 'replot' } );
         toDisable.attr( "disabled", true );
         toEnable.attr( "disabled", false );
+        toEnable2.attr( "disabled", false );
   };
-  // add events to active/ remaining buttons
+  // add events to active/ remaining/ completed buttons
   $('#active').attr( "disabled", true ).click(function()
     {
-      switchMap( active, $(this) , $('#remaining') );
+      switchMap( active, $(this) , $('#remaining'), $('#completed') );
     });
   $('#remaining').attr( "disabled", false ).click(function()
     {
-      switchMap( remaining, $(this), $('#active') );
+      switchMap( remaining, $(this), $('#active'), $('#completed') );
+    });
+   $('#completed').attr( "disabled", false ).click(function()
+    {
+      switchMap( recently_completed, $(this), $('#active'), $('#remaining') );
     });
  }

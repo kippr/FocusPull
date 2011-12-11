@@ -12,12 +12,13 @@
     %button#active Active
   %p
     %button#remaining Remaining
+  %p
+    %button#completed Recently completed
 
 :javascript
   var active = #{@active_treemap};
   var remaining = #{@remaining_treemap};
-  var cur = active;
-  var nex = remaining;
+  var recently_completed = #{@recently_completed_treemap};
   $(document).ready(function () {
     init();
   });

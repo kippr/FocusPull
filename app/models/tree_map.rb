@@ -1,11 +1,40 @@
 class TreeMap
 
-  def initialize focus, status = :active?, weighter = nil,  fader = nil, max = nil
+  def self.active focus
+    self.new_tree focus, lambda{ |i| i.active? }, :active
+  end
+
+  def self.remaining focus
+    self.new_tree focus, lambda{ |i| i.remaining? }, :active, :inactive
+  end
+
+  def self.recent focus
+    completed = lambda{ |i| recently_completed( i ) }
+    self.new_tree( focus, completed, :done )
+  end
+
+  def self.new_tree focus, filter, *status_types
+    weighter = Focus::WeightCalculator.new( NoFilter.new, [], status_types )
+    fader = ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' )
+    tree = self.new( focus, filter, weighter, fader )
+  end
+
+  def self.recently_completed item
+    item.list.any?{ |i| was_recently_completed i }
+  end
+
+  def self.was_recently_completed item
+    #p "completed of #{item} on #{item.completed_date}" if item.status == :done
+    item.respond_to?( :completed_date ) && item.completed_date &&  ( item.completed_date > 2.weeks.ago.to_date )
+  end
+
+
+  def initialize focus, status, weighter, fader, max = nil
     @focus = focus
     @with_status = status
-    @weighter = weighter || Focus::WeightCalculator.new( NoFilter.new, [], status_types ) 
-    @fader = fader || ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' ) 
-    @max = max || [ 150, filter( @focus.list ).collect( &:age ).max || 0 ].max
+    @weighter = weighter
+    @fader = fader
+    @max = max || [ 150, filter( focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children
@@ -38,11 +67,10 @@ class TreeMap
   end
 
   def filter list
-    list = list.select( &@with_status )
-    # todo: make site wide
     list = list.reject{ |a| a.name == 'Personal' }
     list = list.reject( &:orphan? )
     list = list.select{ |a| a.list.actions.select( &@with_status ).count > 0 }
+    # todo: make site wide
     list
   end
 
@@ -80,10 +108,9 @@ class TreeMap
 
   def avg_age
     #todo
-    items = filter( @focus.list ).select( &@with_status )
+    items = filter( @focus.list )
     items = items.reject{ |i| i.age == 0}
     total = items.collect( &:age ).reduce( &:+ ) || 0
-    p "#{name} - #{items} - #{total}" if name == "CATS"
     if items.count == 0
       0
     else
@@ -105,11 +132,6 @@ class TreeMap
 
   def context_name
     @focus.at_context.class == Focus::Context && @focus.at_context.name
-  end
-
-  # todo: yuck, hack
-  def status_types
-    @with_status == :active? ? [ :active ] : [ :active, :inactive ]
   end
 
 
