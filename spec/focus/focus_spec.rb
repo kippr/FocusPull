@@ -8,7 +8,9 @@ describe Focus::Focus do
     @focus = Focus::Focus.new
     @mailProject = Focus::Project.new( "Spend less time in email")
     @mailProject.link_parent( @focus )
+    @pcContext = Focus::Context.new( "PC" )
     @mailContext = Focus::Context.new( "Outlook" )
+    @mailContext.link_parent( @pcContext )
     @mailAction = Focus::Action.new( "Collect useless mails in sd")
     @mailAction.link_parent( @mailProject, @mailContext )
     @personalFolder = Focus::Folder.new( "Personal" )
@@ -106,6 +108,15 @@ describe Focus::Focus do
     @mailAction.status.should == :active
     @mailProject.status = 'dropped'
     @mailAction.status.should == :dropped
+  end
+
+  it "should give a 'long name' for contexts showing parents" do
+    @mailContext.name.should == "PC : Outlook"
+  end
+
+  it "should ignore contexts not of type Context (to work around yaml bug!)" do
+    @mailAction.link_parent @mailProject, "Hello Mum"
+    @mailAction.at_context.name.should be_blank
   end
 
  

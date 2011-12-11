@@ -23,7 +23,6 @@ class Item
   attr_reader :name
   attr_reader :parent
   attr_reader :children
-  attr_reader :at_context
   attr_reader :created_date, :updated_date
   
   def initialize( name )
@@ -34,6 +33,15 @@ class Item
   
   def list
     List.new( self )
+  end
+
+  def at_context
+    # handle a YAML bug which is putting nonsense in here sometimes
+    if @at_context.class == Context
+      @at_context
+    else
+      Context.new ""
+    end
   end
   
   def traverse( value, push, pop = nil, &filter_block )
@@ -61,6 +69,10 @@ class Item
   end
   
   def is_folder?
+    false
+  end
+
+  def context?
     false
   end
   
@@ -102,6 +114,16 @@ class Item
   def age
     0
   end
+
+  #todo: and this is evil too
+  def completed_date
+    nil 
+  end
+  
+  def age
+    0
+  end
+  
   
   def depth
     parent.depth + 1
@@ -207,8 +229,7 @@ class Action < Item
   def status
     if parent && [ :inactive, :dropped, :done ].include?( parent.status ) 
       parent.status 
-      # todo: weird YAML Syck parser bug workaround!!
-    elsif at_context.class == Context && (:inactive == at_context.status)
+    elsif :inactive == at_context.status
       at_context.status
     else
       @status
@@ -299,6 +320,18 @@ end
 
     def visit( visitor, *args )
       visitor.visit_context( self )
+    end
+
+    def context?
+      true
+    end
+
+    def name
+      unless parent && parent.context?
+        super
+      else
+        "#{parent.name} : #{super}"
+      end
     end
 
   end
