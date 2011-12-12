@@ -227,8 +227,8 @@ class Action < Item
   
   # todo: make this prettier
   def status
-    if parent && [ :inactive, :dropped, :done ].include?( parent.status ) 
-      parent.status 
+    if :done != @status && parent && [ :inactive, :dropped, :done ].include?( parent.status )
+      parent.status
     elsif :inactive == at_context.status
       at_context.status
     else

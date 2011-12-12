@@ -110,6 +110,15 @@ describe Focus::Focus do
     @mailAction.status.should == :dropped
   end
 
+  it "should not override the status for actions once they are done" do
+    @mailAction.completed( "2010-12-07T08:50:19.935Z" )
+    @mailAction.status.should == :done
+    @mailProject.status = 'inactive'
+    @mailAction.status.should == :done
+    @mailProject.status = 'dropped'
+    @mailAction.status.should == :done
+  end
+
   it "should give a 'long name' for contexts showing parents" do
     @mailContext.name.should == "PC : Outlook"
   end
