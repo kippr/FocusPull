@@ -47,7 +47,8 @@ class Item
   def traverse( value, push, pop = nil, &filter_block )
     if ( filter_block.nil? || yield( self ) )
       value = push.call( value, self ) if push
-      children.each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
+      #todo: make this class reject nicer
+      children.reject{ | c | c.class == Context }.each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
       value = pop.call( value, self ) if pop
     end
     value
@@ -58,7 +59,7 @@ class Item
     @parent = parent
     @at_context = at_context
     # then add a backlink, registering self with parent, except for root!
-     parent.children << self unless self.is_root?
+     parent.add_child self unless self.is_root?
      # todo: add link from contexts to children?
      #at.children << self unless at.nil?
   end
@@ -137,6 +138,11 @@ class Item
   def weight
     0
   end
+
+  protected
+    def add_child child
+      @children << child
+    end
   
 end
 
@@ -168,11 +174,6 @@ class Focus < Item
 
   def context( name )
     detect_for( Context, name )
-  end
-  
-  #todo: review, what API for contexts?
-  def children
-    super.reject{ |c| c.class == Context }
   end
   
   def parent
