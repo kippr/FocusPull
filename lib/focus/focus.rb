@@ -170,6 +170,10 @@ class Focus < Item
     detect_for( Context, name )
   end
   
+  #todo: review, what API for contexts?
+  def children
+    super.reject{ |c| c.class == Context }
+  end
   
   def parent
     nil
