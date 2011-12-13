@@ -21,7 +21,7 @@ end
 class Item
 
   attr_reader :name
-  attr_reader :parent
+  attr_reader :parent, :children
   attr_reader :created_date, :updated_date
   
   def initialize( name )
@@ -43,10 +43,6 @@ class Item
     end
   end
 
-  def children
-    @children.reject( &:context? )
-  end
-  
   def traverse( value, push, pop = nil, &filter_block )
     if ( filter_block.nil? || yield( self ) )
       value = push.call( value, self ) if push
@@ -142,10 +138,9 @@ class Item
     0
   end
 
-  protected
-    def add_child child
-      @children << child
-    end
+  def add_child child
+    @children << child
+  end
   
 end
 
@@ -153,6 +148,7 @@ class Focus < Item
   
   def initialize
     super( "Portfolio")
+    @contexts = []
   end
         
   def projects
@@ -176,7 +172,7 @@ class Focus < Item
   end
 
   def context( name )
-    detect_for( Context, name )
+    @contexts.detect{ |c| c.name == name }
   end
   
   def parent
@@ -197,6 +193,14 @@ class Focus < Item
   
   def visit( visitor, *args )
     visitor.visit_focus( self )
+  end
+
+  def add_child child
+    if child.context?
+      @contexts << child
+    else
+      @children << child
+     end
   end
   
   private

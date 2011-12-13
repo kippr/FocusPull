@@ -18,7 +18,7 @@ describe TreeMap, 'remaining' do
   end
 
   it 'should use path to root as id' do
-    find( 'Setup 2011 vacsheet' ).path.should == 'Portfolio/Admin/Setup 2011 vacsheet'
+    find( 'Collect useless mails in sd' ).path.should == 'Portfolio/Admin/Spend less time in email/Collect useless mails in sd'
   end
 
   it 'should build a tree' do
