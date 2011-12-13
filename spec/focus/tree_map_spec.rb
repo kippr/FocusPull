@@ -23,5 +23,9 @@ describe TreeMap, 'to_json' do
     tree.to_json.should match 'Portfolio/Admin/Setup 2011 vacsheet/Confirm names for 2011'
   end
 
+  it 'should build a tree' do
+    @tree.children.should include_tree_node( 'Admin' )
+  end
+
 end
 
