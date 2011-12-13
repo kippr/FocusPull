@@ -22,7 +22,6 @@ class Item
 
   attr_reader :name
   attr_reader :parent
-  attr_reader :children
   attr_reader :created_date, :updated_date
   
   def initialize( name )
@@ -43,12 +42,16 @@ class Item
       Context.new ""
     end
   end
+
+  def children
+    @children.reject( &:context? )
+  end
   
   def traverse( value, push, pop = nil, &filter_block )
     if ( filter_block.nil? || yield( self ) )
       value = push.call( value, self ) if push
       #todo: make this class reject nicer
-      children.reject( &:context? ).each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
+      children.each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
       value = pop.call( value, self ) if pop
     end
     value

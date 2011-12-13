@@ -25,6 +25,10 @@ describe TreeMap, 'remaining' do
     @tree.children.should include_tree_node( 'Admin' )
   end
 
+  it 'should not include Contexts' do
+    find( 'Waiting' ).should be_nil
+  end
+
   def find by_name
     @tree.detect{ |n| n.name == by_name }
   end
