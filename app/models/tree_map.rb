@@ -1,4 +1,5 @@
 class TreeMap
+  include Enumerable
 
   def self.active focus
     self.new_tree focus, lambda{ |i| i.active? }, :active
@@ -133,12 +134,10 @@ class TreeMap
     @focus.at_context.class == Focus::Context && @focus.at_context.name
   end
 
-
-
-end
-
-class NoFilter
-  def accept item
-    true
+  def each &block
+    yield self
+    children.each{ |c| c.each &block }
   end
+
+
 end
