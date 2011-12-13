@@ -138,6 +138,10 @@ describe Focus::MindMapFactory, "create_simple_map" do
     node_for( 'Spend less time in email' ).should be_nil
     node_for( 'Admin' ).should_not be_nil
   end
+
+  it "should not include Context elements in the map" do
+    node_for( 'Waiting' ).should be_nil
+  end
     
 end  
 
