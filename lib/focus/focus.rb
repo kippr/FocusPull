@@ -48,7 +48,7 @@ class Item
     if ( filter_block.nil? || yield( self ) )
       value = push.call( value, self ) if push
       #todo: make this class reject nicer
-      children.reject{ | c | c.class == Context }.each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
+      children.reject( &:context? ).each{ | c | value = c.traverse( value, push, pop, &filter_block ) }
       value = pop.call( value, self ) if pop
     end
     value
