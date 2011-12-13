@@ -1,22 +1,22 @@
 class TreeMap
   include Enumerable
 
-  def self.active focus
-    self.new_tree focus, lambda{ |i| i.active? }, :active
+  def self.active focus, *to_exclude
+    self.new_tree focus, lambda{ |i| i.active? }, to_exclude, :active
   end
 
-  def self.remaining focus
-    self.new_tree focus, lambda{ |i| i.remaining? }, :active, :inactive
+  def self.remaining focus, *to_exclude
+    self.new_tree focus, lambda{ |i| i.remaining? }, to_exclude, :active, :inactive
   end
 
-  def self.recent focus
+  def self.recent focus, *to_exclude
     completed = lambda{ |i| recently_completed( i ) }
-    self.new_tree( focus, completed, :done )
+    self.new_tree( focus, completed, to_exclude, :done )
   end
 
-  def self.new_tree focus, filter, *status_types
+  def self.new_tree focus, filter, to_exclude, *status_types
     fader = ColourFader.new( '#00bb33', '#bbbb00', '#BB0000' )
-    tree = self.new( focus, filter, fader, status_types )
+    tree = self.new( focus, filter, fader, to_exclude, status_types )
   end
 
   def self.recently_completed item
@@ -29,16 +29,17 @@ class TreeMap
   end
 
 
-  def initialize focus, status, fader, status_types, max = nil
+  def initialize focus, status, fader, to_exclude, status_types, max = nil
     @focus = focus
     @with_status = status
+    @to_exclude = to_exclude
     @status_types = status_types
     @fader = fader
     @max = max || [ 150, filter( focus.list ).collect( &:age ).max || 0 ].max
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @with_status, @fader, @status_types, @max ) }
+    filter( @focus.children ).map{ |c| TreeMap.new( c, @with_status, @fader, @to_exclude, @status_types, @max ) }
   end
 
   def path node=@focus,current=@focus.name
@@ -67,10 +68,10 @@ class TreeMap
   end
 
   def filter list
-    list = list.reject{ |a| a.name == 'Personal' }
+    # todo: make site wide
+    list = list.reject{ |a| @to_exclude.include?( a.name ) }
     list = list.reject( &:orphan? )
     list = list.select{ |a| a.list.actions.select( &@with_status ).count > 0 }
-    # todo: make site wide
     list
   end
 
