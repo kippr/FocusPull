@@ -5,7 +5,7 @@ class FocusConfig
   end
 
   def exclusions_description
-    exclusions.empty? ? "Nothing" : exclusions.join( ", " )
+    exclusions.empty? ? "nothing" : exclusions.join( ", " )
   end
 
   def exclusions

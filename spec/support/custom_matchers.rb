@@ -53,7 +53,7 @@ module CustomMatchers
   end
 
   def use_default_exclusions
-    ExclusionConfigMatcher.new "Nothing"
+    ExclusionConfigMatcher.new "nothing"
   end
 
 end
