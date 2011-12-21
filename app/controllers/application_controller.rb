@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  helper_method :focus
+  helper_method :focus, :focus_config
   
   def login=( login )
     session[ :login ] = login
@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
   def focus
     time("Getting focus for #{login.name}") { @focus ||= FocusStore.where( :username => login.name ).first.focus }
   end
-  
 
   def store_focus focus
     record = FocusStore.find_or_create_by_username( login.name )
@@ -23,6 +22,10 @@ class ApplicationController < ActionController::Base
     session[ :focus_date ] = Time.now.strftime("%Y.%m.%d %H:%M")
   end
   
+  def focus_config
+    FocusConfig.new
+  end
+
   def info msg
     logger.info "#{self.class.name} was told: #{msg}"
     notice = Notice.new( msg )
