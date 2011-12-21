@@ -59,7 +59,7 @@ class Item
     @at_context = at_context
     # then add backlinks, registering self with parent and containing context, except for root!
      parent.add_child self unless self.is_root?
-     at_context.add_child self unless at_context.nil?
+     at_context.add_child self unless at_context.nil? || at_context.class != Context
   end
   
   #todo: lose 'is_' on these
