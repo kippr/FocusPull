@@ -24,7 +24,6 @@ class TreeMap
   end
 
   def self.was_recently_completed item
-    #p "completed of #{item} on #{item.completed_date}" if item.status == :done
     item.respond_to?( :completed_date ) && item.completed_date &&  ( item.completed_date > 2.weeks.ago.to_date )
   end
 
