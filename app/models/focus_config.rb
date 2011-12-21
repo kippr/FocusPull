@@ -4,8 +4,8 @@ class FocusConfig
     "last 2 weeks"
   end
 
-  def exclusion_description
-    ( @exclusions && @exclusions.to_s ) || "Nothing"
+  def exclusions_description
+    exclusions.empty? ? "Nothing" : exclusions.join( ", " )
   end
 
   def exclusions
@@ -13,7 +13,11 @@ class FocusConfig
   end
 
   def exclusions= exclusion_string
-    @exclusions = ( exclusion_string || "" ).split( %r{,\s*} )
+    if exclusion_string.nil? || exclusion_string.blank?
+      @exclusions = []
+    else
+      @exclusions = exclusion_string.split( %r{,\s*} ) if exclusion_string
+    end
   end
 
 end

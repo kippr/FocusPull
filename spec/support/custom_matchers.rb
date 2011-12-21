@@ -26,31 +26,34 @@ module CustomMatchers
 
   class ExclusionConfigMatcher
 
-    def initialize expected = []
+    def initialize expected_description, expected = []
+      @expected_description = expected_description
       @expected = expected
     end
 
     def matches? target
       @target = target
-      @target.exclusions == @expected
+      @exclusions_match = @target.exclusions == @expected
+      @descriptions_match = @target.exclusions_description == @expected_description
+      @exclusions_match && @descriptions_match
     end
 
     def failure_message
-      "expected #{@expected} as exclusions, but got #{@target.exclusions}"
-    end
-
-    def negative_failure_message
-      "expected #{@expected} not to be the exclusions"
+      unless @descriptions_match
+        "expected #{@expected_description} but got #{@target.exclusions_description}"
+      else
+        "expected #{@expected} as exclusions, but got #{@target.exclusions}"
+      end
     end
 
   end
 
   def use_exclusions *expected_exclusions
-    ExclusionConfigMatcher.new expected_exclusions
+    ExclusionConfigMatcher.new expected_exclusions.join( ", " ), expected_exclusions
   end
 
   def use_default_exclusions
-    ExclusionConfigMatcher.new
+    ExclusionConfigMatcher.new "Nothing"
   end
 
 end

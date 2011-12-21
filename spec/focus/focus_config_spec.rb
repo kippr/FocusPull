@@ -18,11 +18,12 @@ describe FocusConfig do
 
     it "should default to 'Nothing' being excluded" do
       @config.should use_default_exclusions
-      @config.exclusion_description.should == "Nothing"
     end
 
     it "should handle empty input" do
       @config.exclusions = nil
+      @config.should use_default_exclusions
+      @config.exclusions = ""
       @config.should use_default_exclusions
     end
 
