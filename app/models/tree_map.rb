@@ -38,7 +38,12 @@ class TreeMap
   end
 
   def children
-    filter( @focus.children ).map{ |c| TreeMap.new( c, @with_status, @fader, @to_exclude, @status_types, @max ) }
+    kids = if @focus.is_root?
+      @focus.children
+    else
+      @focus.children
+    end
+    filter( kids ).map{ |c| TreeMap.new( c, @with_status, @fader, @to_exclude, @status_types, @max ) }
   end
 
   def path node=@focus,current=@focus.name
