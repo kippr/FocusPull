@@ -19,6 +19,8 @@
     %br
     Exclude: #{text_field_tag( 'exclude', value = "Personal" )}
     %br
+    #{submit_tag( 'Save as site-wide defaults' )}
+    %br
     Show weights:  #{check_box_tag( 'show weights' )}
     %br
     And create a map for #{submit_tag( 'All' )}, #{submit_tag( 'Completed' )} or #{submit_tag( 'New projects' )}

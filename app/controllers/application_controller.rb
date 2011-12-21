@@ -23,7 +23,13 @@ class ApplicationController < ActionController::Base
   end
   
   def focus_config
-    FocusConfig.new
+    session[ :focus_config ] ||= FocusConfig.new
+  end
+
+  def save_config choices
+    defaults = focus_config
+    defaults.exclusions = choices[ :exclude ]
+    session[ :focus_config ] = defaults 
   end
 
   def info msg

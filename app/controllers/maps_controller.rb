@@ -27,10 +27,14 @@ class MapsController < ApplicationController
   def custom_map
     from = parse_date( "map", "from" )
     to = parse_date( "map", "to" )
+    choices = { :from => from, :to => to, :exclude => params[ :exclude ] }
     type = case params[ "commit" ] 
+      #todo: this feels wrong
+      when "Save as site-wide defaults"
+        save_config choices
+        return redirect_to :controller => :maps, :action => :list
       when "Time spent"
-        return redirect_to :controller => :history, :action => :time_spent, 
-          :from => from, :to => to, :exclude => params[ "exclude" ]
+        return redirect_to choices.merge({ :controller => :history, :action => :time_spent })
       when "Completed"
         :all_done
       when "New projects"
@@ -50,7 +54,6 @@ class MapsController < ApplicationController
   private
     def options
       options = { :EXCLUDE_NODES => [ 'Personal' ] }
-      #options = { :EXCLUDE_NODES => [  ] }
     end
     
     def send_map( map_contents )
