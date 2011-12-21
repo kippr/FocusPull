@@ -57,10 +57,9 @@ class Item
   def link_parent( parent, at_context = nil )
     @parent = parent
     @at_context = at_context
-    # then add a backlink, registering self with parent, except for root!
+    # then add backlinks, registering self with parent and containing context, except for root!
      parent.add_child self unless self.is_root?
-     # todo: add link from contexts to children?
-     #at.children << self unless at.nil?
+     at_context.add_child self unless at_context.nil?
   end
   
   #todo: lose 'is_' on these
@@ -145,6 +144,8 @@ class Item
 end
 
 class Focus < Item
+
+  attr_reader :contexts
   
   def initialize
     super( "Portfolio")
