@@ -9,8 +9,8 @@ class TreeMap
     self.new_tree focus, lambda{ |i| i.remaining? }, to_exclude, :active, :inactive
   end
 
-  def self.recent focus, *to_exclude
-    completed = lambda{ |i| recently_completed( i ) }
+  def self.recent focus, from, *to_exclude
+    completed = lambda{ |i| completed_since?( from, i ) }
     self.new_tree( focus, completed, to_exclude, :done )
   end
 
@@ -19,12 +19,12 @@ class TreeMap
     tree = self.new( focus, filter, fader, to_exclude, status_types )
   end
 
-  def self.recently_completed item
-    item.list.any?{ |i| was_recently_completed i }
+  def self.completed_since? from, item
+    item.list.any?{ |i| was_completed_since? from, i }
   end
 
-  def self.was_recently_completed item
-    item.respond_to?( :completed_date ) && item.completed_date &&  ( item.completed_date > 2.weeks.ago.to_date )
+  def self.was_completed_since? from, item
+    item.respond_to?( :completed_date ) && item.completed_date &&  ( item.completed_date >= from )
   end
 
 
