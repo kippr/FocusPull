@@ -9,15 +9,15 @@ class MapsController < ApplicationController
   end
   
   def send_delta_map
-    send_map Focus::MindMapFactory.create_delta_map( focus, from, to, :both_new_and_done, options )
+    send_map Focus::MindMapFactory.create_delta_map( focus, from, to, :both_new_and_done, options ), "Recent-changes-#{period_description}.mm"
   end
   
   def send_done_map
-    send_map Focus::MindMapFactory.create_delta_map( focus, from, to, :all_done, options )
+    send_map Focus::MindMapFactory.create_delta_map( focus, from, to, :all_done, options ), "Recently-completed-#{period_description}.mm"
   end
   
   def send_new_project_map
-    send_map Focus::MindMapFactory.create_delta_map( focus, from, to, :new_projects, options )
+    send_map Focus::MindMapFactory.create_delta_map( focus, from, to, :new_projects, options ), "Recently-added-projects-#{period_description}.mm"
   end
   
   def send_meta_map
@@ -45,7 +45,7 @@ class MapsController < ApplicationController
     if type == :all
       send_map Focus::MindMapFactory.create_simple_map( focus, options )
     else
-      send_map Focus::MindMapFactory.create_delta_map( focus, from.to_s, to.to_s, type, options )
+      send_map Focus::MindMapFactory.create_delta_map( focus, from, to, type, options )
     end
   end
     
@@ -54,12 +54,18 @@ class MapsController < ApplicationController
       options = { :EXCLUDE_NODES => [ 'Personal' ] }
     end
     
-    def send_map( map_contents )
-      send_data map_contents, :type => 'application/freemind'
+    def send_map map_contents, filename = nil
+      options = { :type => 'application/freemind' }
+      options[ :filename ] = filename unless filename.nil?
+      send_data map_contents, options
+    end
+
+    def period_description
+      "#{from}_#{to}"
     end
     
     def from
-      8.days.ago.to_s
+      8.days.ago.to_date.to_s
     end
     
     def to

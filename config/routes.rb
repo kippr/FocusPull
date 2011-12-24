@@ -17,9 +17,9 @@ FocusPull::Application.routes.draw do
   
   
   match 'focus/Portfolio.mm' => 'maps#send_simple_map'
-  match 'focus/Changes-this-week.mm' => 'maps#send_delta_map'
-  match 'focus/Completed-this-week.mm' => 'maps#send_done_map'
-  match 'focus/New-projects-this-week.mm' => 'maps#send_new_project_map'
+  match 'focus/Recent-changes.mm' => 'maps#send_delta_map'
+  match 'focus/Recently-completed.mm' => 'maps#send_done_map'
+  match 'focus/Recently-added-projects.mm' => 'maps#send_new_project_map'
   match 'focus/Metamap.mm' => 'maps#send_meta_map'
   match 'focus/wordcloud.pdf' => 'clouds#create'
 
