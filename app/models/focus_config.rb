@@ -1,7 +1,20 @@
 class FocusConfig
+  include ActionView::Helpers::DateHelper
 
   def period_description
-    "last 2 weeks"
+    "last #{distance_of_time_in_words start_date, end_date}"
+  end
+
+  def start_date
+    @start_date || 2.weeks.ago.to_date
+  end
+
+  def end_date
+    Date.today
+  end
+
+  def period_start= start_date
+    @start_date = start_date
   end
 
   def exclusions_description

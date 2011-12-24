@@ -9,7 +9,12 @@ describe FocusConfig do
   describe "period in focus" do
 
     it "should default to last two weeks" do
-     @config.period_description.should == "last 2 weeks"
+     @config.period_description.should == "last 14 days"
+    end
+
+    it "should allow period to be changed" do
+      @config.period_start = 3.weeks.ago.to_date
+      @config.period_description.should == "last 21 days"
     end
 
   end
