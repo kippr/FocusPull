@@ -42,10 +42,10 @@ class ApplicationController < ActionController::Base
   
   def time msg
       start_time = Time.now
-      logger.debug " --> Starting '#{msg}'"
+      logger.info " --> Starting '#{msg}'"
       res = yield
       end_time = Time.now
-      logger.debug " <-- Done '#{msg}', took #{end_time - start_time} secs"
+      logger.info " <-- Done '#{msg}', took #{end_time - start_time} secs"
       res
   end
   
