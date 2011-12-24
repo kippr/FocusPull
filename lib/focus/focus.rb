@@ -248,7 +248,7 @@ class Action < Item
       @status
     end
   end
-  
+
   def completed( date )
     date = Date.parse( date ) if date.is_a? String
     if date

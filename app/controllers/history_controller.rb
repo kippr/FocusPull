@@ -3,18 +3,18 @@ class HistoryController < ApplicationController
   attr_reader :max, :label
   
   def time_spent
-    excluded_nodes = ( params[ "exclude" ] || "" ).split( "," ).collect(&:strip)
+    excluded_nodes = focus_config.exclusions 
+    perc_period_start = focus_config.period_start 
+    perc_period_end = focus_config.period_end
     @top_level = Hash.new()
     folders = focus.children.select( &:is_folder? ).reject{ | n | excluded_nodes.include? n.name }
     folders.each{ | f | @top_level[ f ] = completed_count_by_week( f.list ) }
 
-    perc_period_start = ( params[ :from ] || 7.days.ago ).to_date
-    perc_period_end = ( params[ :to ] || Date.today ).to_date
     
     perc_period_filter = Focus::TemporalFilter.new( perc_period_start.to_s, perc_period_end.to_s, :all_done )
     @weight_calculator = Focus::WeightCalculator.new( perc_period_filter, excluded_nodes, [ :done ] )
     @weight_calculator.weigh( focus ) # todo: hack to deal with first run...
-    @label = "Percentages for period since last report (#{perc_period_filter.sublabel}); Graph plots last 13 weeks (#{one_quarter_ago}) ; Green shows average for graphed period"
+    @label = "Percentages for period since last report (#{perc_period_filter.sublabel}); Graph plots last 13 weeks (from #{one_quarter_ago}) ; Green shows average for graphed period"
 
     @all_folders = focus.list.folders.reject{ | n | excluded_nodes.include? n.name }.collect{ | f | [ f, completed_count_by_week( f.list ) ] }
     @top_level
