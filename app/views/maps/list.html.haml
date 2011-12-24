@@ -1,47 +1,50 @@
 %div#content
-  Visualisations
-  %ul
-    %li= link_to "Tree map", :controller => "tree_map", :action => "view"
-    %li= link_to "Time spent", :controller => "history", :action => "time_spent"
-    %li= link_to "Word cloud", :controller => "clouds", :action => "create"
-  Mindmaps
-  %ul
-    %li= link_to "Portfolio", :controller => "maps", :action => "send_simple_map"
-    %li= link_to "Portfolio changes", :controller => "maps", :action => "send_delta_map"
-    %li= link_to "Recently completed", :controller => "maps", :action => "send_done_map"
-    %li= link_to "New projects", :controller => "maps", :action => "send_new_project_map"
-    %li= link_to "Metamap", :controller => "maps", :action => "send_meta_map"
-  %p.small
+  %div.float-left 
+    Visualisations
+    %ul
+      %li= link_to "Tree map", :controller => "tree_map", :action => "view"
+      %li= link_to "Time spent", :controller => "history", :action => "time_spent"
+      %li= link_to "Word cloud", :controller => "clouds", :action => "create"
+  %div.float-left 
+    Mindmaps
+    %ul
+      %li= link_to "Portfolio", :controller => "maps", :action => "send_simple_map"
+      %li= link_to "Portfolio changes", :controller => "maps", :action => "send_delta_map"
+      %li= link_to "Recently completed", :controller => "maps", :action => "send_done_map"
+      %li= link_to "New projects", :controller => "maps", :action => "send_new_project_map"
+      %li= link_to "Metamap", :controller => "maps", :action => "send_meta_map"
+  %div.small.alone
     Completed age histogram:
     %br
     %span.sparkline_tallbar= age_histo_for( :done ).join( ',' )
-  %p.small
+  %div.small.alone
     Active age histogram:
     %br
     %span.sparkline_tallbar= age_histo_for( :active ).join( ',' )
-  %p.small
+  %div.small.alone
     On hold age histogram:
     %br
     %span.sparkline_tallbar= age_histo_for( :inactive ).join( ',' )
-  %p
+  %p.alone
     #{ recently_completed_actions.count } Actions completed in last 3 days
     %ul
       - recently_completed_actions.each do |a|
         %li #{a.name} (#{a.parent && a.parent.name})
-  %p
+  %p.alone
     %i Configuration settings
-    = form_tag( '/focus/save-settings' ) do
-      Focus from: #{date_select( 'map', 'from' , :default => focus_config.period_start )}
-      %br
-      Exclude: #{text_field_tag( 'exclude', value = focus_config.exclusions_description )}
-      %br
-      #{submit_tag( 'Save' )}
+    %div.small 
+      = form_tag( '/focus/save-settings' ) do
+        Focus from: #{date_select( 'map', 'from' , :default => focus_config.period_start )}
+        %br
+        Exclude: #{text_field_tag( 'exclude', value = focus_config.exclusions_description )}
+        %br
+        #{submit_tag( 'Save' )}
  
 %div.sidebar
-  %p.small
+  %div.small
     #{ done_by_day_for( 50.days ).reduce( :+ ) } points completed in last 50 days 
     %span.sparkline_bar= done_by_day_for( 50.days ).join( ',' ) 
-  %p.small
+  %div.small
     Net: #{net_by_day_for( 50.days ).reduce( :+ ) } points in last 50 days 
     %span.sparkline_bar= net_by_day_for( 50.days ).join( ',' )
   = render 'shared/status_table'

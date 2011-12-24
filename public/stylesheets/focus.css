@@ -3,7 +3,7 @@
 body {
 	font:normal 100% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
 }
-.small{ font:normal 72%/150% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+.small{ font:normal 72%/150% "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif; 
 }
 .notice { background-color: #A4E7A0; border: 1px solid #26722D; }
 .error { background-color: #F0A8A8; border: 1px solid #900; }
@@ -14,14 +14,17 @@ body {
 .error a { border: 1px solid #900; color: #900; }
 .notice a:hover, .error a:hover { color: #333; border: 1px solid #333; }
 #messages { float: left; margin: 0 auto; width: 550px; }
-#main { margin: 0 auto; min-height: 450px; width: 1050px; clear: both; }
+#main { margin: 0 auto; min-height: 450px; width: 1050px; }
 
 #top-level-folders { float: left; margin: 0 auto; margin-right: -20px; width: 305px; }
 .time-spent-detail{ width: width: 120px; display: none; margin-left: -20px ;}
 
 #content { float: left; margin: 0 auto; width: 800px; }
 #sidebar { float: right; margin-bottom: 60px;  width: 250px; }
-#gutter { float: left; text-align: bottom ; clear: both; }
+#gutter { float: left; text-align: bottom; clear: both; }
+.float-left { float: left; margin: 5px; }
+.alone{ clear: both }
+
 
 
 ul {
