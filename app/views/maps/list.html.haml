@@ -11,9 +11,9 @@
     %li= link_to "Recently completed", :controller => "maps", :action => "send_done_map"
     %li= link_to "New projects", :controller => "maps", :action => "send_new_project_map"
     %li= link_to "Metamap", :controller => "maps", :action => "send_meta_map"
-  %i Customize 
+  %i Customize
   = form_tag( '/focus/custom.mm' ) do
-    From: #{date_select( 'map', 'from' , :default => 7.days.ago )}
+    From: #{date_select( 'map', 'from' , :default => focus_config.period_start )}
     %br
     To:  #{date_select( 'map', 'to' )}
     %br

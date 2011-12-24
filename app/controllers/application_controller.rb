@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
   def save_config choices
     defaults = focus_config
     defaults.exclusions = choices[ :exclude ]
+    defaults.period_start = choices[ :from ]
     session[ :focus_config ] = defaults 
   end
 
