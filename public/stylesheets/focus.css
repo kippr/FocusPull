@@ -22,7 +22,7 @@ body {
 #content { float: left; margin: 0 auto; width: 800px; }
 #sidebar { float: right; margin-bottom: 60px;  width: 250px; }
 #gutter { float: left; text-align: bottom; clear: both; }
-.float-left { float: left; margin: 5px; }
+.float-left { float: left; margin: 5px 20px 5px 0px; }
 .alone{ clear: both }
 
 
