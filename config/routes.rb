@@ -23,7 +23,7 @@ FocusPull::Application.routes.draw do
   match 'focus/Metamap.mm' => 'maps#send_meta_map'
   match 'focus/wordcloud.pdf' => 'clouds#create'
 
-  match 'focus/custom.mm' => 'maps#custom_map'
+  match 'focus/save-settings' => 'maps#save_settings'
 
   match 'focus' => 'maps#list'
 

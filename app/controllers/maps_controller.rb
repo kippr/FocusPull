@@ -24,29 +24,12 @@ class MapsController < ApplicationController
     send_map Focus::MindMapFactory.create_meta_map( focus, options )
   end
   
-  def custom_map
+  def save_settings 
     from = parse_date( "map", "from" )
-    to = parse_date( "map", "to" )
-    choices = { :from => from, :to => to, :exclude => params[ :exclude ] }
-    type = case params[ "commit" ] 
-      #todo: this feels wrong
-      when "Save as site-wide defaults"
-        save_config choices
-        return redirect_to :controller => :maps, :action => :list
-      when "Completed"
-        :all_done
-      when "New projects"
-        :new_projects 
-      else :all
-      end 
-    show_weights = params[ "show weights" ]
-    exclude = params[ "exclude" ].split( "," ).collect(&:strip)
-    options = options().merge({ :EXCLUDE_NODES => exclude, :APPEND_WEIGHTS => show_weights })
-    if type == :all
-      send_map Focus::MindMapFactory.create_simple_map( focus, options )
-    else
-      send_map Focus::MindMapFactory.create_delta_map( focus, from, to, type, options )
-    end
+    choices = { :from => from, :exclude => params[ :exclude ] }
+    save_config choices
+    info "Settings saved successfully"
+    redirect_to :controller => :maps, :action => :list
   end
     
   private
