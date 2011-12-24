@@ -14,7 +14,6 @@ class FocusConfig
   end
 
   def period_start= start_date
-    puts start_date
     @start_date = start_date
   end
 

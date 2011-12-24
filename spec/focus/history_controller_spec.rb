@@ -6,6 +6,10 @@ describe HistoryController, "time_spent" do
   before(:all) do
     @history = HistoryController.new
     @history.params = { }
+
+    def @history.focus_config
+      @focus_config ||= FocusConfig.new
+    end
        
 
     def @history.focus
@@ -14,6 +18,7 @@ describe HistoryController, "time_spent" do
       end
       @focus
     end
+
   end
   
   it "group done tasks into one bucket per week" do
@@ -33,19 +38,18 @@ describe HistoryController, "time_spent" do
     end
   end
 
-  it "should tell what period the percentages are for, defaulting to last 7 days" do
+  it "should tell what period the percentages are for, defaulting to last 14 days" do
     Timecop.travel(2010, 12, 20) do
       @history.time_spent
-      @history.label.should include( "2010-12-13..2010-12-20" )
+      @history.label.should include( "2010-12-06..2010-12-20" )
     end
   end
 
   it "should allow percentage period to be changed" do
     Timecop.travel(2010, 12, 20) do
-      @history.params = { :from  => '2010-12-01', 
-        :to  => '2010-12-11' }
+      @history.focus_config.period_start = '2010-12-01'.to_date
       @history.time_spent
-      @history.label.should include( "2010-12-01..2010-12-11" )
+      @history.label.should include( "2010-12-01..2010-12-20" )
     end
   end
 

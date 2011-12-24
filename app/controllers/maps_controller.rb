@@ -33,8 +33,6 @@ class MapsController < ApplicationController
       when "Save as site-wide defaults"
         save_config choices
         return redirect_to :controller => :maps, :action => :list
-      when "Time spent"
-        return redirect_to choices.merge({ :controller => :history, :action => :time_spent })
       when "Completed"
         :all_done
       when "New projects"
