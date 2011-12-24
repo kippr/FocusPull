@@ -51,7 +51,7 @@ class MapsController < ApplicationController
     
   private
     def options
-      options = { :EXCLUDE_NODES => [ 'Personal' ] }
+      { :EXCLUDE_NODES => focus_config.exclusions }
     end
     
     def send_map map_contents, filename = nil
@@ -65,7 +65,7 @@ class MapsController < ApplicationController
     end
     
     def from
-      8.days.ago.to_date.to_s
+     focus_config.period_start.to_s
     end
     
     def to
