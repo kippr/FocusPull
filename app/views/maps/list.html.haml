@@ -17,7 +17,7 @@
     %br
     To:  #{date_select( 'map', 'to' )}
     %br
-    Exclude: #{text_field_tag( 'exclude', value = "Personal" )}
+    Exclude: #{text_field_tag( 'exclude', value = focus_config.exclusions_description )}
     %br
     #{submit_tag( 'Save as site-wide defaults' )}
     %br
