@@ -38,6 +38,12 @@
         %br
         Exclude: #{text_field_tag( 'exclude', value = focus_config.exclusions_description )}
         %br
+        Mode:
+        = radio_button_tag( :mode, "Project", mode == :Project )
+        = label_tag(:mode_Project, "Project")
+        = radio_button_tag( :mode, "Context", mode == :Context )
+        = label_tag(:mode_Context, "Context")
+        %br
         #{submit_tag( 'Save' )}
  
 %div.sidebar

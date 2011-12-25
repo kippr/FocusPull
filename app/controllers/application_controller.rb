@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  helper_method :focus, :focus_config
+  helper_method :focus, :focus_config, :mode
   
   def login=( login )
     session[ :login ] = login
@@ -18,8 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   def mode
-    #:Context
-    :Project
+    focus_config.mode
   end
 
   def context_based_focus
@@ -46,6 +45,7 @@ class ApplicationController < ActionController::Base
     defaults = focus_config
     defaults.exclusions = choices[ :exclude ]
     defaults.period_start = choices[ :from ]
+    defaults.mode = choices[ :mode ]
     session[ :focus_config ] = defaults 
   end
 

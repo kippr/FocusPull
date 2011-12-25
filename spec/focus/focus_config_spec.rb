@@ -43,4 +43,18 @@ describe FocusConfig do
     end
 
   end
+
+  describe "mode" do
+    
+    it "should default to Project mode" do
+      @config.mode.should == :Project
+    end
+
+    it "should be assignable from a string" do
+      @config.mode = "Context"
+      @config.mode.should == :Context
+    end
+
+  end
+
 end

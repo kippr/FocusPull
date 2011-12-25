@@ -1,4 +1,8 @@
 - if session[ :focus_date ]
-  Archive for #{session[ :focus_user]} as at #{session[ :focus_date ]} (#{link_to "refresh", :controller => "login", :action => "release_archive"}) 
-  *** 
-  Focusing on #{focus_config.period_description}, excluding #{focus_config.exclusions_description}
+  %div.small
+    Focusing on #{focus_config.period_description}, excluding #{focus_config.exclusions_description}
+    *** 
+    #{mode} mode
+    ***
+    Archive for #{session[ :focus_user]} as at #{session[ :focus_date ]} (#{link_to "refresh", :controller => "login", :action => "release_archive"}) 
+

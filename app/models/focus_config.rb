@@ -33,4 +33,12 @@ class FocusConfig
     end
   end
 
+  def mode
+    @mode || :Project
+  end
+
+  def mode= mode
+    @mode = mode.to_sym
+  end
+
 end

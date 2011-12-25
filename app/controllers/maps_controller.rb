@@ -26,7 +26,7 @@ class MapsController < ApplicationController
   
   def save_settings 
     from = parse_date( "map", "from" )
-    choices = { :from => from, :exclude => params[ :exclude ] }
+    choices = { :from => from, :exclude => params[ :exclude ], :mode => params[ :mode ] }
     save_config choices
     info "Settings saved successfully"
     redirect_to :controller => :maps, :action => :list
