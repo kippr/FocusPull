@@ -11,7 +11,23 @@ class ApplicationController < ActionController::Base
   end
   
   def focus
-    time("Getting focus for #{login.name}") { @focus ||= FocusStore.where( :username => login.name ).first.focus }
+    time( "Getting focus for #{login.name}" ) do
+      @focus ||= FocusStore.where( :username => login.name ).first.focus
+      mode == :Project ? project_based_focus : context_based_focus
+    end
+  end
+
+  def mode
+    #:Context
+    :Project
+  end
+
+  def context_based_focus
+    @focus.extend( ContextBasedFocus )
+  end
+
+  def project_based_focus
+    @focus.extend( ProjectBasedFocus )
   end
 
   def store_focus focus
@@ -49,4 +65,20 @@ class ApplicationController < ActionController::Base
       res
   end
   
+end
+
+module ContextBasedFocus
+
+  def children
+    contexts
+  end
+
+end
+
+module ProjectBasedFocus
+
+  def children
+    super
+  end
+
 end
