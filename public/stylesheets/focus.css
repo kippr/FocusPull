@@ -13,7 +13,7 @@ body {
 .notice a { border: 1px solid #26722D; color: #26722D; }
 .error a { border: 1px solid #900; color: #900; }
 .notice a:hover, .error a:hover { color: #333; border: 1px solid #333; }
-#messages { float: left; margin: 0 auto; width: 550px; }
+#messages { float: left; margin: 0 auto; width: 800px; }
 #main { margin: 0 auto; min-height: 450px; width: 1050px; }
 
 #top-level-folders { float: left; margin: 0 auto; margin-right: -20px; width: 305px; }
