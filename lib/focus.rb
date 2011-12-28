@@ -3,6 +3,7 @@ require 'mechanize'
 require 'logger'
 require 'zip/zipfilesystem'
 require 'archive/tar/minitar'
+require 'psych'
 
 
 require 'focus/focus'
