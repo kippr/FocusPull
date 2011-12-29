@@ -7,7 +7,7 @@ $(document).ready(function() {
     type: 'bar', 
     barColor: 'green',
     height: 50,
-    barWidth: 2 
+    barWidth: 1 
     });
   $('.sparkline_completed').sparkline( 'html', {
     type: 'line', 

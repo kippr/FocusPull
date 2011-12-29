@@ -9,7 +9,9 @@ module ListHelper
   end
 
   def age_histo_for status
-    @focus.list.with_status( status ).not.root.not.folders.group_by( &:age ).map{ |age, items| [age.to_i, items.size] }.sort_by{ |i| i[0]}.map{ |age, count| count } 
+    count_by_age = Hash[ @focus.list.with_status( status ).not.root.not.folders.group_by( &:age ).map{ |age, items| [age.to_i, items.size] } ]
+    count_by_age.default = 0
+    ( 1..( count_by_age.keys.max )).collect{ |n| count_by_age[n] }
   end
 
   def done_by_day_for period
