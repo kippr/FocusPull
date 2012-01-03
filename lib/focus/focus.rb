@@ -238,12 +238,15 @@ class Action < Item
     super( name )
   end
   
-  # todo: make this prettier
+  # todo: make this prettier?
   def status
-    if :done != @status && parent && [ :inactive, :dropped, :done ].include?( parent.status )
+    case
+    when :done == @status
+      :done
+    when :inactive == at_context.status
+      :inactive 
+    when parent && [ :inactive, :dropped, :done ].include?( parent.status )
       parent.status
-    elsif :inactive == at_context.status
-      at_context.status
     else
       @status
     end

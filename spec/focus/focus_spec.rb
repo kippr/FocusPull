@@ -117,6 +117,8 @@ describe Focus::Focus do
     @mailAction.status.should == :done
     @mailProject.status = 'dropped'
     @mailAction.status.should == :done
+    @mailContext.status = 'inactive'
+    @mailAction.status.should == :done
   end
 
   it "should give a 'long name' for contexts showing parents" do
