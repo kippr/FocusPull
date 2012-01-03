@@ -245,7 +245,7 @@ class Action < Item
       :done
     when :inactive == at_context.status
       :inactive 
-    when parent && [ :inactive, :dropped, :done ].include?( parent.status )
+    when parent && :active != parent.status
       parent.status
     else
       @status
