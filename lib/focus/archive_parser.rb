@@ -101,7 +101,6 @@ module Focus
     end
 
     def resolve_links
-      @log.debug( "Resolving links for #{@ref_to_node}")
       @ref_to_node.sort_by{ | ref, node | @ranking[ ref ] }.each do | ref, node |
         # replace the string key ref we stored on each node with the actual parent
         parent = @ref_to_node[ @parent_ref_of[ ref ] ] || @root
