@@ -234,11 +234,12 @@ end
 
 class Action < Item
 
+  attr_reader :start_date
+
   def initialize( name )
     super( name )
   end
   
-  # todo: make this prettier?
   def status
     case
     when :done == @status
@@ -247,6 +248,8 @@ class Action < Item
       :inactive 
     when :active != parent.status
       parent.status
+    when @start_date && @start_date.future?
+      :inactive
     else
       @status
     end
@@ -270,6 +273,10 @@ class Action < Item
     else
       Date.today - ( @created_date || 0 )
     end
+  end
+
+  def start_date=( datetime )
+    @start_date = datetime.respond_to?( :to_datetime ) ? datetime.to_datetime : DateTime.parse( datetime ) if datetime
   end
       
   def done?

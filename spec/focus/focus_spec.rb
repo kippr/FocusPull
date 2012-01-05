@@ -110,6 +110,12 @@ describe Focus::Focus do
     @mailAction.status.should == :dropped
   end
 
+  it "should override the status for actions with future start dates" do
+    @mailAction.status.should == :active
+    @mailAction.start_date = "2080-01-01"
+    @mailAction.status.should == :inactive
+  end
+
   it "should not override the status for actions once they are done" do
     @mailAction.completed( "2010-12-07T08:50:19.935Z" )
     @mailAction.status.should == :done

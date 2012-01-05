@@ -39,11 +39,12 @@ module Focus
         if project_node
           item = create_node( action_node, Project )
           item.status = xpath_content( project_node, './xmlns:status', nil)
-          item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )                    
+          item.set_single_actions if project_node.at_xpath( './xmlns:singleton' )
         else
           item = create_node( action_node, Action )
         end
-        item.completed( xpath_content( action_node, './xmlns:completed', nil ) )        
+        item.start_date = xpath_content( action_node, './xmlns:start', nil ) 
+        item.completed( xpath_content( action_node, './xmlns:completed', nil ) )
       end
     end
         

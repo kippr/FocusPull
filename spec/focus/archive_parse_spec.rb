@@ -20,11 +20,16 @@ describe Focus::FocusParser, "#parse" do
     doneProject.status.should == :done
   end
   
-  it "should parse start, modified, end dates" do
+  it "should parse created, modified, end dates" do
     doneProject = @focus.project("Switch to 3 network")
     doneProject.completed_date.to_date.should == DateTime.parse("2010-12-16")
     doneProject.created_date.to_date.should == Date.parse("2010-12-08")
     doneProject.updated_date.to_date.should == Date.parse("2010-12-16")
+  end
+
+  it "should parse start dates" do
+    action = @focus.action( "Confirm names for 2011" )
+    action.start_date.should == DateTime.parse( "2010-11-25 08:00" )
   end
   
   it "should read folders" do
