@@ -4,7 +4,7 @@ gem 'rails', '3.1.3'
 gem "rake", "0.8.7"
 gem 'haml'
 
-#gem 'psych'
+gem 'psych'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
