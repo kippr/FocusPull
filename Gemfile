@@ -31,6 +31,8 @@ gem "cloud", :git => "git://github.com/kippr/cloud.git"
 gem 'pdf-writer', :git => "git://github.com/metaskills/pdf-writer.git"
 #gem 'pdf-writer'
 gem 'RubyInline'
+gem "ZenTest", "4.6.0"
+
 gem 'hpricot', '0.8.3'
 gem 'hoe', '2.8.0'
 
