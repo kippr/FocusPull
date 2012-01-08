@@ -85,7 +85,7 @@ GEM
     net-http-persistent (2.3.3)
     nokogiri (1.5.0)
     ntlm-http (0.1.1)
-    pg (0.12.2)
+    p
     polyglot (0.3.3)
     psych (1.2.2)
     rack (1.3.6)
