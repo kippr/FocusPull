@@ -244,10 +244,10 @@ class Action < Item
     case
     when :done == @status
       :done
-    when :inactive == at_context.status
-      :inactive 
     when :active != parent.status
       parent.status
+    when :inactive == at_context.status
+      :inactive 
     when @start_date && @start_date.future?
       :inactive
     else

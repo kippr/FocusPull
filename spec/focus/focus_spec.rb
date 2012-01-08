@@ -104,6 +104,14 @@ describe Focus::Focus do
     @mailAction.status.should == :inactive
   end
 
+  it "should look at 'project' overrides before it looks at context overrides" do
+    @mailAction.status.should == :active
+    @mailContext.status = 'inactive'
+    @mailAction.status.should == :inactive
+    @mailProject.status = 'dropped'
+    @mailAction.status.should == :dropped
+  end
+
   it "should override the status for actions in dropped projects to be dropped" do
     @mailAction.status.should == :active
     @mailProject.status = 'dropped'
