@@ -12,7 +12,10 @@ class ApplicationController < ActionController::Base
   
   def focus
     time( "Getting focus for #{login.name}" ) do
-      @focus ||= FocusStore.where( :username => login.name ).first.focus
+      # todo: hack store yaml directly to avoid weird local problems with first
+      # illegal instruction, then 'object allocation during gc' in yaml
+      # serialization in active record :(
+      @focus ||= YAML::load( FocusStore.where( :username => login.name ).first.focus )
       mode == :Project ? project_based_focus : context_based_focus
     end
   end
@@ -31,7 +34,10 @@ class ApplicationController < ActionController::Base
 
   def store_focus focus
     record = FocusStore.find_or_create_by_username( login.name )
-    record.focus = focus
+    # todo: hack store yaml directly to avoid weird local problems with first
+    # illegal instruction, then 'object allocation during gc' in yaml
+    # serialization in active record :(
+    record.focus = focus.to_yaml
     record.save
     # todo: use focus updated attribute instead
     session[ :focus_date ] = Time.now.strftime("%Y.%m.%d %H:%M")
