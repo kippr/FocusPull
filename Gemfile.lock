@@ -167,7 +167,6 @@ PLATFORMS
 
 DEPENDENCIES
   RubyInline
-  ZenTest
   cloud!
   haml
   hoe (= 2.8.0)
