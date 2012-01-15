@@ -22,7 +22,7 @@ class Item
 
   attr_reader :name
   attr_reader :parent, :children
-  attr_reader :created_date, :updated_date
+  attr_reader :created_date
   
   def initialize( name )
     @name = name
@@ -77,6 +77,10 @@ class Item
   
   def created_date=( date )
     @created_date = date.respond_to?( :to_date ) ? date.to_date : Date.parse( date ) if date
+  end
+
+  def updated_date
+    @updated_date || parent.updated_date
   end
 
   def updated_date=( date )
@@ -263,10 +267,6 @@ class Action < Item
     end
   end
 
-  def completed_date
-    @completed_date || parent.completed_date
-  end
-
   def age
     if done?
       completed_date - @created_date
@@ -281,6 +281,23 @@ class Action < Item
       
   def done?
     status == :done
+  end
+
+  # on hold only appears in actions when 'inherited' from parent project or
+  # context
+  def on_hold?
+    status == :inactive
+  end
+
+  # dropped only appears in actions when 'inherited' from parent project or
+  # context
+  def dropped?
+    status == :dropped
+  end
+  
+  #todo: move these parent calls into method for these params!!
+  def completed_date
+    dropped? ? updated_date : ( @completed_date || parent.completed_date )
   end
 
   def orphan?
@@ -303,18 +320,6 @@ end
 
 class Project < Action  
 
-  def on_hold?
-    status == :inactive
-  end
-
-  def dropped?
-    status == :dropped
-  end
-  
-  def completed_date
-    dropped? ? updated_date : @completed_date
-  end
-  
   def single_actions?
     @single_actions || false
   end
@@ -425,6 +430,10 @@ end
 
     def created_in_last seconds
       chain lambda { | n | ( Date.today - n.created_date ) * 24*60*60 <= seconds }
+    end
+    
+    def dropped_in_last seconds
+      chain lambda { | n | n.dropped? && ( Date.today - n.updated_date ) * 24*60*60 <= seconds }
     end
     
     def single_action

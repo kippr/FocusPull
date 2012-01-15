@@ -77,24 +77,28 @@ end
 class TrendVisitor
   include VisitorMixin, Enumerable
 
-  attr_reader :added_projects, :added_actions, :completed_projects, :completed_actions
+  attr_reader :added_projects, :added_actions, :completed_projects, :completed_actions, :dropped_projects, :dropped_actions
   
   def initialize( earliest_date )
     @added_projects = Results.new
     @added_actions = Results.new
     @completed_projects = Results.new
     @completed_actions = Results.new
+    @dropped_projects = Results.new
+    @dropped_actions = Results.new
     @earliest = earliest_date
   end
    
   def visit_project project
     @added_projects.add( project.created_date - @earliest, project )
     @completed_projects.add( project.completed_date - @earliest, project ) if project.done?
+    @dropped_projects.add( project.completed_date - @earliest, project ) if project.dropped?
   end
 
   def visit_action action
     @added_actions.add( action.created_date - @earliest, action )
     @completed_actions.add( action.completed_date - @earliest, action ) if action.done?
+    @dropped_actions.add( action.completed_date - @earliest, action ) if action.dropped?
   end
   
   def size
@@ -112,15 +116,16 @@ end
 
 class SparklineVisitor < TrendVisitor
   
+  # todo: find a prettier way
   def each
     (0...size).each do | i |
-      yield  completed_actions[i].size + completed_projects[i].size * 3 - added_actions[i].size - added_projects[i].size * 3
+      yield  completed_actions[i].size + completed_projects[i].size * 3 - added_actions[i].size - added_projects[i].size * 3 + dropped_actions[i].size + dropped_projects[i].size * 3
     end
   end
     
 end
 
-# find a prettier way
+# todo: find a prettier way
 class DoneSparklineVisitor < TrendVisitor
   
   def each
