@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
       # todo: hack store yaml directly to avoid weird local problems with first
       # illegal instruction, then 'object allocation during gc' in yaml
       # serialization in active record :(
+      Focus::Focus.class
       @focus ||= YAML::load( FocusStore.where( :username => login.name ).first.focus )
       mode == :Project ? project_based_focus : context_based_focus
     end
