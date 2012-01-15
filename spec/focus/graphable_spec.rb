@@ -43,8 +43,8 @@ describe Focus::Graphable, "sparkline_data" do
     @trend = Focus::Graphable.sparkline_data( @parser.parse.list )
   end
   
-  it "should return a simple array of net created/ completed each day" do
-    @trend.to_a[70..75].should == ( [-9, -1, 0, 0, 0, 1] )
+  it "should return a simple array of net created vs completed + dropped each day" do
+    @trend.to_a[70..75].should == ( [-9, -1, 0, 3, 0, 1] )
   end
   
 end
