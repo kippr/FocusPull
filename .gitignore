@@ -8,3 +8,4 @@ output/
 test/omnisync-sample.tar
 *.swp
 *~
+coverage/
