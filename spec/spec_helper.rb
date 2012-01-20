@@ -1,6 +1,8 @@
 require 'simplecov'
 SimpleCov.start do
 
+  add_filter '/config/'
+
   add_group 'Core', 'lib/focus'
   add_group 'Controllers', 'app/controllers'
   add_group 'Models', 'app/models'
