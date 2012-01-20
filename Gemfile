@@ -50,6 +50,8 @@ group :development, :test do
 
   # To use debugger
   gem 'ruby-debug19'
+
+  gem 'simplecov'
 end
 
 group :production do

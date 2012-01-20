@@ -140,6 +140,10 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    simplecov (0.5.4)
+      multi_json (~> 1.0.3)
+      simplecov-html (~> 0.5.3)
+    simplecov-html (0.5.3)
     sprockets (2.0.3)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -183,6 +187,7 @@ DEPENDENCIES
   rake (= 0.8.7)
   rspec-rails
   ruby-debug19
+  simplecov
   sqlite3-ruby
   timecop
   zip
