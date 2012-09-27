@@ -4,5 +4,5 @@
     *** 
     #{mode} mode
     ***
-    Archive for #{session[ :focus_user]} as at #{session[ :focus_date ]} (#{link_to "refresh", :controller => "login", :action => "release_archive"}) 
+    Archive for #{session[ :focus_user]} as at #{session[ :focus_date ]} (#{link_to "refresh", :controller => "login", :action => "release_archive"}|#{link_to "verify", controller: "meta", action: "verify_rules"}) 
 

@@ -23,8 +23,11 @@ FocusPull::Application.routes.draw do
   match 'focus/Metamap.mm' => 'maps#send_meta_map'
   match 'focus/wordcloud.pdf' => 'clouds#create'
 
+  match 'focus/verify' => 'meta#verify_rules'
+
   match 'focus/save-settings' => 'maps#save_settings'
 
+  # todo: this should move to another controller - home?
   match 'focus' => 'maps#list'
 
   match 'time_spent' => 'history#time_spent'
