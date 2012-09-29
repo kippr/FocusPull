@@ -75,6 +75,12 @@
     <name>Personal</name>
     <rank>1757020160</rank>
   </folder>
+  <folder id="lTvKvwDOXV2">
+    <added>2010-11-23T19:10:50.745Z</added>
+    <modified>2010-12-08T18:30:09.436Z</modified>
+    <name>Nerd</name>
+    <rank>1757020161</rank>
+  </folder>
   <folder id="dLI6ihcrYxf">
     <added>2010-11-23T19:14:49.122Z</added>
     <modified>2010-12-06T21:42:11.808Z</modified>
@@ -223,6 +229,46 @@
     <name>Send Simon a mail to ask when he can make lunch</name>
     <rank>0</rank>
     <context idref="pf4w70-AZjc"/>
+    <order>parallel</order>
+  </task>
+  <task id="c-WwLWr_Cjl">
+    <project>
+      <folder idref="lTvKvwDOXV2"/>
+      <last-review>2012-09-24T10:30:44.393Z</last-review>
+      <review-interval>@1w</review-interval>
+    </project>
+    <added>2010-11-26T08:26:46.246Z</added>
+    <modified>2012-09-27T21:20:41.408Z</modified>
+    <name>Nerd Actions</name>
+    <rank>-1965493511</rank>
+    <order>parallel</order>
+  </task>
+  <task id="lEtypt_jbcp">
+    <project>
+      <folder idref="lTvKvwDOXV2"/>
+      <singleton>true</singleton>
+      <last-review>2012-09-24T10:30:01.304Z</last-review>
+      <review-interval>@1w</review-interval>
+      <status>inactive</status>
+    </project>
+    <added>2011-06-02T22:35:15.379Z</added>
+    <modified>2012-09-24T10:30:01.317Z</modified>
+    <name>Nerd Goals</name>
+    <rank>-2111085621</rank>
+    <order>parallel</order>
+  </task>
+  <task id="gOIsLy9R95W">
+    <project>
+      <folder idref="lTvKvwDOXV2"/>
+      <singleton>true</singleton>
+      <last-review>2012-09-24T10:30:33.767Z</last-review>
+      <review-interval>@1w</review-interval>
+      <status>active</status>
+    </project>
+    <added>2011-06-02T22:35:20.386Z</added>
+    <modified>2012-09-24T10:30:33.779Z</modified>
+    <name>Nerd Ideas</name>
+    <rank>-2038289566</rank>
     <order>parallel</order>
   </task>
   <perspective id="ProcessFlagged">
