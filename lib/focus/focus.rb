@@ -177,7 +177,7 @@ class Focus < Item
   end
 
   def context( name )
-    @contexts.detect{ |c| c.name == name }
+    List.new_for_contexts( self ).detect{ |c| c.name == name }
   end
   
   def parent
@@ -367,17 +367,26 @@ end
 
   class List
     include Enumerable
+
+    attr_writer :kids
+
+    def self.new_for_contexts source
+      List.new( source ).tap do | list |
+        list.kids = :contexts
+      end
+    end
     
     def initialize source, filter = lambda{ |n| true }
       @source = source
       @filter = filter
       @negate_next = false
+      @kids = :children
     end
     
     def each( &block )
       yield @source
       proc = block
-      @source.children.each { | child | child.list.each( &proc ) }
+      @source.send( @kids ).each { | child | child.list.each( &proc ) }
     end
     
     def folders
