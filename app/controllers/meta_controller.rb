@@ -1,7 +1,7 @@
 class MetaController < ApplicationController
 
   def verify_rules
-    GtdRules.new( focus ).verify
+    @errors = GtdRules.new( focus ).verify.tap{ |j| pp j }
   end
 
 end
@@ -19,8 +19,8 @@ class GtdRules
   end
 
   def verify_idea_projects
-    active_idea_projects = @focus.list.active.projects.select{ |p| /[Ii]deas$/ =~ p.name }
-    @errors[ :active_idea_project ] = active_idea_projects if active_idea_projects
+    active_idea_projects = @focus.list.active.projects.select{ |p| /Ideas$/ =~ p.name }
+    @errors[ :active_idea_project ] = active_idea_projects unless active_idea_projects.empty?
   end
 
 end

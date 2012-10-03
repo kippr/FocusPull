@@ -1,1 +1,9 @@
-All ok
+%div#content
+  Portfolio verification
+  - @errors.each do |key, projects|
+    %p
+      = key
+      %div.small
+        %ul.small
+        - projects.each do |p|
+          %li= p.name

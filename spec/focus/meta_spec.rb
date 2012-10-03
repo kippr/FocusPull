@@ -11,6 +11,7 @@ describe GtdRules do
 
     it 'should warn about idea projects that aren\'t on hold' do
       @rules.verify.should have_key( :active_idea_project )
+       @rules.verify[ :active_idea_project ].should_not be_empty
     end
 
   end
