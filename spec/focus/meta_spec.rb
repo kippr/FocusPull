@@ -18,6 +18,10 @@ describe GtdRules do
       @rules.verify.should have_key( :projects_that_should_be_single_action )
     end
 
+    it 'should warn about Idea, Goal and Action projects whose name doesn\'t mirror the containing folder' do
+      @rules.verify.should have_key( :projects_whose_name_should_mirror_folder_name )
+    end
+
   end
 
 
