@@ -1,9 +1,7 @@
 %div#content
-  Portfolio verification
   - @errors.each do |key, projects|
     %p
-      = key
-      %div.small
-        %ul.small
+      = key.to_s.capitalize.gsub('_', ' ')
+      %ul.small
         - projects.each do |p|
           %li= p.name

@@ -14,13 +14,19 @@ class GtdRules
   end
 
   def verify
-    verify_idea_projects
+    verify_projects_that_should_not_be_active
+    verify_projects_that_should_be_single_action
     @errors
   end
 
-  def verify_idea_projects
-    active_idea_projects = @focus.list.active.projects.select{ |p| /Ideas$/ =~ p.name }
-    @errors[ :active_idea_project ] = active_idea_projects unless active_idea_projects.empty?
+  def verify_projects_that_should_not_be_active
+    active_projects = @focus.list.active.projects.select{ |p| /(Goals)|(Ideas)$/ =~ p.name }
+    @errors[ :projects_that_should_not_be_active ] = active_projects unless active_projects.empty?
+  end
+
+  def verify_projects_that_should_be_single_action
+    non_singletons = @focus.list.projects.not.single_action.select{ |p| /(Goals)|(Ideas)|(Actions)$/ =~ p.name }
+    @errors[ :projects_that_should_be_single_action ] = non_singletons unless non_singletons.empty?
   end
 
 end

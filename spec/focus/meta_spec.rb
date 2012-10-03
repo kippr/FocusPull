@@ -9,9 +9,13 @@ describe GtdRules do
 
   describe "structure verification" do
 
-    it 'should warn about idea projects that aren\'t on hold' do
-      @rules.verify.should have_key( :active_idea_project )
-       @rules.verify[ :active_idea_project ].should_not be_empty
+    it 'should warn about Goals and Ideas projects that aren\'t on hold' do
+      @rules.verify.should have_key( :projects_that_should_not_be_active )
+       @rules.verify[ :projects_that_should_not_be_active ].should_not be_empty
+    end
+
+    it 'should warn about Idea, Goal and Action projects that aren\'t single action projects' do
+      @rules.verify.should have_key( :projects_that_should_be_single_action )
     end
 
   end
