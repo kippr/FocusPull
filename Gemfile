@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.11'
-gem "rake", "0.8.7"
+gem "rake"
 gem 'haml'
 
 gem 'psych'
@@ -26,7 +26,8 @@ gem 'psych'
 gem 'nokogiri'
 gem 'minitar'
 gem 'mechanize'
-gem 'zip'
+#gem 'zip'
+gem 'rubyzip'
 
 gem "cloud", :git => "git://github.com/kippr/cloud.git"
 #gem 'ninajansen-cloud'
