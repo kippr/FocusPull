@@ -5,7 +5,7 @@ module Focus
 
   def self.local
       parser = FocusParser.new nil, nil, nil
-      parser.archive_dir = '~/Library/Application Support/OmniFocus/OmniFocus.ofocus'
+      parser.archive_dir = "#{ENV['HOME']}/Library/Application Support/OmniFocus/OmniFocus.ofocus"
       parser.parse
   end
 
