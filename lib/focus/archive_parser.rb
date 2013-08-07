@@ -3,6 +3,14 @@ module Focus
 
   class FocusParser
 
+  def self.local
+      parser = FocusParser.new nil, nil, nil
+      parser.archive_dir = '~/Library/Application Support/OmniFocus/OmniFocus.ofocus'
+      parser.parse
+  end
+
+  attr_accessor :archive_dir
+
   def initialize( directory, filename, username )
     @log = Logger.new(STDOUT)
     @log.level = Logger::INFO
@@ -19,7 +27,7 @@ module Focus
     @context_ref_of = Hash.new
     @ranking = Hash.new( 0 )
 
-    foreach_archive_xml do | content |
+    for_all do | content |
       @xml = Nokogiri::XML( content )
       parse_actions
       parse_folders
@@ -127,6 +135,31 @@ module Focus
     end
 
 
+    def for_all
+        if @archive_dir
+            for_xml_in @archive_dir do | each |
+                yield each
+            end
+        else
+            foreach_archive_xml do | each |
+                yield each
+            end
+        end
+    end
+
+    def for_xml_in archive_dir
+        @log.debug( "unzipping entries in archive: #{@directory}/#{@username}/OmniFocus.ofocus/" )
+        Dir.foreach( archive_dir ).sort.each do | file |
+          if( /\.zip$/ =~ file )
+            @log.debug("Found zip file #{archive_dir}/#{file}")
+            Zip::ZipFile.open( "#{archive_dir}/#{file}" ) do |zipfile|
+              yield zipfile.read( "contents.xml" )
+            end
+          end
+        end
+        return "Ok"
+    end
+
     def foreach_archive_xml
       @log.debug( "untarring #{@directory}/#{@filename} for #{@username}" )
       begin
@@ -134,17 +167,10 @@ module Focus
 
         FileUtils.mv( @username, @directory )
 
-        @log.debug( "unzipping entries in archive: #{@directory}/#{@username}/OmniFocus.ofocus/" )
-        full_path = "#{@directory}/#{@username}/OmniFocus.ofocus"
-        Dir.foreach( full_path ).sort.each do | file |
-          if( /\.zip$/ =~ file )
-            @log.debug("Found zip file #{full_path}/#{file}")
-            Zip::ZipFile.open( "#{full_path}/#{file}" ) do |zipfile|
-              yield zipfile.read( "contents.xml" )
-            end
-          end
+        archive_dir = "#{@directory}/#{@username}/OmniFocus.ofocus"
+        for_xml_in archive_dir do | each |
+            yield each
         end
-        return "Ok"
       ensure
         @log.debug("Cleaning up afterwards")
         FileUtils.rm_rf("#{@directory}/#{@username}")
