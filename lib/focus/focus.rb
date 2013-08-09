@@ -196,6 +196,10 @@ class Focus < Item
     Date.today
   end
 
+  def core?
+      false
+  end
+
   def visit( visitor, *args )
     visitor.visit_focus( self )
   end
@@ -234,6 +238,10 @@ class Folder < Item
     true
   end
 
+  def core?
+      not ['Goals', 'Ideas', 'Tickler'].include? name
+  end
+
 end
 
 class Action < Item
@@ -269,9 +277,9 @@ class Action < Item
 
   def age
     if done?
-      completed_date - @created_date
+      (completed_date - @created_date).to_i
     else
-      Date.today - ( @created_date || 0 )
+      (Date.today - ( @created_date || 0 )).to_i
     end
   end
 
@@ -302,6 +310,11 @@ class Action < Item
 
   def orphan?
     parent.nil? || parent.is_root?
+  end
+
+  # Core items exclude Goals and Tickler items
+  def core?
+      (orphan? or parent.core?) and not name.starts_with? '##'
   end
 
   def visit( visitor )
@@ -399,6 +412,10 @@ end
 
     def actions
       with_type Action
+    end
+
+    def core
+        chain lambda{ |i| i.core?}
     end
 
     def root
