@@ -135,15 +135,11 @@ module Focus
     end
 
 
-    def for_all
+    def for_all &do_block
         if @archive_dir
-            for_xml_in @archive_dir do | each |
-                yield each
-            end
+            for_xml_in @archive_dir, &do_block
         else
-            foreach_archive_xml do | each |
-                yield each
-            end
+            foreach_archive_xml &do_block
         end
     end
 
@@ -160,17 +156,13 @@ module Focus
         return "Ok"
     end
 
-    def foreach_archive_xml
+    def foreach_archive_xml &do_block
       @log.debug( "untarring #{@directory}/#{@filename} for #{@username}" )
       begin
         Archive::Tar::Minitar.unpack "#{@directory}/#{@filename}", "."
-
         FileUtils.mv( @username, @directory )
-
         archive_dir = "#{@directory}/#{@username}/OmniFocus.ofocus"
-        for_xml_in archive_dir do | each |
-            yield each
-        end
+        for_xml_in archive_dir, &do_block
       ensure
         @log.debug("Cleaning up afterwards")
         FileUtils.rm_rf("#{@directory}/#{@username}")
