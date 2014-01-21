@@ -1,3 +1,4 @@
+#!env osascript
 set dateString to "" & (day of (current date)) & "-" & month of (current date) & "-" & year of (current date)
 tell application "OmniFocus"
 	tell default document

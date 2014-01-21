@@ -217,8 +217,12 @@ class Focus < Item
       self.list.select{ | n | n.class == type }
     end
 
-    def detect_for( type, name )
-      self.list.detect{ | n | n.class == type && n.name == name }
+    def detect_for( type, name_or_regex )
+      if name_or_regex.is_a? Regexp
+        self.list.detect{ | n | n.class == type && n.name =~ name_or_regex }
+      else
+        self.list.detect{ | n | n.class == type && name_or_regex == n.name }
+      end
     end
 
 end
