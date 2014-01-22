@@ -18,6 +18,7 @@ module VisitorMixin
 
 end
 
+
 class Item
 
   attr_reader :name
@@ -36,7 +37,7 @@ class Item
 
   def at_context
     # handle a YAML bug which is putting nonsense in here sometimes
-    if @at_context.class == Context
+    if @at_context.is_a? Context
       @at_context
     else
       Context.new ""
@@ -147,6 +148,7 @@ class Item
 
 end
 
+
 class Focus < Item
 
   attr_reader :contexts
@@ -157,27 +159,27 @@ class Focus < Item
   end
 
   def projects
-    select_for Project
+    list.projects
   end
 
   def actions
-    select_for Action
+    list.actions
   end
 
-  def project( name )
-    detect_for( Project, name )
+  def project( name_or_regex )
+    list.projects.with_name( name_or_regex )
   end
 
-  def folder( name )
-    detect_for( Folder, name )
+  def folder( name_or_regex )
+    list.folders.with_name( name_or_regex )
   end
 
-  def action( name )
-    detect_for( Action, name )
+  def action( name_or_regex )
+    list.actions.with_name( name_or_regex )
   end
 
-  def context( name )
-    List.new_for_contexts( self ).detect{ |c| c.name == name }
+  def context( name_or_regex )
+    List.new_for_contexts( self ).with_name( name_or_regex )
   end
 
   def parent
@@ -212,20 +214,8 @@ class Focus < Item
      end
   end
 
-  private
-    def select_for( type )
-      self.list.select{ | n | n.class == type }
-    end
-
-    def detect_for( type, name_or_regex )
-      if name_or_regex.is_a? Regexp
-        self.list.detect{ | n | n.class == type && n.name =~ name_or_regex }
-      else
-        self.list.detect{ | n | n.class == type && name_or_regex == n.name }
-      end
-    end
-
 end
+
 
 class Folder < Item
 
@@ -247,6 +237,7 @@ class Folder < Item
   end
 
 end
+
 
 class Action < Item
 
@@ -335,6 +326,7 @@ class Action < Item
 
 end
 
+
 class Project < Action
 
   def single_actions?
@@ -360,6 +352,7 @@ class Project < Action
   end
 
 end
+
 
   class Context < Item
 
@@ -416,6 +409,22 @@ end
 
     def actions
       with_type Action
+    end
+
+    def project name_regex
+        projects.with_name(name_regex)
+    end
+
+    def action name_regex
+        actions.with_name(name_regex)
+    end
+
+    def with_name name_or_regex
+      if name_or_regex.is_a? Regexp
+        detect{ | n | name_or_regex =~ n.name }
+      else
+        detect{ | n | name_or_regex == n.name }
+      end
     end
 
     def core

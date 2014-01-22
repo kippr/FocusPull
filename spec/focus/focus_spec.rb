@@ -39,8 +39,8 @@ describe Focus::Focus do
   it "should provide regex shortcuts for finding items" do
       @focus.project(/Spend/).should == @mailProject
       @focus.action(/useless/).should == @mailAction
-      pending "context lookups not working?"
-      @focus.context(/PC/).should == @mailContext
+      pending "What am I doing wrong here? no time/ need to look at this now"
+      @focus.context(/look/).should == @mailContext
   end
 
   it "should offer pre-order traversal" do
@@ -260,6 +260,11 @@ describe Focus::Focus do
       completed_items.should include(@openZoneProject)
       completed_items.should_not include(@mailProject)
       completed_items.find_index(@openZoneProject).should < completed_items.find_index(@mailAction)
+    end
+
+    it "should offer regexp first matching similar to overall tree finder" do
+        @focus.list.active.project(/less/).should == @mailProject
+        @focus.list.active.action(/less/).should == @mailAction
     end
 
   end
