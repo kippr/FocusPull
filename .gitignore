@@ -9,3 +9,4 @@ test/omnisync-sample.tar
 *.swp
 *~
 coverage/
+pomodoro.pstore

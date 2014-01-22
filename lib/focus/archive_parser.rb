@@ -78,7 +78,9 @@ module Focus
       name = xpath_content( node, './xmlns:name' )
       # for very weird bugs, this is useful
       # name = "#{name}-#{node[ 'id' ]}"
-      item = type.new( name )
+      # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
+      id = node[ 'id' ] || node.parent[ 'id' ]
+      item = type.new( name, id )
       item.created_date = xpath_content( node, './xmlns:added', nil )
       item.updated_date = xpath_content( node, './xmlns:modified', nil )
       if node[ 'op' ] == "delete"
@@ -93,13 +95,11 @@ module Focus
       # parent id is held as idref
       parent_id = xpath_content( item_node, './/@idref', nil )
       @log.debug( "Found parent link to '#{parent_id}'" )
-      # node ids are held on action nodes (which are 1-1 parent of project nodes, hence 2nd check)
-      id = item_node[ 'id' ] || item_node.parent[ 'id' ]
       # todo: consider 'blank context' nullobj?
       context_id = xpath_content( item_node, './xmlns:context/@idref', nil )
-      @ref_to_node[  id ]  = item
-      @parent_ref_of[ id ] = parent_id
-      @context_ref_of[ id ] = context_id
+      @ref_to_node[  item.id ]  = item
+      @parent_ref_of[ item.id ] = parent_id
+      @context_ref_of[ item.id ] = context_id
     end
 
     def remove_links( deleted_node )

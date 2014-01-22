@@ -21,14 +21,15 @@ end
 
 class Item
 
-  attr_reader :name
+  attr_reader :name, :id
   attr_reader :parent, :children
   attr_reader :created_date
 
-  def initialize( name )
+  def initialize( name, id = nil )
     @name = name
     @children = []
     @status = :active
+    @id = id
   end
 
   def list
@@ -154,7 +155,7 @@ class Focus < Item
   attr_reader :contexts
 
   def initialize
-    super( "Portfolio")
+    super( "Portfolio" )
     @contexts = []
   end
 
@@ -242,10 +243,6 @@ end
 class Action < Item
 
   attr_reader :start_date
-
-  def initialize( name )
-    super( name )
-  end
 
   def status
     case
