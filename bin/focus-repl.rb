@@ -123,7 +123,7 @@ module PomodoroClient
 
     def start
         begin
-            25.times{| minute | _tick minute}
+            25.times{| minute | _tick minute, 25}
         rescue Interrupt
             pomo.interrupt!
             _notify_interrupted
@@ -133,6 +133,16 @@ module PomodoroClient
         end
         _update_prompt
         _reset_title
+        rest
+    end
+
+    def rest length = nil
+        length = 5 unless length
+        begin
+            length.times{| minute | _tick minute, length}
+        rescue Interrupt
+        end
+        _notify_rested
     end
 
     def _update_prompt
@@ -158,15 +168,20 @@ module PomodoroClient
         _term_notify "Pomodoro interupted", "#{active.name} [#{pomo.to_short_s}]"
     end
 
+    def _notify_rested
+        _term_notify "Break over!", "Get back to work slacker"
+    end
+
     def _reset_title
         _tmux_title 'Focus'
     end
 
-    def _tick minute
-        puts
-        puts "#{minute}/25: #{active.name}"
-        _tmux_title "Focus[#{minute}]"
+    def _tick minute, length
+        title = length == 25 ? 'Focus' : 'Rest'
+        _tmux_title "#{title}[#{minute}]"
+        print "#{minute}/#{length} "
         60.times{ sleep(1) && print('.') }
+        puts
     end
 
 end
