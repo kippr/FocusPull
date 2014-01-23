@@ -55,6 +55,7 @@ group :development, :test do
   gem 'simplecov'
 
   gem 'pry'
+  gem 'terminal-notifier'  # for focus-repl
 end
 
 group :production do

@@ -2,6 +2,7 @@ require 'focus'
 require 'active_support/core_ext'
 require 'pstore'
 
+
 class Array
   def sum
     inject(0.0) { |result, el| result + el }
@@ -19,9 +20,9 @@ class Pomodoro
 
     def initialize omni_id
         @id = omni_id
-        @estimated = 0
-        @completed = 0
-        @interupted = 0
+        @estimated = '-'
+        @completed = []
+        @interrupted = []
     end
 
     def estimate= value
@@ -30,12 +31,12 @@ class Pomodoro
     end
 
     def complete!
-        @completed += 1
+        @completed << Time.now
         save!
     end
 
     def interrupt!
-        @interupted += 1
+        @interrupted << Time.now
         save!
     end
 
@@ -45,6 +46,14 @@ class Pomodoro
         end
     end
 
+    def to_short_s
+        "#{@completed.length}/#{@estimated}"
+    end
+
+    def to_s
+        "Estimate: #{@estimated}; Completed: #{@completed.length}; Interuptions: #{@interrupted.length}"
+    end
+
     def self.obtain! omni_id
         @@store.transaction(true) { @@store[omni_id] } || new( omni_id )
     end
@@ -52,54 +61,117 @@ class Pomodoro
 end
 
 
-def reload
-    @@pf = Focus::FocusParser.local
-end
+module PomodoroClient
 
-def pf
-    @@pf
-end
+    attr_accessor :pf
 
-def pfl
-    pf.list
-end
-
-def tmux_title title
-    `tmux rename-window -t #{$tmux_win} "#{title}"`
-end
-
-module Focus
-    class Item
-
-        def pomo
-            Pomodoro.obtain!( @id )
-        end
-
-    end
-end
-
-
-def go action
-    pomodoro = action.pomo
-    puts pomodoro.inspect
     begin
-        (0..25).each do | min |
-            puts
-            puts "#{min}/25: #{action.name}"
-            tmux_title "GTD #{min}/25"
-            60.times{ sleep(1) && print('.') }
-        end
-        pomodoro.complete!
-        tmux_title 'Ding!!'
-        $stdin.gets
-    rescue Interrupt
-        pomodoro.interrupt!
-        puts "Doh!!"
+        require 'terminal-notifier'
+        @@notifications = true
+    rescue LoadError
+        $stderr.puts "\nWARNING: terminal-notifier gem not found, no notifications will be posted\n\n"
+        @@notifications = false
     end
-    tmux_title 'GTD'
+
+    @@tmux_win = `tmux display-message -p '#I'`.chop
+
+    def reload
+        @pf = Focus::FocusParser.local
+        _reset_title
+    end
+    alias_method :r, :reload
+
+    def print_summary
+        puts
+        puts "*** #{active.name} ***"
+        puts "    #{pomo}"
+        puts
+        puts "[#{active.parent.name}]"
+        active.parent.list.active.actions.each do |a|
+            if active == a
+                puts " --> #{a.name.truncate(80)}" if active == a
+            else
+                puts "  *  #{a.name.truncate(80)}" unless active == a
+            end
+        end
+        puts
+    end
+    alias_method :w, :print_summary
+
+    def active
+        @active || raise( "No active action; set via 'workon <action>'" )
+    end
+
+    def pomo
+        Pomodoro.obtain!( active.id )
+    end
+
+    def focuson action
+        action = pf.list.action( action ) if action.is_a? Regexp
+        raise( "No action given" ) unless action.is_a? Focus::Item
+        @active = action
+        _update_prompt
+        print_summary
+    end
+    alias_method :focus, :focuson
+
+    def estimate estimate
+        pomo.estimate = estimate
+        _update_prompt
+    end
+    alias_method :est, :estimate
+
+    def start
+        begin
+            25.times{| minute | _tick minute}
+        rescue Interrupt
+            pomo.interrupt!
+            _notify_interrupted
+        else
+            pomo.complete!
+            _notify_completed
+        end
+        _update_prompt
+        _reset_title
+    end
+
+    def _update_prompt
+        Pry.config.prompt_name = "#{active.name.truncate(25, :separator => ' ')} [#{pomo.to_short_s}]"
+    end
+
+    def _tmux_title title
+        `tmux rename-window -t #{@@tmux_win} "#{title}"`
+    end
+
+    def _term_notify title, message
+        if @@notifications
+            TerminalNotifier.notify(message, :title => title, :sender => 'com.apple.Terminal', :activate => 'com.apple.Terminal')
+        end
+        @@notifications
+    end
+
+    def _notify_completed
+        _term_notify "Pomodoro complete", "#{active.name} [#{pomo.to_short_s}]"
+    end
+
+    def _notify_interrupted
+        _term_notify "Pomodoro interupted", "#{active.name} [#{pomo.to_short_s}]"
+    end
+
+    def _reset_title
+        _tmux_title 'Focus'
+    end
+
+    def _tick minute
+        puts
+        puts "#{minute}/25: #{active.name}"
+        _tmux_title "Focus[#{minute}]"
+        60.times{ sleep(1) && print('.') }
+    end
+
 end
 
+
+extend PomodoroClient
 reload
-puts "Access portfolio via pf"
-$tmux_win = `tmux display-message -p '#I'`.chop
-tmux_title 'GTD'
+puts "FocusRepl started, access portfolio via pf, set active action via focuson"
