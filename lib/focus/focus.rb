@@ -138,6 +138,20 @@ class Item
     "#{self.class}: #{@name}"
   end
 
+  def ancestors
+      parents = []
+      item = self.parent
+      until item.nil? or item.is_root?
+          parents << item
+          item = item.parent
+      end
+      parents
+  end
+
+  def full_name
+      ([self] + ancestors).reverse.collect(&:name).join(' : ')
+  end
+
   # todo: this doesn't feel like it belongs here, but how to share this else?
   def weight
     0
@@ -485,7 +499,11 @@ end
     end
 
     def names
-        self.collect(&:name)
+        collect(&:name)
+    end
+
+    def full_names
+        collect(&:full_name)
     end
 
     def with &block

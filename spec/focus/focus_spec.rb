@@ -150,6 +150,10 @@ describe Focus::Focus do
     @mailContext.name.should == "PC : Outlook"
   end
 
+  it "should give a 'full name' showing ancestors for actions" do
+      @mailAction.full_name.should == "Spend less time in email : Collect useless mails in sd"
+  end
+
   it "should ignore contexts not of type Context (to work around yaml bug!)" do
     @mailAction.link_parent @mailProject, "Hello Mum"
     @mailAction.at_context.name.should be_blank
