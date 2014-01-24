@@ -107,7 +107,7 @@ module PomodoroClient
     end
 
     def focuson action
-        action = pf.list.action( action ) if action.is_a? Regexp
+        action = pf.list.active.action( action ) if action.is_a? Regexp
         raise( "No action given" ) unless action.is_a? Focus::Item
         @active = action
         _update_prompt
@@ -117,6 +117,7 @@ module PomodoroClient
 
     def estimate estimate
         pomo.estimate = estimate
+        print_summary
         _update_prompt
     end
     alias_method :est, :estimate
@@ -130,10 +131,10 @@ module PomodoroClient
         else
             pomo.complete!
             _notify_completed
+            rest
         end
         _update_prompt
         _reset_title
-        rest
     end
 
     def rest length = nil
@@ -141,8 +142,10 @@ module PomodoroClient
         begin
             length.times{| minute | _tick minute, length}
         rescue Interrupt
+        else
+            _notify_rested
         end
-        _notify_rested
+        _reset_title
     end
 
     def _update_prompt
@@ -173,7 +176,7 @@ module PomodoroClient
     end
 
     def _reset_title
-        _tmux_title 'Focus'
+        _tmux_title 'Plan'
     end
 
     def _tick minute, length
