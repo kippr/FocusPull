@@ -2,6 +2,8 @@ require 'focus'
 require 'active_support/core_ext'
 require 'pstore'
 
+require_relative '../../forks/selecta/selecta'
+
 
 class Array
   def sum
@@ -106,8 +108,21 @@ module PomodoroClient
         Pomodoro.obtain!( active.id )
     end
 
-    def focuson action
-        action = pf.list.active.action( action ) if action.is_a? Regexp
+    def _resolve_focus_action input
+        case input
+        when Enumerable
+            pick( input )
+        when Regexp
+            pf.list.active.action( input )
+        when Focus::Item
+            input
+        else
+            pick( pf.list.active.actions, input )
+        end
+    end
+
+    def focuson input=nil
+        action = _resolve_focus_action( input )
         raise( "No action given" ) unless action.is_a? Focus::Item
         @active = action
         _update_prompt
@@ -135,6 +150,20 @@ module PomodoroClient
         end
         _update_prompt
         _reset_title
+    end
+
+    def pick choices, initial_filter=nil
+        found = _selecta( choices.full_names, initial_filter )
+        pf.list.detect{ |i| i.full_name == found} if found
+    end
+
+    def _selecta choices, initial_filter
+        options = {search: initial_filter || ''}
+        selecta = Selecta.new
+        search = Screen.with_screen do |screen, tty|
+            config = Configuration.from_inputs(choices, options, screen.height)
+            Selecta.new.run_in_screen(config, screen, tty)
+        end.selected_choice
     end
 
     def rest length = nil
@@ -188,6 +217,7 @@ module PomodoroClient
     end
 
 end
+
 
 
 extend PomodoroClient
