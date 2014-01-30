@@ -108,27 +108,44 @@ module PomodoroClient
         Pomodoro.obtain!( active.id )
     end
 
-    def _resolve_focus_action input
+    def _resolve_focus_item input, base_choices
         case input
         when Enumerable
             pick( input )
         when Regexp
-            pf.list.active.action( input )
+            base_choices.call.with_name( input )
         when Focus::Item
             input
         else
-            pick( pf.list.active.actions, input )
+            pick( base_choices.call, input )
         end
     end
 
     def focuson input=nil
-        action = _resolve_focus_action( input )
+        action = _resolve_focus_item( input , lambda{ pf.list.active.actions })
         raise( "No action given" ) unless action.is_a? Focus::Item
         @active = action
         _update_prompt
         print_summary
     end
     alias_method :focus, :focuson
+
+    def show input=nil
+        item = _resolve_focus_item( input, lambda { pf.list } )
+        puts
+        puts
+        puts item.full_name.truncate(130)
+        _show( item, 1 )
+        nil
+    end
+
+    def _show item, depth
+        for item in item.children
+            puts "#{'  ' * depth} - #{item.name.truncate(130)}"
+            _show( item, depth + 1)
+        end
+    end
+
 
     def estimate estimate
         pomo.estimate = estimate
@@ -153,6 +170,7 @@ module PomodoroClient
     end
 
     def pick choices, initial_filter=nil
+        puts choices.to_a
         found = _selecta( choices.full_names, initial_filter )
         pf.list.detect{ |i| i.full_name == found} if found
     end
