@@ -20,6 +20,16 @@ class Pomodoro
 
     @@store = PStore.new('pomodoro.pstore')
 
+    def self.active_id
+        @@store.transaction(true) { @@store['active'] }
+    end
+
+    def self.active_id= active_id
+        @@store.transaction do
+            @@store['active'] = active_id
+        end
+    end
+
     def initialize omni_id
         @id = omni_id
         @estimated = '-'
@@ -83,6 +93,11 @@ module PomodoroClient
     end
     alias_method :r, :reload
 
+    def _restore_active
+        last_id = Pomodoro.active_id
+        focuson pf.list.detect{|i|i.id == last_id} if last_id
+    end
+
     def print_summary
         puts
         puts "*** #{active.name} ***"
@@ -125,6 +140,7 @@ module PomodoroClient
         action = _resolve_focus_item( input , lambda{ pf.list.active.actions })
         raise( "No action given" ) unless action.is_a? Focus::Item
         @active = action
+        Pomodoro.active_id = action.id
         _update_prompt
         print_summary
     end
@@ -241,3 +257,4 @@ end
 extend PomodoroClient
 reload
 puts "FocusRepl started, access portfolio via pf, set active action via focuson"
+_restore_active
