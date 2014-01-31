@@ -37,6 +37,10 @@ class Pomodoro
         @interrupted = []
     end
 
+    def estimated?
+        @estimated.is_a? Fixnum
+    end
+
     def estimate= value
         @estimated = value
         save!
@@ -170,7 +174,14 @@ module PomodoroClient
     end
     alias_method :est, :estimate
 
-    def start
+    def start input=nil
+        focuson input if input
+        unless pomo.estimated?
+            print "Estimate? "
+            input = $stdin.gets.chop.to_i
+            pomo.estimate = input unless input.blank?
+            puts
+        end
         begin
             25.times{| minute | _tick minute, 25}
         rescue Interrupt
