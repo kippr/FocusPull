@@ -1,6 +1,8 @@
 require 'focus'
 require 'active_support/core_ext'
 require 'pstore'
+require "awesome_print"
+AwesomePrint.pry!
 
 require_relative '../../forks/selecta/selecta'
 
@@ -76,6 +78,70 @@ class Pomodoro
 
 end
 
+module AwesomePrint
+    module Focus
+
+        def self.included(base)
+            base.send :alias_method, :cast_without_focus, :cast
+            base.send :alias_method, :cast, :cast_with_focus
+        end
+
+        def cast_with_focus(object, type)
+            cast = cast_without_focus(object, type)
+            return cast if !defined?(::Focus)
+
+            if object.is_a?(::Focus::Project)
+                cast = :focus_project
+            elsif object.is_a?(::Focus::Action)
+                cast = :focus_action
+            elsif object.is_a?(::Focus::Item)
+                cast = :focus_item
+            elsif object.is_a?(::Focus::List)
+                cast = :focus_list
+            end
+            cast
+        end
+
+        def _color_key(object)
+            class_key = object.class.name.split('::').last
+            status_key = object.status
+            "#{class_key}_#{status_key}".downcase.to_sym
+        end
+
+        def awesome_focus_project(object)
+            out = []
+            # kp: todo: color ancestors
+            out << colorize(object.full_name, _color_key(object))
+            out += _show( object )
+            out.join("\n")
+        end
+
+        def _show object
+            out = []
+            indented do
+                for item in object.children
+                    out << "#{indent} - #{@inspector.awesome(item)}"
+                    out += _show( item)
+                end
+            end
+            out
+        end
+
+        def awesome_focus_action(object)
+            colorize(object.name, _color_key(object))
+        end
+
+        def awesome_focus_item(object)
+            colorize(object.name, _color_key(object))
+        end
+
+        def awesome_focus_list(object)
+            @inspector.awesome(object.to_a)
+        end
+
+    end
+end
+AwesomePrint::Formatter.send(:include, AwesomePrint::Focus)
 
 module PomodoroClient
 
@@ -151,21 +217,8 @@ module PomodoroClient
     alias_method :focus, :focuson
 
     def show input=nil
-        item = _resolve_focus_item( input, lambda { pf.list } )
-        puts
-        puts
-        puts item.full_name.truncate(130)
-        _show( item, 1 )
-        nil
+        _resolve_focus_item( input, lambda { pf.list } )
     end
-
-    def _show item, depth
-        for item in item.children
-            puts "#{'  ' * depth} - #{item.name.truncate(130)}"
-            _show( item, depth + 1)
-        end
-    end
-
 
     def estimate estimate
         pomo.estimate = estimate
@@ -208,7 +261,6 @@ module PomodoroClient
     end
 
     def pick choices, initial_filter=nil
-        puts choices.to_a
         found = _selecta( choices.full_names, initial_filter )
         pf.list.detect{ |i| i.full_name == found} if found
     end

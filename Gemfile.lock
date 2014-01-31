@@ -52,6 +52,7 @@ GEM
       multi_json (~> 1.0)
     archive-tar-minitar (0.5.2)
     arel (3.0.2)
+    awesome_print (1.2.0)
     builder (3.0.4)
     coderay (1.0.9)
     color (1.4.1)
@@ -181,6 +182,7 @@ PLATFORMS
 DEPENDENCIES
   RubyInline
   ZenTest (= 4.6.0)
+  awesome_print
   cloud!
   haml
   hoe (= 2.8.0)

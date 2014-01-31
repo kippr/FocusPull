@@ -56,6 +56,7 @@ group :development, :test do
 
   gem 'pry'
   gem 'terminal-notifier'  # for focus-repl
+  gem 'awesome_print'
 end
 
 group :production do
