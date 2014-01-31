@@ -195,6 +195,17 @@ module PomodoroClient
         _update_prompt
         _reset_title
     end
+    alias_method :go, :start
+
+    def done input=nil
+        focuson input if input
+        item_id = active.id
+        puts "Toggling status of #{active}"
+        `osascript script/Omnifocus/toggle-completed.scpt #{item_id}`
+        reload
+        new_item = pf.list.detect{ |i| i.id == item_id }
+        focuson new_item if new_item
+    end
 
     def pick choices, initial_filter=nil
         puts choices.to_a
