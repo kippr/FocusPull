@@ -159,6 +159,7 @@ module PomodoroClient
 
     def reload
         @pf = Focus::FocusParser.local
+        _restore_active
         _reset_title
     end
     alias_method :r, :reload
@@ -188,10 +189,16 @@ module PomodoroClient
     def active
         @active || raise( "No active action; set via 'workon <action>'" )
     end
+    alias_method :a, :active
 
     def pomo
         Pomodoro.obtain!( active.id )
     end
+
+    def project
+        active.parent
+    end
+    alias_method :pr, :project
 
     def _resolve_focus_item input, base_choices
         case input
@@ -243,6 +250,7 @@ module PomodoroClient
         else
             pomo.complete!
             _notify_completed
+            print_summary
             rest
         end
         _update_prompt
@@ -331,4 +339,3 @@ end
 extend PomodoroClient
 reload
 puts "FocusRepl started, access portfolio via pf, set active action via focuson"
-_restore_active
