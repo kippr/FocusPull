@@ -259,7 +259,7 @@ module PomodoroClient
     alias_method :go, :start
 
     def done input=nil
-        focuson input if input
+        focuson( _resolve_focus_item( input, lambda { pf.list } ) ) if input
         item_id = active.id
         puts "Toggling status of #{active}"
         `osascript script/Omnifocus/toggle-completed.scpt #{item_id}`
