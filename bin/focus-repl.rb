@@ -213,13 +213,13 @@ module PomodoroClient
         end
     end
 
-    def focuson input=nil
+    def focuson input=nil, silent=false
         action = _resolve_focus_item( input , lambda{ pf.list.active.actions })
         raise( "No action given" ) unless action.is_a? Focus::Item
         @active = action
         Pomodoro.active_id = action.id
         _update_prompt
-        print_summary
+        print_summary unless silent
     end
     alias_method :focus, :focuson
 
@@ -259,13 +259,13 @@ module PomodoroClient
     alias_method :go, :start
 
     def done input=nil
-        focuson( _resolve_focus_item( input, lambda { pf.list } ) ) if input
+        focuson( _resolve_focus_item( input, lambda { pf.list } ), true ) if input
         item_id = active.id
         puts "Toggling status of #{active}"
         `osascript script/Omnifocus/toggle-completed.scpt #{item_id}`
         reload
         new_item = pf.list.detect{ |i| i.id == item_id }
-        focuson new_item if new_item
+        focuson( new_item, true ) if new_item
     end
 
     def pick choices, initial_filter=nil

@@ -430,6 +430,10 @@ end
         actions.with_name(name_regex)
     end
 
+    def folder name_regex
+        folders.with_name(name_regex)
+    end
+
     def with_name name_or_regex
       if name_or_regex.is_a? Regexp
         detect{ | n | name_or_regex =~ n.name }
