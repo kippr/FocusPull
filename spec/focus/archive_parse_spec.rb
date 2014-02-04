@@ -7,19 +7,19 @@ describe Focus::FocusParser, "#parse" do
     @parser = Focus::FocusParser.new( "spec/focus", "omnisync-sample.tar", "tester" )
     @focus = @parser.parse
   end
-  
+
   it "should read projects" do
     @focus.project("Spend less time in email").should_not be_nil
     @focus.projects.first.name.should_not be_nil
   end
-  
+
   it "should parse project status" do
     @focus.project("iPad has open zone access").status.should == :dropped
     @focus.project("Spend less time in email").status.should == :active
     doneProject = @focus.project("Switch to 3 network")
     doneProject.status.should == :done
   end
-  
+
   it "should parse created, modified, end dates" do
     doneProject = @focus.project("Switch to 3 network")
     doneProject.completed_date.to_date.should == DateTime.parse("2010-12-16")
@@ -31,34 +31,44 @@ describe Focus::FocusParser, "#parse" do
     action = @focus.action( "Confirm names for 2011" )
     action.start_date.should == DateTime.parse( "2010-11-25 08:00" )
   end
-  
+
+  it "should parse due dates" do
+    projectWithDueDate = @focus.project("Setup 2011 vacsheet")
+    projectWithDueDate.due_date.should == DateTime.parse( "2010-12-21 16:00" )
+  end
+
+  it "should use nil for projects without due dates" do
+    projectWithoutDueDate = @focus.project("Switch to 3 network")
+    projectWithoutDueDate.due_date.should be_nil
+  end
+
   it "should read folders" do
     @focus.folder("Personal").should_not be_nil
     @focus.list.folders.detect("Admin").should_not be_nil
   end
-  
+
   it "should build the folder tree structure" do
     planFolder = @focus.folder("Plan")
     planFolder.parent.name.should == "Secretive Project"
     @focus.folder("Secretive Project").children.should include(planFolder)
   end
-  
+
   it "should build links from projects to folders" do
     @focus.project("Spend less time in email").parent.name.should == "Admin"
   end
-  
+
   it "should link actions to their projects" do
     @focus.action("Collect useless mails in sd").parent.name.should == "Spend less time in email"
   end
-  
+
   it "should build a tree starting with orphan nodes linked into root" do
     @focus.name.should == "Portfolio"
     @focus.parent.should be_nil
     personal = @focus.children.detect{ |c| c.name == "Personal" }
     personal.should_not be_nil
-    personal.children.map( &:name ).should include( "Switch to 3 network" )   
+    personal.children.map( &:name ).should include( "Switch to 3 network" )
   end
-  
+
   it "should order folders and projects as per their rank" do
     pers_order =  rank_of_folder 'Personal'
     proj_order = rank_of_folder 'Secretive Project'
@@ -66,19 +76,19 @@ describe Focus::FocusParser, "#parse" do
     adm_order.should be < pers_order
     proj_order.should be < adm_order
   end
-  
+
   it "should recognize single-action projects" do
     @focus.project("Miscellaneous").single_actions?.should be_true
   end
-  
+
   it "should not include tasks that were later deleted" do
     @focus.action( "A task that was later removed" ).should be_nil
   end
-  
+
   def rank_of_folder name
     folder, order = @focus.list.folders.zip(1..100).detect{ | f, o | f.name == name }
     folder.should_not be_nil
-    order  
+    order
   end
 
   describe 'context' do

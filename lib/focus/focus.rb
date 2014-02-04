@@ -257,6 +257,7 @@ end
 class Action < Item
 
   attr_reader :start_date
+  attr_reader :due_date
 
   def status
     case
@@ -291,6 +292,10 @@ class Action < Item
 
   def start_date=( datetime )
     @start_date = datetime.respond_to?( :to_datetime ) ? datetime.to_datetime : DateTime.parse( datetime ) if datetime
+  end
+
+  def due_date=( datetime )
+    @due_date = datetime.respond_to?( :to_datetime ) ? datetime.to_datetime : DateTime.parse( datetime ) if datetime
   end
 
   def done?

@@ -53,6 +53,7 @@ module Focus
         end
         item.start_date = xpath_content( action_node, './xmlns:start', nil )
         item.completed( xpath_content( action_node, './xmlns:completed', nil ) )
+        item.due_date =  xpath_content( action_node, './xmlns:due', nil )
       end
     end
 
