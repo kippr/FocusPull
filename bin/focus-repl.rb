@@ -65,7 +65,7 @@ class Pomodoro
     end
 
     def to_short_s
-        "#{@completed.length}/#{@estimated}"
+        "#{@completed.length}/#{@estimated}/#{@interrupted.length}"
     end
 
     def to_s
@@ -177,11 +177,9 @@ module PomodoroClient
         puts
         puts "[#{item.parent.name}]"
         item.parent.list.active.actions.each do |a|
-            if active == a
-                puts " --> #{a.name.truncate(80)}" if item == a
-            else
-                puts "  *  #{a.name.truncate(80)}" unless item == a
-            end
+            pomodoro_status = pomo( a ).to_short_s
+            print item == a ? " --> " : "  *  "
+            puts "[#{pomodoro_status}]   #{a.name.truncate(80)}"
         end
         puts
     end
@@ -231,7 +229,8 @@ module PomodoroClient
 
     def due
         puts "Items due within 3 days"
-        pf.list.due.each{ |i| print_summary i }
+        pf.list.due.each{ |i| print "  *  " ; ap( i )}
+        nil
     end
 
     def estimate estimate
@@ -347,5 +346,8 @@ extend PomodoroClient
 puts
 reload
 puts
+puts
 due
+puts
+puts
 puts "FocusRepl started, access portfolio via pf, set active action via focuson"
