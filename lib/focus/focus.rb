@@ -290,6 +290,18 @@ class Action < Item
     end
   end
 
+  def overdue?
+      due_within? 0.days
+  end
+
+  def due?
+      due_within? 3.days
+  end
+
+  def due_within? period
+      remaining? && (due_date - period) < Date.today if due_date
+  end
+
   def start_date=( datetime )
     @start_date = datetime.respond_to?( :to_datetime ) ? datetime.to_datetime : DateTime.parse( datetime ) if datetime
   end
@@ -474,6 +486,19 @@ end
     def stalled
       #todo: should children also move?
       active.not.single_action.with{ | n | n.children.none?(&:remaining?) }
+    end
+
+    # kp: todod: remove duplicatino here with some meta programming
+    def due
+      chain lambda{ | n | n.respond_to?( :due? ) && n.due? }
+    end
+
+    def due_within within
+      chain lambda{ | n | n.respond_to?( :due_within? ) && n.due_within?( within ) }
+    end
+
+    def overdue
+      chain lambda{ | n | n.respond_to?( :overdue? ) && n.overdue? }
     end
 
     def older_than seconds_ago

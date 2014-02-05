@@ -233,6 +233,18 @@ describe Focus::Focus do
       @focus.list.actions.should include(@mailAction)
     end
 
+    it "should offer overdue filters" do
+        @mailAction.due_date = 2.days.ago
+        @focus.list.overdue.should include( @mailAction )
+    end
+
+    it "should offer due soon filters" do
+        @mailAction.due_date = 2.days.ago
+        @mailProject.due_date = 3.days.from_now
+        @focus.list.due.should include( @mailAction )
+        @focus.list.due.should include( @mailProject )
+    end
+
     it "should offer age based filters" do
       @mailProject.created_date = ( Date.today - 4 ).to_s
       @mailAction.created_date = ( Date.today - 2 ).to_s

@@ -169,17 +169,18 @@ module PomodoroClient
         focuson pf.list.detect{|i|i.id == last_id} if last_id
     end
 
-    def print_summary
+    def print_summary item = nil
+        item = active unless item
         puts
-        puts "*** #{active.name} ***"
-        puts "    #{pomo}"
+        puts "*** #{item.name} ***"
+        puts "    #{pomo item}"
         puts
-        puts "[#{active.parent.name}]"
-        active.parent.list.active.actions.each do |a|
+        puts "[#{item.parent.name}]"
+        item.parent.list.active.actions.each do |a|
             if active == a
-                puts " --> #{a.name.truncate(80)}" if active == a
+                puts " --> #{a.name.truncate(80)}" if item == a
             else
-                puts "  *  #{a.name.truncate(80)}" unless active == a
+                puts "  *  #{a.name.truncate(80)}" unless item == a
             end
         end
         puts
@@ -191,8 +192,9 @@ module PomodoroClient
     end
     alias_method :a, :active
 
-    def pomo
-        Pomodoro.obtain!( active.id )
+    def pomo item = nil
+        item = active unless item
+        Pomodoro.obtain!( item.id )
     end
 
     def project
@@ -225,6 +227,11 @@ module PomodoroClient
 
     def show input=nil
         _resolve_focus_item( input, lambda { pf.list } )
+    end
+
+    def due
+        puts "Items due within 3 days"
+        pf.list.due.each{ |i| print_summary i }
     end
 
     def estimate estimate
@@ -337,5 +344,8 @@ end
 
 
 extend PomodoroClient
+puts
 reload
+puts
+due
 puts "FocusRepl started, access portfolio via pf, set active action via focuson"
