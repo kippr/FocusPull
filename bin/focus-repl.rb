@@ -157,16 +157,16 @@ module PomodoroClient
 
     @@tmux_win = `tmux display-message -p '#I'`.chop
 
-    def reload
+    def reload silent = false
         @pf = Focus::FocusParser.local
-        _restore_active
+        _restore_active silent
         _reset_title
     end
     alias_method :r, :reload
 
-    def _restore_active
+    def _restore_active silent
         last_id = Pomodoro.active_id
-        focuson pf.list.detect{|i|i.id == last_id} if last_id
+        focuson( pf.list.detect{|i|i.id == last_id}, silent ) if last_id
     end
 
     def print_summary item = nil
@@ -176,10 +176,13 @@ module PomodoroClient
         puts "    #{pomo item}"
         puts
         puts "[#{item.parent.name}]"
-        item.parent.list.active.actions.each do |a|
+        #kp: todo: be good to add project? to Item
+        container = item.class == Focus::Action ? item.parent : item
+        container.list.actions.each do |a|
             pomodoro_status = pomo( a ).to_short_s
-            print item == a ? " --> " : "  *  "
-            puts "[#{pomodoro_status}]   #{a.name.truncate(80)}"
+            print (item.id == a.id ? " --> " : "  *  ")
+            print "[#{pomodoro_status}]  "
+            ap(a)
         end
         puts
     end
@@ -200,6 +203,11 @@ module PomodoroClient
     end
     alias_method :pr, :project
 
+    def focus_projects
+        pf.list.active.projects.not.single_action.full_names
+    end
+    alias_method :fp, :focus_projects
+
     def _resolve_focus_item input, base_choices
         case input
         when Enumerable
@@ -213,9 +221,13 @@ module PomodoroClient
         end
     end
 
+    def _ensure_present item
+        raise RuntimeError( "No item matched" ) unless item.is_a? Focus::Item
+    end
+
     def focuson input=nil, silent=false
         action = _resolve_focus_item( input , lambda{ pf.list.active.actions })
-        raise( "No action given" ) unless action.is_a? Focus::Item
+        _ensure_present action
         @active = action
         Pomodoro.active_id = action.id
         _update_prompt
@@ -233,21 +245,29 @@ module PomodoroClient
         nil
     end
 
-    def estimate estimate
-        pomo.estimate = estimate
-        print_summary
-        _update_prompt
+    def estimate estimate_or_item
+        if estimate_or_item.is_a? Focus::Item
+            estimate_or_item.list.active.actions.each{ |a| ap(a) ; _get_estimate a }
+        else
+            pomo.estimate = estimate
+            print_summary
+            _update_prompt
+        end
     end
     alias_method :est, :estimate
 
+    def _get_estimate item=nil
+        item = _resolve_focus_item( input, lambda{ pf.list } ) unless item
+        print "Estimate? "
+        input = $stdin.gets.chop.to_i
+        pomo( item ).estimate = input unless input.blank?
+        _update_prompt
+        puts
+    end
+
     def start input=nil
         focuson input if input
-        unless pomo.estimated?
-            print "Estimate? "
-            input = $stdin.gets.chop.to_i
-            pomo.estimate = input unless input.blank?
-            puts
-        end
+        _get_estimate( active ) unless pomo.estimated?
         begin
             25.times{| minute | _tick minute, 25}
         rescue Interrupt
@@ -265,16 +285,16 @@ module PomodoroClient
     alias_method :go, :start
 
     def done input=nil
-        focuson( _resolve_focus_item( input, lambda { pf.list } ), true ) if input
-        item_id = active.id
-        puts "Toggling status of #{active}"
+        item = input ? _resolve_focus_item( input, lambda { pf.list } ) : active
+        _ensure_present item
+        item_id = item.id
+        active_id = active.id
+        puts "Toggling status of #{item}"
         `osascript script/Omnifocus/toggle-completed.scpt #{item_id}`
-        reload
-        new_item = pf.list.detect{ |i| i.id == item_id }
-        focuson( new_item, true ) if new_item
+        reload true
     end
 
-    def pick choices, initial_filter=nil
+    def pick choices initial_filter=nil
         found = _selecta( choices.full_names, initial_filter )
         pf.list.detect{ |i| i.full_name == found} if found
     end
@@ -300,7 +320,7 @@ module PomodoroClient
     end
 
     def _update_prompt
-        Pry.config.prompt_name = "#{active.name.truncate(25, :separator => ' ')} [#{pomo.to_short_s}]"
+        Pry.config.prompt_name = "#{active.name.truncate(25, :separator => ' ')} [#{pomo.to_short_s}]  "
     end
 
     def _tmux_title title
@@ -328,6 +348,7 @@ module PomodoroClient
 
     def _reset_title
         _tmux_title 'Plan'
+        nil
     end
 
     def _tick minute, length
@@ -350,4 +371,5 @@ puts
 due
 puts
 puts
-puts "FocusRepl started, access portfolio via pf, set active action via focuson"
+puts "{FocusRepl started, access portfolio via pf, set active action via focuson}"
+puts
