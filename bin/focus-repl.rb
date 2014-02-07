@@ -245,6 +245,15 @@ module PomodoroClient
         nil
     end
 
+    def overdue
+        overdue = pf.list.overdue.to_a
+        unless overdue.empty?
+            puts "Overdue items"
+            overdue.each{ |i| print "  *  " ; ap( i )}
+        end
+        nil
+    end
+
     def estimate estimate_or_item
         if estimate_or_item.is_a? Focus::Item
             estimate_or_item.list.active.actions.each{ |a| ap(a) ; _get_estimate a }
@@ -292,9 +301,10 @@ module PomodoroClient
         puts "Toggling status of #{item}"
         `osascript script/Omnifocus/toggle-completed.scpt #{item_id}`
         reload true
+        overdue
     end
 
-    def pick choices initial_filter=nil
+    def pick choices, initial_filter=nil
         found = _selecta( choices.full_names, initial_filter )
         pf.list.detect{ |i| i.full_name == found} if found
     end

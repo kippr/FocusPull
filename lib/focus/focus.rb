@@ -299,7 +299,7 @@ class Action < Item
   end
 
   def due_within? period
-      remaining? && (due_date - period) < Date.today if due_date
+      remaining? && (due_date - period) < Time.now if due_date
   end
 
   def start_date=( datetime )

@@ -234,7 +234,7 @@ describe Focus::Focus do
     end
 
     it "should offer overdue filters" do
-        @mailAction.due_date = 2.days.ago
+        @mailAction.due_date = 2.minutes.ago
         @focus.list.overdue.should include( @mailAction )
     end
 
