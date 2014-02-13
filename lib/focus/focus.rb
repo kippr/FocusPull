@@ -24,6 +24,7 @@ class Item
   attr_reader :name, :id
   attr_reader :parent, :children
   attr_reader :created_date
+  alias_method :kids, :children
 
   def initialize( name, id = nil )
     @name = name

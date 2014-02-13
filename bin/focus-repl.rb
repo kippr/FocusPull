@@ -145,8 +145,6 @@ AwesomePrint::Formatter.send(:include, AwesomePrint::Focus)
 
 module PomodoroClient
 
-    attr_accessor :pf
-
     begin
         require 'terminal-notifier'
         @@notifications = true
@@ -157,10 +155,15 @@ module PomodoroClient
 
     @@tmux_win = `tmux display-message -p '#I'`.chop
 
+    def pf
+        @@pf || reload( true )
+    end
+
     def reload silent = false
-        @pf = Focus::FocusParser.local
+        @@pf = Focus::FocusParser.local
         _restore_active silent
         _reset_title
+        @@pf
     end
     alias_method :r, :reload
 
@@ -189,7 +192,7 @@ module PomodoroClient
     alias_method :w, :print_summary
 
     def active
-        @active || raise( "No active action; set via 'workon <action>'" )
+        @@active || raise( "No active action; set via 'workon <action>'" )
     end
     alias_method :a, :active
 
@@ -211,13 +214,13 @@ module PomodoroClient
     def _resolve_focus_item input, base_choices
         case input
         when Enumerable
-            pick( input )
+            pick( nil, input )
         when Regexp
             base_choices.call.with_name( input )
         when Focus::Item
             input
         else
-            pick( base_choices.call, input )
+            pick( input, base_choices.call )
         end
     end
 
@@ -228,7 +231,7 @@ module PomodoroClient
     def focuson input=nil, silent=false
         action = _resolve_focus_item( input , lambda{ pf.list.active.actions })
         _ensure_present action
-        @active = action
+        @@active = action
         Pomodoro.active_id = action.id
         _update_prompt
         print_summary unless silent
@@ -238,6 +241,7 @@ module PomodoroClient
     def show input=nil
         _resolve_focus_item( input, lambda { pf.list } )
     end
+
 
     def due
         puts "Items due within 3 days"
@@ -304,7 +308,7 @@ module PomodoroClient
         overdue
     end
 
-    def pick choices, initial_filter=nil
+    def pick initial_filter, choices=pf.list
         found = _selecta( choices.full_names, initial_filter )
         pf.list.detect{ |i| i.full_name == found} if found
     end
@@ -371,9 +375,35 @@ module PomodoroClient
 
 end
 
+module TreeNavigation
+
+    def right move=1
+        index = parent.kids.find_index self
+        parent.kids[index + move]
+    end
+
+    def left move=1
+        right( move * -1 )
+    end
+
+    def up
+        parent
+    end
+
+    def down
+        kids[0]
+    end
+
+    alias_method :h, :left
+    alias_method :l, :right
+    alias_method :k, :up
+    alias_method :j, :down
+
+end
 
 
-extend PomodoroClient
+include PomodoroClient
+include TreeNavigation
 puts
 reload
 puts
