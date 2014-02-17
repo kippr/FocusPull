@@ -428,6 +428,10 @@ end
       @source.send( @kids ).each { | child | child.list.each( &proc ) }
     end
 
+    def []( *args )
+        to_a[*args]
+    end
+
     def folders
       with_type Folder
     end

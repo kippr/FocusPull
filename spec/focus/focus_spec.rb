@@ -210,6 +210,10 @@ describe Focus::Focus do
       @focus.list.should include( @mailAction )
     end
 
+    it "should support index access" do
+      @focus.list[2].should == @focus.list.to_a[2]
+    end
+
     it "should offer project view chaining" do
       @focus.list.projects.should include( @mailProject )
       @focus.list.projects.should_not include( @mailAction )
