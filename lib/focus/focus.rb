@@ -432,6 +432,14 @@ end
         to_a[*args]
     end
 
+    def length
+        to_a.length
+    end
+
+    def sample( *args )
+        to_a.sample(*args)
+    end
+
     def folders
       with_type Folder
     end
