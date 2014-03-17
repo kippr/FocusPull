@@ -37,6 +37,10 @@ class Item
     List.new( self )
   end
 
+  def []( *args )
+    children[*args]
+  end
+
   def at_context
     # handle a YAML bug which is putting nonsense in here sometimes
     if @at_context.is_a? Context
