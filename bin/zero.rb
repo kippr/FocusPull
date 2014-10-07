@@ -18,8 +18,8 @@ def _term_notify title, message
     @@notifications
 end
 
-def _notify msg
-    _term_notify msg, msg
+def _notify msg, submsg
+    _term_notify msg, submsg
 end
 
 
@@ -36,28 +36,49 @@ def _tmux_title title
     `tmux rename-window -t #{@@tmux_win} "#{title}"`
 end
 
-def _tick minute, length, start_count
+def report_progress minute, length, start_count
     current_count = inbox_count.to_f
     handled = start_count - current_count
-    rate = (handled / minute.to_f).to_i
-    remaining = length - minute
-    projected = start_count - (rate * remaining)
-    msg = "[#{minute}] #{handled.to_i},#{current_count.to_i} ! #{rate}/min ~ #{projected}"
-    _tmux_title msg
-    _notify msg
-    print msg
+    rate = (handled / minute.to_f)
+    remaining_time = length - minute
+    projected_end_count = (start_count - (rate * remaining_time)).to_i
+    if rate > 0
+        projected_time_to_zero = (current_count / rate).to_i
+    else
+        projected_time_to_zero = '-'
+    end
+    actual = "[#{minute}] #{handled.to_i},#{current_count.to_i} ! #{rate.to_i}/min"
+    projected = "~ #{projected_end_count}, #{projected_time_to_zero} mins"
+    _tmux_title "#{actual} #{projected}"
+    _notify actual, projected # if minute % 5 == 0
+    puts "#{actual} #{projected}"
+end
+
+def _tick minute, length, start_count
+    report_progress minute, length, start_count
     60.times{ sleep(1) && print('.') }
     puts
 end
 
 def go length=25
+    minute = 0
+    start_count = inbox_count
+    interrupted = false
     begin
-        start_count = inbox_count
-        length.times{| minute | _tick minute + 1, length, start_count }
+        length.times do | x |
+            minute = x + 1
+            begin
+                _tick minute, length, start_count
+                interrupted = false
+            rescue Interrupt
+                break if interrupted
+                interrupted = true
+            end
+        end
     rescue Interrupt
-    else
-        end_count = inbox_count
     end
+    report_progress minute, length, start_count
+    _tmux_title ""
 end
 
 
