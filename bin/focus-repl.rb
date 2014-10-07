@@ -145,6 +145,8 @@ AwesomePrint::Formatter.send(:include, AwesomePrint::Focus)
 
 module PomodoroClient
 
+    @@tmux_win = `tmux display-message -p '#I'`.chop
+
     begin
         require 'terminal-notifier'
         @@notifications = true
@@ -152,8 +154,6 @@ module PomodoroClient
         $stderr.puts "\nWARNING: terminal-notifier gem not found, no notifications will be posted\n\n"
         @@notifications = false
     end
-
-    @@tmux_win = `tmux display-message -p '#I'`.chop
 
     def pf
         @@pf || reload( true )
@@ -225,7 +225,7 @@ module PomodoroClient
     end
 
     def _ensure_present item
-        raise RuntimeError( "No item matched" ) unless item.is_a? Focus::Item
+        raise RuntimeError.new( "No item matched, got '#{item}'" ) unless item.is_a? Focus::Item
     end
 
     def focuson input=nil, silent=false
@@ -310,7 +310,7 @@ module PomodoroClient
 
     def pick initial_filter, choices=pf.list
         found = _selecta( choices.full_names, initial_filter )
-        pf.list.detect{ |i| i.full_name == found} if found
+        pf.list.detect{ |i| i.full_name.strip == found} if found
     end
 
     def _selecta choices, initial_filter
@@ -332,6 +332,7 @@ module PomodoroClient
         end
         _reset_title
     end
+    alias_method :take, :rest
 
     def _update_prompt
         Pry.config.prompt_name = "#{active.name.truncate(25, :separator => ' ')} [#{pomo.to_short_s}]  "
@@ -373,12 +374,17 @@ module PomodoroClient
         puts
     end
 
+
+    def mis
+        show /^MIS$/
+    end
+
 end
 
 module TreeNavigation
 
     def right move=1
-        index = parent.kids.find_index self
+        index = active.parent.kids.find_index self
         parent.kids[index + move]
     end
 
@@ -400,6 +406,94 @@ module TreeNavigation
     alias_method :j, :down
 
 end
+
+class PryTreeNavigation < Pry::ClassCommand
+
+    match 'cn'
+    group 'context'
+    description 'Like cd but moves around the Focus tree'
+
+    banner <<-'BANNER'
+        Usage: cn [options] [--help]
+
+        Set new focus tree node as Pry context. `cn /` takes you to root, `cn ..`
+        takes you up a level, `cn -` might toggle last two nodes.
+    BANNER
+
+    def process
+        puts pf
+        state.old_stack ||= []
+        stack, state.old_stack = context_from(arg_string, _pry_, state.old_stack)
+        _pry_.binding_stack = stack if stack
+    end
+
+    def context_from(arg_string, _pry_, old_stack)
+        # copied/ adapted from context_from_object_path, see that impl for comments
+
+        path      = arg_string.split(/\//).delete_if { |a| a =~ /\A\s+\z/ }
+        puts "**#{path}**"
+        stack     = _pry_.binding_stack.dup
+        state_old_stack = old_stack
+
+        if path.empty?
+          state_old_stack = stack.dup unless old_stack.empty?
+          stack = [stack.first]
+        end
+
+        path.each_with_index do |context, i|
+          begin
+            case context.chomp
+            when ""
+              state_old_stack = stack.dup
+              stack = [stack.first]
+            when "::"
+              state_old_stack = stack.dup
+              stack.push(TOPLEVEL_BINDING)
+            when "."
+              next
+            when "<"
+                puts "left"
+                stack.push(Pry.binding_for(left))
+            when ">"
+                stack.push(Pry.binding_for(right))
+            when ".."
+              unless stack.size == 1
+                # Don't rewrite old_stack if we're in complex expression
+                # (e.g.: `cd 1/2/3/../4).
+                state_old_stack = stack.dup if path.first == ".."
+                stack.pop
+              end
+            when "-"
+              unless old_stack.empty?
+                # Interchange current stack and old stack with each other.
+                stack, state_old_stack = state_old_stack, stack
+              end
+            else
+              state_old_stack = stack.dup if i == 0
+              stack.push(Pry.binding_for(stack.last.eval(context)))
+            end
+
+          rescue ::Pry::RescuableException => e
+            # Restore old stack to its initial values.
+            state_old_stack = old_stack
+
+            msg = [
+              "Bad object path: #{arg_string}.",
+              "Failed trying to resolve: #{context}.",
+              e.inspect
+            ].join(' ')
+
+            ::Pry::CommandError.new(msg).tap do |err|
+              err.set_backtrace e.backtrace
+              raise err
+            end
+          end
+        end
+        return stack, state_old_stack
+    end
+
+end
+Pry::Commands.add_command(PryTreeNavigation)
 
 
 include PomodoroClient
