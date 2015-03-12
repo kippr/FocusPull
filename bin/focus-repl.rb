@@ -177,6 +177,9 @@ class BurndownChart
                     text: 'Todos'
                 },
             },
+            tooltip: {
+                shared: true,
+            },
             legend: {
                 layout: 'vertical',
                 align: 'right',
@@ -207,9 +210,11 @@ class BurndownChart
         today = Date.today
         while (day <= end_date)
             if day <= end_date
-                for todo in todos
-                    results[day] = [] if results[day] == nil
-                    results[day] << todo if todo.created_date <= day and (not todo.completed_date or todo.completed_date > day)
+                if not day.saturday? and not day.sunday?
+                    for todo in todos
+                        results[day] = [] if results[day] == nil
+                        results[day] << todo if todo.created_date <= day and (not todo.completed_date or todo.completed_date > day)
+                    end
                 end
             else
                 results[day] = nil
@@ -220,13 +225,21 @@ class BurndownChart
     end
 
     def plot chart_name, todos, start_date, end_date
-        todos_by_date = by_date(todos, start_date, end_date)
-        labels, actuals = todos_by_date.sort.transpose
-        limit = labels.select{|l| l <= Date.today}.length
-        actuals = actuals[0, limit].collect(&:length)
-        start = actuals[0]
-        target = start / (labels.length.to_f - 1)
-        guide = labels.length.times.collect{ |day| start - target * day }
+        todos_by_date = by_date(todos, start_date, end_date).sort
+        high_count = 0
+        per_day = 0
+        days_to_go = todos_by_date.length
+        labels, actuals, guide = todos_by_date.collect do |day, todos|
+            remaining = todos.length
+            if remaining > high_count
+                high_count = remaining
+                per_day = remaining / days_to_go.to_f
+            end
+            guide = per_day * days_to_go
+            days_to_go -= 1
+            remaining = nil if day > Date.today
+            [day, remaining, guide]
+        end.transpose
         chart_config = highcharts_json(chart_name, labels, guide, actuals)
         return HTML % { chart_config: JSON.dump(chart_config) }
     end
