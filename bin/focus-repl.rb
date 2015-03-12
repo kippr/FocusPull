@@ -219,13 +219,11 @@ class BurndownChart
         results
     end
 
-    def plot chart_name, todos
-        start_date = Date.new(2015, 1, 31)
-        end_date = Date.new(2015,3, 5)
+    def plot chart_name, todos, start_date, end_date
         todos_by_date = by_date(todos, start_date, end_date)
         labels, actuals = todos_by_date.sort.transpose
-        #labels = labels.collect{ |l| l
-        actuals = actuals.collect(&:length)
+        limit = labels.select{|l| l <= Date.today}.length
+        actuals = actuals[0, limit].collect(&:length)
         start = actuals[0]
         target = start / (labels.length.to_f - 1)
         guide = labels.length.times.collect{ |day| start - target * day }
@@ -472,11 +470,20 @@ module PomodoroClient
     end
 
 
-    def burndown
+    def burndown start_date=nil, end_date=nil
         todos = project.list.actions
-        html = BurndownChart.new.plot project.name, todos
-        File.open('/tmp/burndown.html', 'w') { |f| f.write(html) }
-        `open /tmp/burndown.html`
+        start_date = project.start_date unless start_date
+        end_date = project.due_date unless end_date
+        if not (start_date and end_date)
+            missing = []
+            missing << 'start date' unless start_date
+            missing << 'due date' unless end_date
+            "Please provide missing #{missing.join('/')}"
+        else
+            html = BurndownChart.new.plot project.name, todos, start_date.to_date, end_date.to_date
+            File.open('/tmp/burndown.html', 'w') { |f| f.write(html) }
+            `open /tmp/burndown.html`
+        end
     end
 
 end
