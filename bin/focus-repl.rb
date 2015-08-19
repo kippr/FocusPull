@@ -407,6 +407,27 @@ module TreeNavigation
 
 end
 
+
+module GtdTests
+
+    def _test_count label, max_count, items, list_items_if_over
+        if items.length > max_count
+            items.each{ |i| puts " * #{i.name}" } if list_items_if_over
+            puts "--> Too many #{label} #{items.length} > #{max_count}"
+        end
+    end
+
+    def check
+        _test_count 'Flagged actions', 20, pf.list.core.flagged.remaining.actions, list=true
+        _test_count 'Flagged projects', 10, pf.list.core.flagged.remaining.projects, list=true
+        _test_count 'Available actions', 100, pf.list.core.active.actions, list=false
+        _test_count 'Available projects', 50, pf.list.core.active.projects, list=false
+        _test_count 'Remaining actions', 300, pf.list.core.remaining.actions, list=false
+        _test_count 'Remaining projects', 150, pf.list.core.remaining.projects, list=false
+    end
+
+end
+
 class PryTreeNavigation < Pry::ClassCommand
 
     match 'cn'
@@ -496,8 +517,11 @@ end
 Pry::Commands.add_command(PryTreeNavigation)
 
 
+
+
 include PomodoroClient
 include TreeNavigation
+include GtdTests
 puts
 reload
 puts
