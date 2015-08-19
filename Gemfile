@@ -30,6 +30,7 @@ gem 'mechanize'
 gem 'rubyzip'
 
 gem "cloud", :git => "git://github.com/kippr/cloud.git"
+gem "iconv"
 #gem 'ninajansen-cloud'
 gem 'pdf-writer', :git => "git://github.com/metaskills/pdf-writer.git"
 #gem 'pdf-writer'
@@ -50,7 +51,7 @@ group :development, :test do
 	gem 'timecop'
 
   # To use debugger
-  gem 'ruby-debug19'
+  #gem 'ruby-debug19'
 
   gem 'simplecov'
 
