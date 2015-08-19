@@ -1,8 +1,8 @@
 require 'nokogiri'
 require 'mechanize'
 require 'logger'
-#require 'zip/zipfilesystem'
-require 'zip'
+require 'zip/zipfilesystem'
+#require 'zip'
 require 'archive/tar/minitar'
 require 'psych'
 
