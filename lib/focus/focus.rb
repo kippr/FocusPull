@@ -130,6 +130,10 @@ class Item
     nil
   end
 
+  def flagged?
+    false
+  end
+
   def age
     0
   end
@@ -345,6 +349,14 @@ class Action < Item
       (orphan? or parent.core?) and not name.starts_with? '##'
   end
 
+  def flagged?
+    @flagged || parent.flagged? || false
+  end
+
+  def set_flagged
+    @flagged = true
+  end
+
   def visit( visitor )
     visitor.visit_action( self )
   end
@@ -539,6 +551,10 @@ end
 
     def single_action
       chain lambda{ | n | n.respond_to?( :single_actions? ) && n.single_actions? }
+    end
+
+    def flagged
+        chain lambda{ | n | n.respond_to?( :flagged? ) && n.flagged? }
     end
 
     def focus
