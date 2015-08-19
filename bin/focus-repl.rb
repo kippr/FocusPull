@@ -143,6 +143,109 @@ module AwesomePrint
 end
 AwesomePrint::Formatter.send(:include, AwesomePrint::Focus)
 
+class BurndownChart
+
+    HTML = <<-EOS
+        <html>
+        <head>
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script>
+            $(function () {
+                $('#container').highcharts(%{chart_config});
+            });
+        </script>
+        </head>
+        <body>
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </body>
+        </html>
+    EOS
+
+    def highcharts_json(chart_name, labels, guide, actuals)
+        {
+            title: {
+                text: chart_name,
+                x: -20
+            },
+            xAxis: {
+                categories: labels,
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Todos'
+                },
+            },
+            tooltip: {
+                shared: true,
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0,
+            },
+            series: [
+                {
+                    name: 'Guide',
+                    data: guide,
+                },
+                {
+                    name: 'Actual',
+                    data: actuals,
+                },
+            ],
+            plotOptions: {
+                series: {
+                    marker: {enabled: false},
+                }
+            }
+        }
+    end
+
+    def by_date(todos, start_date, end_date)
+        results = {}
+        day = start_date
+        today = Date.today
+        while (day <= end_date)
+            if day <= end_date
+                if not day.saturday? and not day.sunday?
+                    for todo in todos
+                        results[day] = [] if results[day] == nil
+                        results[day] << todo if todo.created_date <= day and (not todo.completed_date or todo.completed_date > day)
+                    end
+                end
+            else
+                results[day] = nil
+            end
+            day = day + 1
+        end
+        results
+    end
+
+    def plot chart_name, todos, start_date, end_date
+        todos_by_date = by_date(todos, start_date, end_date).sort
+        high_count = 0
+        per_day = 0
+        days_to_go = todos_by_date.length
+        labels, actuals, guide = todos_by_date.collect do |day, todos|
+            remaining = todos.length
+            if remaining > high_count
+                high_count = remaining
+                per_day = remaining / days_to_go.to_f
+            end
+            guide = per_day * days_to_go
+            days_to_go -= 1
+            remaining = nil if day > Date.today
+            [day, remaining, guide]
+        end.transpose
+        chart_config = highcharts_json(chart_name, labels, guide, actuals)
+        return HTML % { chart_config: JSON.dump(chart_config) }
+    end
+
+end
+
 module PomodoroClient
 
     @@tmux_win = `tmux display-message -p '#I'`.chop
@@ -377,6 +480,23 @@ module PomodoroClient
 
     def mis
         show /^MIS$/
+    end
+
+
+    def burndown start_date=nil, end_date=nil
+        todos = project.list.actions
+        start_date = project.start_date unless start_date
+        end_date = project.due_date unless end_date
+        if not (start_date and end_date)
+            missing = []
+            missing << 'start date' unless start_date
+            missing << 'due date' unless end_date
+            "Please provide missing #{missing.join('/')}"
+        else
+            html = BurndownChart.new.plot project.name, todos, start_date.to_date, end_date.to_date
+            File.open('/tmp/burndown.html', 'w') { |f| f.write(html) }
+            `open /tmp/burndown.html`
+        end
     end
 
 end

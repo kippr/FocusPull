@@ -151,7 +151,7 @@ module Focus
         Dir.foreach( archive_dir ).sort.each do | file |
           if( /\.zip$/ =~ file )
             @log.debug("Found zip file #{archive_dir}/#{file}")
-            Zip::ZipFile.open( "#{archive_dir}/#{file}" ) do |zipfile|
+            Zip::File.open( "#{archive_dir}/#{file}" ) do |zipfile|
               yield zipfile.read( "contents.xml" )
             end
           end
